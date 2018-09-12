@@ -1,0 +1,37 @@
+sprites:
+sprite data held in an ini
+
+[0] #index of sprite
+#the sprite name
+name = "player_idle"
+#the texture sheet on which this sprite resides on
+texture = "tx_player"
+#the coordinates of the sprite on the texture sheet
+left = 0;
+top = 0;
+#the sprite data
+width = 0;
+height = 0;
+images = 0;
+xorigin = 0;
+yorigin = 0;
+
+Dictionary<string spriteName, int spriteIndex>
+
+music/sounds
+file data held in an ini
+
+[0] #index of audio file
+#internal name for the audio
+name = "mus_menu"
+#the filename
+file = "menu.ogg"
+
+Dictionary<string soundName, int index>
+
+lighting:
+a white surface
+
+render light texture to surface with subtractive blend mode
+
+render surface to screen with subtractive blending

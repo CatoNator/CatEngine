@@ -1,0 +1,8 @@
+# dirs
+CatEngine/bin
+CatEngine/obj
+CatEngine/Content/obj
+
+# files
+*.suo
+*.mgcontent
