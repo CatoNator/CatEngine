@@ -14,8 +14,8 @@ namespace CatEngine
         private int iAspectRatioH = 16;
         private int iAspectRatioV = 9;
 
-        public int iBackBufferWidth = 1280;
-        public int iBackBufferHeight = 720;
+        public int iBackBufferWidth = 640;
+        public int iBackBufferHeight = 360;
 
         public float fMusicVolume = 1.0f;
         public float fSoundVolume = 1.0f;

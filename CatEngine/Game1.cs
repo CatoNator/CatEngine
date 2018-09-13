@@ -36,7 +36,7 @@ namespace CatEngine
             graphics = new GraphicsDeviceManager(this);
 
             CSettings.Instance.SetGameViewSize();
-            CSettings.Instance.SetBackbufferSize(720);
+            CSettings.Instance.SetBackbufferSize(360);
 
             graphics.PreferredBackBufferWidth = CSettings.Instance.iBackBufferWidth;
             graphics.PreferredBackBufferHeight = CSettings.Instance.iBackBufferHeight;
@@ -122,10 +122,12 @@ namespace CatEngine
         protected override void Draw(GameTime gameTime)
         {
             //setting up the original resolution draw
+
+            //I suspect I have a memory leak here. rendertargets aren't properly cleared every frame
             SpriteBatch screenBatch = new SpriteBatch(GraphicsDevice);
             RenderTarget2D renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
 
-            RenderTarget2D lightMap = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
+            //RenderTarget2D lightMap = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
 
             GraphicsDevice.SetRenderTarget(renderTarget);
 
@@ -141,17 +143,19 @@ namespace CatEngine
 
             spriteBatch.End();
 
-            GraphicsDevice.SetRenderTarget(lightMap);
+            /*GraphicsDevice.SetRenderTarget(lightMap);
             GraphicsDevice.Clear(Color.White);
 
             CSprite.Instance.sbSpriteBatch = lightBatch;
+
+            //subtractive rensdering is broken as fuck so no lights for now
 
             lightBatch.Begin(SpriteSortMode.Immediate, bsSubtract, SamplerState.PointClamp, null, null, null, null);
 
             //rendering the lights
             CObjectManager.Instance.RenderLights();
 
-            lightBatch.End();
+            lightBatch.End();*/
 
             /*GraphicsDevice.SetRenderTarget(renderTarget);
 
@@ -170,9 +174,11 @@ namespace CatEngine
             screenBatch.Draw(renderTarget, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
             screenBatch.End();
 
-            screenBatch.Begin(SpriteSortMode.Immediate, bsSubtract, SamplerState.PointClamp, null, null, null, null);
-            screenBatch.Draw(lightMap, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-            screenBatch.End();
+            //screenBatch.Begin(SpriteSortMode.Immediate, bsSubtract, SamplerState.PointClamp, null, null, null, null);
+            //screenBatch.Draw(lightMap, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            //screenBatch.End();
+
+            renderTarget = null;
 
             base.Draw(gameTime);
         }
