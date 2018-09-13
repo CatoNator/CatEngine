@@ -35,3 +35,5 @@ a white surface
 render light texture to surface with subtractive blend mode
 
 render surface to screen with subtractive blending
+
+--> lighting doesn't work properly! scrap this shit to save time
