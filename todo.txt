@@ -41,3 +41,7 @@ render surface to screen with subtractive blending
 
 memory leak somewhere -- suspect improperly cleared rendertargets
 although not 100% sure! debug later
+
+in draw loop
+not caused by objects
+not caused by lights

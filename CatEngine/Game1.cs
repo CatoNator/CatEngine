@@ -18,6 +18,9 @@ namespace CatEngine
         SpriteBatch spriteBatch;
         SpriteBatch lightBatch;
 
+        SpriteBatch screenBatch;
+        RenderTarget2D renderTarget;
+
         private Random myRandom = new Random();
 
         public readonly static BlendState
@@ -119,13 +122,17 @@ namespace CatEngine
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// 
+
+        //draw loop has a memory leak somewhere
+
         protected override void Draw(GameTime gameTime)
         {
             //setting up the original resolution draw
 
             //I suspect I have a memory leak here. rendertargets aren't properly cleared every frame
-            SpriteBatch screenBatch = new SpriteBatch(GraphicsDevice);
-            RenderTarget2D renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
+            screenBatch = new SpriteBatch(GraphicsDevice);
+            renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
 
             //RenderTarget2D lightMap = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
 
@@ -177,8 +184,6 @@ namespace CatEngine
             //screenBatch.Begin(SpriteSortMode.Immediate, bsSubtract, SamplerState.PointClamp, null, null, null, null);
             //screenBatch.Draw(lightMap, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
             //screenBatch.End();
-
-            renderTarget = null;
 
             base.Draw(gameTime);
         }
