@@ -1,5 +1,5 @@
 sprites:
-sprite data held in an ini
+sprite data held in an ini/xml file (whatever C# supports natively)
 
 [0] #index of sprite
 #the sprite name
@@ -37,11 +37,3 @@ render light texture to surface with subtractive blend mode
 render surface to screen with subtractive blending
 
 --> lighting doesn't work properly! scrap this shit to save time
-
-
-memory leak somewhere -- suspect improperly cleared rendertargets
-although not 100% sure! debug later
-
-in draw loop
-not caused by objects
-not caused by lights
