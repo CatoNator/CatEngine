@@ -92,6 +92,7 @@ namespace CatEngine
             iSpriteYOrigin[1] = 128;
         }
 
+        //mem leak, texture2ds won't get deleted once they fall out of scope
         public void DrawRect(Rectangle rectangle, Color color)
         {
             Texture2D rect = new Texture2D(graphics.GraphicsDevice, rectangle.Width, rectangle.Height);
@@ -102,6 +103,12 @@ namespace CatEngine
 
             Vector2 coor = new Vector2(rectangle.X, rectangle.Y);
             sbSpriteBatch.Draw(rect, coor, Color.White);
+
+            sbSpriteBatch.End();
+
+            rect.Dispose();
+
+            sbSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
         }
         
         public void Render(string spriteName, float x, float y, int imageIndex, bool flip, float rotation, float layerDepth, Color color)

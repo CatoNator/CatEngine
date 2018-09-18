@@ -69,7 +69,10 @@ namespace CatEngine
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            lightBatch = new SpriteBatch(GraphicsDevice);
+            //lightBatch = new SpriteBatch(GraphicsDevice);
+
+            screenBatch = new SpriteBatch(GraphicsDevice);
+            renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
 
             CSprite.Instance.dTextureDict.Add("Player", Content.Load<Texture2D>("PlayerTest"));
             CSprite.Instance.dTextureDict.Add("Lights", Content.Load<Texture2D>("Lights"));
@@ -124,16 +127,9 @@ namespace CatEngine
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         /// 
 
-        //draw loop has a memory leak somewhere
-
         protected override void Draw(GameTime gameTime)
         {
             //setting up the original resolution draw
-
-            //I suspect I have a memory leak here. rendertargets aren't properly cleared every frame
-            screenBatch = new SpriteBatch(GraphicsDevice);
-            renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
-
             //RenderTarget2D lightMap = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
 
             GraphicsDevice.SetRenderTarget(renderTarget);
@@ -141,7 +137,7 @@ namespace CatEngine
             //the actual game engine draw calls            
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            CSprite.Instance.sbSpriteBatch = spriteBatch;
+            //CSprite.Instance.sbSpriteBatch = spriteBatch;
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 

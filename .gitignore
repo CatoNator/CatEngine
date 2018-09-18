@@ -2,6 +2,7 @@
 CatEngine/bin
 CatEngine/obj
 CatEngine/Content/obj
+.vs
 
 # files
 *.suo
