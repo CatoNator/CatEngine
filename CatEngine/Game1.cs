@@ -113,7 +113,7 @@ namespace CatEngine
             CObjectManager.Instance.Update();
 
             //updating the HUD
-            CHud.Instance.Update();
+            //CHud.Instance.Update();
 
             base.Update(gameTime);
         }
