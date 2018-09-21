@@ -74,11 +74,11 @@ namespace CatEngine
             sSpriteTexture[0] = "Player";
             iSpriteLeft[0] = 0;
             iSpriteTop[0] = 0;
-            iSpriteWidth[0] = 33;
-            iSpriteHeight[0] = 35;
+            iSpriteWidth[0] = 64;
+            iSpriteHeight[0] = 64;
             iSpriteImages[0] = 0;
-            iSpriteXOrigin[0] = 17;
-            iSpriteYOrigin[0] = 17;
+            iSpriteXOrigin[0] = 18;
+            iSpriteYOrigin[0] = 30;
 
             dSpriteNameDict.Add("sprLight", 1);
 
@@ -97,7 +97,7 @@ namespace CatEngine
         {
             Texture2D rect = new Texture2D(graphics.GraphicsDevice, rectangle.Width, rectangle.Height);
 
-            Color[] data = new Color[rectangle.Width * rectangle.Height];
+            Color[] data = new Color[rectangle.Width*rectangle.Height];
             for (int i = 0; i < data.Length; ++i) data[i] = color;
             rect.SetData(data);
 
