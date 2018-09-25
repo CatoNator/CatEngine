@@ -13,7 +13,8 @@ namespace CatEngine
     {
         public float fAimDirection = 0.0f;
 
-        private int iSpeed = 0;
+        private int iFSpeed = 0;
+        private int iSSpeed = 0;
         
         public override void InstanceSpawn()
         {
@@ -28,44 +29,19 @@ namespace CatEngine
             //floor collision
             CGameObject collision = CollisionRectangle(new Rectangle(rCollisionRectangle.X, rCollisionRectangle.Y + rCollisionRectangle.Height, rCollisionRectangle.Width, 1), typeof(CWall), true);
 
-            /*if (collision != null && fVerSpeed > 0)
-            {
-                bLanded = true;
-                y = collision.y - vCollisionOrigin.Y;
-                fVerSpeed = 0;
-            }
-            else
-                bLanded = false;*/
-
             //input
             KeyboardState keyboardState = Keyboard.GetState();
 
-            //rename this var
-            int maxSpeed = 2;
+            MovementKeyboard(keyboardState);
 
-            //turning
-            if (keyboardState.IsKeyDown(Keys.Left))
-                fAimDirection += 2.0f;
-            else if (keyboardState.IsKeyDown(Keys.Right))
-                fAimDirection -= 2.0f;
-
+            //capping the player rotation to [0.0f, 360.0f]
             if (fAimDirection >= 360)
                 fAimDirection -= 360;
             else if (fAimDirection <= 0)
                 fAimDirection += 360;
 
-            //moving forward/backward
-            if (keyboardState.IsKeyDown(Keys.Up))
-                iSpeed = maxSpeed;
-            else if (keyboardState.IsKeyDown(Keys.Down))
-                iSpeed = -maxSpeed;
-            else
-                iSpeed = 0;
-
-            //strafing??
-
-            fHorSpeed = (float)distDirX((float)iSpeed, degToRad(fAimDirection));
-            fVerSpeed = (float)distDirY((float)iSpeed, degToRad(fAimDirection));
+            fHorSpeed = (float)distDirX((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirX((float)iSSpeed, degToRad(fAimDirection+90.0f));
+            fVerSpeed = (float)distDirY((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirY((float)iSSpeed, degToRad(fAimDirection+90.0f));
 
             //note! current collision model only supports recantular collisions, no pixel perfect shapes
             //collision always gets stuck, needs adjusting
@@ -91,6 +67,34 @@ namespace CatEngine
             //CSprite.Instance.DrawRect(rCollisionRectangle, Color.Green);
 
             CSprite.Instance.Render("sprTest", x, y, 0, false, -degToRad(fAimDirection), 1.0f, Color.White);
+        }
+
+        public void MovementKeyboard(KeyboardState keyboardState)
+        {
+            //rename this var
+            int maxSpeed = 2;
+
+            //turning
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPTurnLeft))
+                fAimDirection += 2.0f;
+            else if (keyboardState.IsKeyDown(CSettings.Instance.kPTurnRight))
+                fAimDirection -= 2.0f;
+
+            //moving forward/backward
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveForward))
+                iFSpeed = maxSpeed;
+            else if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveBackward))
+                iFSpeed = -maxSpeed;
+            else
+                iFSpeed = 0;
+
+            //strafing??
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPStrafeLeft))
+                iSSpeed = maxSpeed;
+            else if (keyboardState.IsKeyDown(CSettings.Instance.kPStrafeRight))
+                iSSpeed = -maxSpeed;
+            else
+                iSSpeed = 0;
         }
     }
 }
