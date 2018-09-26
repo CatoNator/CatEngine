@@ -70,20 +70,20 @@ namespace CatEngine
 
             //figure out the json implementation
 
-            /*foreach(sprite in xmlelement)
+            /*foreach(sprite in element)
             {
                 int index = <read this>;
 
                 dSpriteNameDict.Add(<name>, index);
-            
-                sSpriteTexture[0] = <texture>;
-                iSpriteLeft[0] = <left>;
-                iSpriteTop[0] = <top>
-                iSpriteWidth[0] = <width>;
-                iSpriteHeight[0] = <height>;
-                iSpriteImages[0] = <images>;
-                iSpriteXOrigin[0] = <xorig>;
-                iSpriteYOrigin[0] = <yorig>;
+
+                sSpriteTexture[index] = <texture>;
+                iSpriteLeft[index] = <left>;
+                iSpriteTop[index] = <top>
+                iSpriteWidth[index] = <width>;
+                iSpriteHeight[index] = <height>;
+                iSpriteImages[index] = <images>;
+                iSpriteXOrigin[index] = <xorig>;
+                iSpriteYOrigin[index] = <yorig>;
             }*/
 
             //DELETE ME
