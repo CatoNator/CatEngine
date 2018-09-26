@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -67,7 +68,7 @@ namespace CatEngine
             iSpriteXOrigin = new int[iSprites];
             iSpriteYOrigin = new int[iSprites];
 
-            //XElement element = new XElement
+            //figure out the json implementation
 
             /*foreach(sprite in xmlelement)
             {
