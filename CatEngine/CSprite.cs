@@ -67,8 +67,27 @@ namespace CatEngine
             iSpriteXOrigin = new int[iSprites];
             iSpriteYOrigin = new int[iSprites];
 
+            //XElement element = new XElement
+
+            /*foreach(sprite in xmlelement)
+            {
+                int index = <read this>;
+
+                dSpriteNameDict.Add(<name>, index);
+            
+                sSpriteTexture[0] = <texture>;
+                iSpriteLeft[0] = <left>;
+                iSpriteTop[0] = <top>
+                iSpriteWidth[0] = <width>;
+                iSpriteHeight[0] = <height>;
+                iSpriteImages[0] = <images>;
+                iSpriteXOrigin[0] = <xorig>;
+                iSpriteYOrigin[0] = <yorig>;
+            }*/
+
             //DELETE ME
             //this is going to be loaded from an ini later on
+
             dSpriteNameDict.Add("sprTest", 0);
 
             sSpriteTexture[0] = "Player";

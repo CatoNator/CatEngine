@@ -1,0 +1,25 @@
+<sprite>
+	<index>0</index>
+	<name>sprTest</name>
+	<texture>Player</texture>
+	<left>0</left>
+	<top>0</top>
+	<width>64</width>
+	<height>64</height>
+	<images>0</images>
+	<xorig>20</xorig>
+	<yorig>30</yorig>
+</sprite>
+
+<sprite>
+	<index>0</index>
+	<name>sprLight</name>
+	<texture>Lights</texture>
+	<left>0</left>
+	<top>0</top>
+	<width>256</width>
+	<height>256</height>
+	<images>0</images>
+	<xorig>128</xorig>
+	<yorig>128</yorig>
+</sprite>
