@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Newtonsoft.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -32,6 +34,19 @@ namespace CatEngine
         private int[] iSpriteXOrigin;
         private int[] iSpriteYOrigin;
 
+        private class SpriteDataHolder
+        {
+            public int index { get; set; }
+            public string sSpriteTexture { get; set; }
+            public int iSpriteLeft { get; set; }
+            public int iSpriteTop { get; set; }
+            public int iSpriteWidth { get; set; }
+            public int iSpriteHeight { get; set; }
+            public int iSpriteImages { get; set; }
+            public int iSpriteXOrigin { get; set; }
+            public int iSpriteYOrigin { get; set; }
+        }
+
         private CSprite()
         {
             this.txTexture = CObjectManager.Instance.txTexture;
@@ -56,9 +71,17 @@ namespace CatEngine
 
         private void AllocateSprites()
         {
+            //opening the xml file
+            Debug.WriteLine("Opening SpriteData");
+            string xmlText = System.IO.File.ReadAllText("AssetData/SpriteData.xml");
+            Debug.WriteLine("Text file loaded");
+            XDocument file = XDocument.Parse(xmlText);
+            Debug.WriteLine("XML parsed");
+            
             //this is going to be loaded from an ini later on
-            iSprites = 2;
+            iSprites = Int32.Parse(file.Root.Element("sprites").Value);
 
+            //allocating the arrays
             sSpriteTexture = new string[iSprites];
             iSpriteLeft = new int[iSprites];
             iSpriteTop = new int[iSprites];
@@ -68,28 +91,31 @@ namespace CatEngine
             iSpriteXOrigin = new int[iSprites];
             iSpriteYOrigin = new int[iSprites];
 
-            //figure out the json implementation
+            //loading the data using a foreach loop
+            Debug.WriteLine("Entering Spritedata loop");
 
-            /*foreach(sprite in element)
+            foreach (XElement element in file.Descendants("sprite"))
             {
-                int index = <read this>;
+                int index = Int32.Parse(element.Element("index").Value);
 
-                dSpriteNameDict.Add(<name>, index);
+                Debug.WriteLine("Reading element index " + index);
 
-                sSpriteTexture[index] = <texture>;
-                iSpriteLeft[index] = <left>;
-                iSpriteTop[index] = <top>
-                iSpriteWidth[index] = <width>;
-                iSpriteHeight[index] = <height>;
-                iSpriteImages[index] = <images>;
-                iSpriteXOrigin[index] = <xorig>;
-                iSpriteYOrigin[index] = <yorig>;
-            }*/
+                dSpriteNameDict.Add(element.Element("name").Value, index);
+
+                sSpriteTexture[index] = element.Element("texture").Value;
+                iSpriteLeft[index] = Int32.Parse(element.Element("left").Value);
+                iSpriteTop[index] = Int32.Parse(element.Element("top").Value);
+                iSpriteWidth[index] = Int32.Parse(element.Element("width").Value);
+                iSpriteHeight[index] = Int32.Parse(element.Element("height").Value);
+                iSpriteImages[index] = Int32.Parse(element.Element("images").Value);
+                iSpriteXOrigin[index] = Int32.Parse(element.Element("xorig").Value);
+                iSpriteYOrigin[index] = Int32.Parse(element.Element("yorig").Value);
+            }
 
             //DELETE ME
             //this is going to be loaded from an ini later on
 
-            dSpriteNameDict.Add("sprTest", 0);
+            /*dSpriteNameDict.Add("sprTest", 0);
 
             sSpriteTexture[0] = "Player";
             iSpriteLeft[0] = 0;
@@ -109,7 +135,7 @@ namespace CatEngine
             iSpriteHeight[1] = 256;
             iSpriteImages[1] = 0;
             iSpriteXOrigin[1] = 128;
-            iSpriteYOrigin[1] = 128;
+            iSpriteYOrigin[1] = 128;*/
         }
 
         //mem leak, texture2ds won't get deleted once they fall out of scope
