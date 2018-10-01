@@ -125,12 +125,6 @@ namespace CatEngine
         //the step code called once per frame
         public virtual void Update()
         {
-            /*if (iLifeTime <= 0)
-                CObjectManager.Instance.DestroyInstance(iIndex);
-            else
-                iLifeTime--;*/
-
-            //Console.WriteLine("Player objects: " + InstanceNumber(typeof(CPlayer)));
         }
 
         //does a specific type exist?
@@ -191,6 +185,8 @@ namespace CatEngine
 
             return collidedInstance;
         }
+
+        //aabb rectangle collisions, rework to use SAT instead for vector-based collision
 
         //bounding box collision
         public CGameObject BboxMeeting(Type instanceType, bool notMe)

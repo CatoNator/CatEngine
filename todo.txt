@@ -29,11 +29,26 @@ file = "menu.ogg"
 
 Dictionary<string soundName, int index>
 
-lighting:
-a white surface
+rendering an irregular polygon with textures as floor
 
-render light texture to surface with subtractive blend mode
+render the texture on a rendertarget
+render the polygon itself as a mask
+cut out the area on the rendertarget outside of the polygon
+- maybe I should restrict the polygon to being a quad?
 
-render surface to screen with subtractive blending
 
---> lighting doesn't work properly! scrap this shit to save time
+-- SAT collision to replace the AABB solutions I have atm
+walls to be vector-based instead of tile-based
+maybe utilize the collision code from asteroids circle collider?
+	figure out the closes corner along the axis between the centers of two colliders
+
+XML-based level files
+
+<root>
+	<wall>
+		<x1>0</x1>
+		<y1>0</y1>
+		<x2>0</x2>
+		<y2>0</y2>
+	</wall>
+</root>
