@@ -22,12 +22,8 @@ namespace CatEngine
         public float fMusicVolume = 1.0f;
         public float fSoundVolume = 1.0f;
 
-        public Keys kPTurnLeft = Keys.A;
-        public Keys kPTurnRight = Keys.D;
-        public Keys kPMoveForward = Keys.W;
-        public Keys kPMoveBackward = Keys.S;
-        public Keys kPStrafeLeft = Keys.Q;
-        public Keys kPStrafeRight = Keys.E;
+        public Keys kPMoveLeft = Keys.A;
+        public Keys kPMoveRight = Keys.D;
 
         public Keys kPFire = Keys.Space;
 

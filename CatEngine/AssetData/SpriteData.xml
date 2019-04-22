@@ -25,3 +25,16 @@
 	<xorig>128</xorig>
 	<yorig>128</yorig>
 </sprite>
+
+<sprite>
+	<index>2</index>
+	<name>sprBall</name>
+	<texture>Player</texture>
+	<left>64</left>
+	<top>0</top>
+	<width>32</width>
+	<height>32</height>
+	<images>0</images>
+	<xorig>16</xorig>
+	<yorig>16</yorig>
+</sprite>
