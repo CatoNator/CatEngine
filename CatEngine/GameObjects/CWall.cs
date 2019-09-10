@@ -11,14 +11,7 @@ namespace CatEngine
     {
         public override void InstanceSpawn()
         {
-            rCollisionRectangle = new Rectangle(0, 0, 16, 8);
-
-            UpdateCollision();
-        }
-
-        public override void OnDestruction()
-        {
-            CGameManager.Instance.iScore += 10;
+            rCollisionRectangle = new Rectangle(0, 0, 128, 16);
         }
 
         public override void Render()

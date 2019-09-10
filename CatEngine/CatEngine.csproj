@@ -39,7 +39,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CAudioManager.cs" />
-    <Compile Include="CGameManager.cs" />
     <Compile Include="CGameObject.cs" />
     <Compile Include="CHud.cs" />
     <Compile Include="CLight.cs" />
@@ -48,7 +47,6 @@
     <Compile Include="fmod.cs" />
     <Compile Include="fmod_dsp.cs" />
     <Compile Include="fmod_errors.cs" />
-    <Compile Include="GameObjects\CBall.cs" />
     <Compile Include="GameObjects\CPlayer.cs" />
     <Compile Include="CSprite.cs" />
     <Compile Include="GameObjects\CWall.cs" />

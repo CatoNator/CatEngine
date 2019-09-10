@@ -16,15 +16,12 @@ namespace CatEngine
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        //the light system is not used as subtractive rendering is still broken...
-        //SpriteBatch lightBatch;
+        SpriteBatch lightBatch;
 
         SpriteBatch screenBatch;
         RenderTarget2D renderTarget;
 
         private Random myRandom = new Random();
-
-        public SpriteFont scoreFont;
 
         public readonly static BlendState
             bsSubtract = new BlendState
@@ -79,15 +76,19 @@ namespace CatEngine
 
             CSprite.Instance.dTextureDict.Add("Player", Content.Load<Texture2D>("PlayerTest"));
             CSprite.Instance.dTextureDict.Add("Lights", Content.Load<Texture2D>("Lights"));
-            scoreFont = Content.Load<SpriteFont>("ScoreFont");
 
             //CSprite.Instance.txTexture = Content.Load<Texture2D>("PlayerTest");
             CSprite.Instance.sbSpriteBatch = spriteBatch;
             CSprite.Instance.graphics = graphics;
 
-            //creating a player and some platforms
+            //DEBUG: creating a player and some platforms
+            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 64, 64);
 
-            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 208, 200);
+            CObjectManager.Instance.CreateInstance(typeof(CWall), 64, 128);
+            CObjectManager.Instance.CreateInstance(typeof(CWall), 192, 160);
+            CObjectManager.Instance.CreateInstance(typeof(CWall), 320, 128);
+
+            CObjectManager.Instance.CreateLight(78, 78);
 
             // TODO: use this.Content to load your game content here
         }
@@ -108,8 +109,6 @@ namespace CatEngine
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            CGameManager.Instance.UpdateGame();
-            
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -136,7 +135,7 @@ namespace CatEngine
             GraphicsDevice.SetRenderTarget(renderTarget);
 
             //the actual game engine draw calls            
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             //CSprite.Instance.sbSpriteBatch = spriteBatch;
 
@@ -161,14 +160,15 @@ namespace CatEngine
 
             lightBatch.End();*/
 
-            GraphicsDevice.SetRenderTarget(renderTarget);
+            /*GraphicsDevice.SetRenderTarget(renderTarget);
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp, null, null, null, null);
 
             //rendering the HUD
-            CHud.Instance.Render(spriteBatch, scoreFont);
+            CHud.Instance.Render();
 
-            spriteBatch.End();
+            spriteBatch.End();*/
+
 
             GraphicsDevice.SetRenderTarget(null);
 
