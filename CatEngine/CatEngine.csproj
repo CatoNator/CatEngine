@@ -45,9 +45,11 @@
     <Compile Include="CLight.cs" />
     <Compile Include="CObjectManager.cs" />
     <Compile Include="CSettings.cs" />
+    <Compile Include="CTile.cs" />
     <Compile Include="fmod.cs" />
     <Compile Include="fmod_dsp.cs" />
     <Compile Include="fmod_errors.cs" />
+    <Compile Include="GameObjects\CDoor.cs" />
     <Compile Include="GameObjects\CEnemy.cs" />
     <Compile Include="GameObjects\CEnemyBullet.cs" />
     <Compile Include="GameObjects\CPlayer.cs" />
