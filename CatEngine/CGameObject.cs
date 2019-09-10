@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,7 +75,7 @@ namespace CatEngine
             return (-Math.Sin(dir) * dist);
         }
 
-        public double pointDirection(float x1, float y1, float x2, float y2)
+        public double PointDirection(float x1, float y1, float x2, float y2)
         {
             return Math.Atan2((double)(y2 - y1), (double)(x2 - x1));
         }
@@ -93,6 +94,25 @@ namespace CatEngine
             }
 
             return instances;
+        }
+
+        //returns first instance of given type, pretty trash hack 
+        public CGameObject FindInstance(Type instanceType)
+        {
+            CGameObject instance = null;
+
+            for (int i = 0; i < CObjectManager.MAX_INSTANCES; i++)
+            {
+                //if the other object type is the one we're looking for
+                if ((CObjectManager.Instance.pGameObjectList[i] != null)
+                    && Object.ReferenceEquals(instanceType, CObjectManager.Instance.pGameObjectList[i].GetType()))
+                {
+                    instance = CObjectManager.Instance.pGameObjectList[i];
+                    break;
+                }
+            }
+
+            return instance;
         }
 
         //deactivating instances (stops updating but not rendering)
@@ -157,7 +177,7 @@ namespace CatEngine
         }
 
         //circle collider from Super Starblasters
-        public CGameObject CollisionCircle(Type instanceType, double collisionDistance)
+        public CGameObject CollisionCircle(Type instanceType, double collisionRadius)
         {
             CGameObject collidedInstance = null;
             CGameObject otherInstance = null;
@@ -174,12 +194,18 @@ namespace CatEngine
                     //getting the reference
                     otherInstance = CObjectManager.Instance.pGameObjectList[i];
 
-                    //measuring the distance
-                    double dist = (float)Math.Sqrt(Math.Pow(this.x - otherInstance.x, 2) + Math.Pow(this.y - otherInstance.y, 2));
+                    for (int e = 0; e <= 360; e++)
+                    {
+                        int pointx = (int)this.x + (int)distDirX((float)collisionRadius, (float)e);
+                        int pointy = (int)this.y + (int)distDirY((float)collisionRadius, (float)e);
 
-                    //if distance is smaller than the collision radiuses
-                    if (dist <= collisionDistance)
-                        collidedInstance = otherInstance;
+                        if (otherInstance.rCollisionRectangle.Contains(pointx, pointy))
+                        {
+                            collidedInstance = otherInstance;
+                            break;
+                        }
+                    }
+                    
                 }
             }
 
@@ -240,15 +266,18 @@ namespace CatEngine
             return collidedInstance;
         }
 
-        //raycast collider
-        public Vector2 RaycastCollider(int startX, int startY, int destX, int destY, Type instanceType)
+        //second raycast collider, returns whether there is a collision along a line
+        public bool CollisionLine(int startX, int startY, int destX, int destY, Type instanceType)
         {
             bool hasHit = false;
+
             Vector2 hitCoords = new Vector2(destX, destY);
 
             //measuring the distance between the two points
             double dist = (float)Math.Sqrt(Math.Pow(destX - startX, 2) + Math.Pow(destY - startY, 2));
-            float dir = 0;
+            float dir = -(float)PointDirection(startX, startY, destX, destY);
+
+            //Debug.Print("raycast attr " + dist + " - " + dir);
 
             //looping through the gameobject list
             for (int e = 0; e < CObjectManager.MAX_INSTANCES; e++)
@@ -257,18 +286,68 @@ namespace CatEngine
                 if (CObjectManager.Instance.pGameObjectList[e] != null
                     && Object.ReferenceEquals(instanceType, CObjectManager.Instance.pGameObjectList[e].GetType()))
                 {
+
+                    //looping through all the positions on the ray
+                    for (int i = 0; i < dist; i++)
+                    {
+                        float xpos = (float)startX + (float)distDirX((float)i, dir);
+                        float ypos = (float)startY + (float)distDirY((float)i, dir);
+
+                        hitCoords = new Vector2(xpos, ypos);
+
+                        //bool s = CObjectManager.Instance.pGameObjectList[e].rCollisionRectangle.Contains(new Point((int)xpos, (int)ypos));
+
+                        //Debug.Print("coll coords " + CObjectManager.Instance.pGameObjectList[e].rCollisionRectangle.ToString() + " include point " + xpos + " " + ypos + ": " + s.ToString());
+
+                        //if a position on the ray is inside the object's rectangle collider
+                        if (CObjectManager.Instance.pGameObjectList[e].rCollisionRectangle.Contains(new Point((int)xpos, (int)ypos)) && !hasHit)
+                        {
+                            //return the collision position
+                            hasHit = true;
+                            //Debug.Print("collision");
+                        }
+                    }
+                }
+            }
+
+            //Debug.Print("raycast X Y " + hitCoords.X + " " + hitCoords.Y);
+
+            //Debug.Print("has hit " + hasHit.ToString());
+
+            return hasHit;
+        }
+
+        //raycast collider
+        public Vector2 RaycastCollider(int startX, int startY, int destX, int destY, Type instanceType)
+        {
+            bool hasHit = false;
+            Vector2 hitCoords = new Vector2(destX, destY);
+
+            //measuring the distance between the two points
+            double dist = (float)Math.Sqrt(Math.Pow(destX - startX, 2) + Math.Pow(destY - startY, 2));
+            float dir = -(float)PointDirection(startX, startY, destX, destY);
+
+            //looping through the gameobject list
+            for (int e = 0; e < CObjectManager.MAX_INSTANCES; e++)
+            {
+                //if the other object type is the one we're looking for and exists
+                if (CObjectManager.Instance.pGameObjectList[e] != null
+                    && Object.ReferenceEquals(instanceType, CObjectManager.Instance.pGameObjectList[e].GetType()))
+                {
+                    //Debug.Print("found requested object type");
+
                     //looping through all the positions on the ray
                     for (int i = 0; i < dist; i++)
                     {
                         float xpos = (float)startX + (float)distDirX((float)dist, dir);
                         float ypos = (float)startY + (float)distDirY((float)dist, dir);
-                        
+
                         //if a position on the ray is inside the object's rectangle collider
                         if (CObjectManager.Instance.pGameObjectList[e].rCollisionRectangle.Contains(xpos, ypos) && !hasHit)
                         {
                             //return the collision position
-                            hitCoords = new Vector2(xpos, ypos);
                             hasHit = true;
+                            break;
                         }
                     }
                 }

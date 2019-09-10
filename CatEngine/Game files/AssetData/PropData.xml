@@ -1,0 +1,17 @@
+<propdata>
+	<prop>
+		<name>propCopCar</name>
+		<sprite>sprCopCar</sprite>
+		<col_width>97</col_width>
+		<col_height>44</col_height>
+		<health>-1</health>
+	</prop>
+</propdata>
+
+**/
+prop data:
+name (string) the name of the prop
+sprite (string) the name of the sprite the prop uses
+col_width (int) width of the prop's collision box
+col_height (int) the height of the prop's collision box
+health (int) how many times the prop can be hit before it breaks. -1 equals an undestructible prop

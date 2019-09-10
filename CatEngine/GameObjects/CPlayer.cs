@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,10 +36,9 @@ namespace CatEngine
             MovementKeyboard(keyboardState);
 
             //capping the player rotation to [0.0f, 360.0f]
-            if (fAimDirection >= 360)
-                fAimDirection -= 360;
-            else if (fAimDirection <= 0)
-                fAimDirection += 360;
+            fAimDirection = fAimDirection % 360;
+
+            //Debug.Print("player aim dir " + fAimDirection);
 
             fHorSpeed = (float)distDirX((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirX((float)iSSpeed, degToRad(fAimDirection+90.0f));
             fVerSpeed = (float)distDirY((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirY((float)iSSpeed, degToRad(fAimDirection+90.0f));

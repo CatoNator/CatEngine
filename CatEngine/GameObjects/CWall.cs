@@ -9,9 +9,20 @@ namespace CatEngine
 {
     public class CWall : CGameObject
     {
+        private int iXScale = 1;
+        private int iYScale = 1;
+
         public override void InstanceSpawn()
         {
-            rCollisionRectangle = new Rectangle(0, 0, 128, 16);
+            rCollisionRectangle = new Rectangle(0, 0, 16*iXScale, 16*iYScale);
+        }
+
+        public void SetScale(int iXScale, int iYScale)
+        {
+            this.iXScale = iXScale;
+            this.iYScale = iYScale;
+
+            rCollisionRectangle = new Rectangle(0, 0, 16*iXScale, 16*iYScale);
         }
 
         public override void Render()

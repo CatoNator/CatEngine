@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Newtonsoft.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -110,32 +109,9 @@ namespace CatEngine
                 iSpriteImages[index] = Int32.Parse(element.Element("images").Value);
                 iSpriteXOrigin[index] = Int32.Parse(element.Element("xorig").Value);
                 iSpriteYOrigin[index] = Int32.Parse(element.Element("yorig").Value);
+
+                Debug.Print(index + " w " + iSpriteWidth[index] + " h " + iSpriteHeight[index]);
             }
-
-            //DELETE ME
-            //this is going to be loaded from an ini later on
-
-            /*dSpriteNameDict.Add("sprTest", 0);
-
-            sSpriteTexture[0] = "Player";
-            iSpriteLeft[0] = 0;
-            iSpriteTop[0] = 0;
-            iSpriteWidth[0] = 64;
-            iSpriteHeight[0] = 64;
-            iSpriteImages[0] = 0;
-            iSpriteXOrigin[0] = 18;
-            iSpriteYOrigin[0] = 30;
-
-            dSpriteNameDict.Add("sprLight", 1);
-
-            sSpriteTexture[1] = "Lights";
-            iSpriteLeft[1] = 0;
-            iSpriteTop[1] = 0;
-            iSpriteWidth[1] = 256;
-            iSpriteHeight[1] = 256;
-            iSpriteImages[1] = 0;
-            iSpriteXOrigin[1] = 128;
-            iSpriteYOrigin[1] = 128;*/
         }
 
         //mem leak, texture2ds won't get deleted once they fall out of scope
@@ -172,7 +148,7 @@ namespace CatEngine
 
             //mathsssss
             Rectangle sourceRectangle = new Rectangle(iSpriteLeft[index]+(iSpriteWidth[index]*imgIndex), iSpriteTop[index], iSpriteWidth[index], iSpriteHeight[index]);
-            Rectangle destRectangle = new Rectangle((int)x, (int)y, iSpriteWidth[index], iSpriteWidth[index]);
+            Rectangle destRectangle = new Rectangle((int)x, (int)y, iSpriteWidth[index], iSpriteHeight[index]);
             Vector2 Origin = new Vector2(iSpriteXOrigin[index], iSpriteYOrigin[index]);
 
             Texture2D texture = dTextureDict[sSpriteTexture[index]];

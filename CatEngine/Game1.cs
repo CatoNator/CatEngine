@@ -39,7 +39,7 @@ namespace CatEngine
             graphics = new GraphicsDeviceManager(this);
 
             CSettings.Instance.SetGameViewSize();
-            CSettings.Instance.SetBackbufferSize(360);
+            CSettings.Instance.SetBackbufferSize(720);
 
             graphics.PreferredBackBufferWidth = CSettings.Instance.iBackBufferWidth;
             graphics.PreferredBackBufferHeight = CSettings.Instance.iBackBufferHeight;
@@ -75,6 +75,8 @@ namespace CatEngine
             renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
 
             CSprite.Instance.dTextureDict.Add("Player", Content.Load<Texture2D>("PlayerTest"));
+            CSprite.Instance.dTextureDict.Add("Enemy", Content.Load<Texture2D>("EnemyTest"));
+            CSprite.Instance.dTextureDict.Add("Props", Content.Load<Texture2D>("Props"));
             CSprite.Instance.dTextureDict.Add("Lights", Content.Load<Texture2D>("Lights"));
 
             //CSprite.Instance.txTexture = Content.Load<Texture2D>("PlayerTest");
@@ -82,11 +84,11 @@ namespace CatEngine
             CSprite.Instance.graphics = graphics;
 
             //DEBUG: creating a player and some platforms
+            CObjectManager.Instance.CreateInstance(typeof(CLevel), 0, 0);
             CObjectManager.Instance.CreateInstance(typeof(CPlayer), 64, 64);
 
-            CObjectManager.Instance.CreateInstance(typeof(CWall), 64, 128);
-            CObjectManager.Instance.CreateInstance(typeof(CWall), 192, 160);
-            CObjectManager.Instance.CreateInstance(typeof(CWall), 320, 128);
+            //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 256, 180);
+            CObjectManager.Instance.CreateInstance(typeof(CEnemy), 300, 180);
 
             CObjectManager.Instance.CreateLight(78, 78);
 

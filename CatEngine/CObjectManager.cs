@@ -11,7 +11,7 @@ namespace CatEngine
     public sealed class CObjectManager
     {
         public CGameObject[] pGameObjectList;
-        public const int MAX_INSTANCES = 128;
+        public const int MAX_INSTANCES = 256;
 
         public CLight[] pLightList;
         public const int MAX_LIGHTS = 16;

@@ -1,0 +1,44 @@
+<leveldata>
+	<wall>
+		<x>32</x>
+		<y>32</y>
+		<xscale>1</xscale>
+		<yscale>1</yscale>
+	</wall>
+	
+	<wall>
+		<x>32</x>
+		<y>32</y>
+		<xscale>1</xscale>
+		<yscale>1</yscale>
+	</wall>
+	
+	<prop>
+		<name>propCar</name>
+		<x>96</x>
+		<y>128</y>
+		<dir>1</dir>
+		<health>-1</health>
+	</prop>
+</spritedata>
+
+
+**/
+not included in file!!!!!!!!!
+
+wall data:
+x (int) location on x
+y (int) location on y
+xscale (int) wall width in tiles - i.e. 16 pixels wide equals 1 in xscale, 32 is 2 etc.
+
+prop data:
+name (string) the name of the prop. prop data is located in a separate file which defines the size of the collision bbox and the sprite and shit like that, and that's located via this
+x (int) the location on x
+y (int) the location on y
+dir (int) the range is 0-3, the rotation of the prop. can only be rotaed in 90 degree angles, so the angle of the prop is dir*90
+
+enemy data:
+type (tbd) enemy type, tbd
+x (int)
+y (int)
+dir (tbd) possibly same as prop but idk yet

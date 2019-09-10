@@ -1,5 +1,5 @@
 <spritedata>
-	<sprites>2</sprites>
+	<sprites>3</sprites>
 
 	<sprite>
 		<index>0</index>
@@ -16,14 +16,27 @@
 
 	<sprite>
 		<index>1</index>
-		<name>sprLight</name>
-		<texture>Lights</texture>
+		<name>sprEnemyTest</name>
+		<texture>Enemy</texture>
 		<left>0</left>
 		<top>0</top>
-		<width>256</width>
-		<height>256</height>
+		<width>64</width>
+		<height>64</height>
 		<images>0</images>
-		<xorig>128</xorig>
-		<yorig>128</yorig>
+		<xorig>20</xorig>
+		<yorig>30</yorig>
+	</sprite>
+	
+	<sprite>
+		<index>2</index>
+		<name>sprCopCar</name>
+		<texture>Props</texture>
+		<left>0</left>
+		<top>0</top>
+		<width>97</width>
+		<height>44</height>
+		<images>0</images>
+		<xorig>0</xorig>
+		<yorig>0</yorig>
 	</sprite>
 </spritedata>
