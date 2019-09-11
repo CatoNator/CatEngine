@@ -44,7 +44,7 @@ namespace CatEngine
 
             CSprite.Instance.DrawRect(rCollisionRectangle, Color.Gray);
 
-            CSprite.Instance.Render(sSpriteName, x, y, 0, false, -degToRad((float)iDir * 90.0f), 1.0f, Color.White);
+            CSprite.Instance.Render(sSpriteName, x, y+iColHeight, 0, false, -degToRad((float)iDir * 90.0f), 1.0f, Color.White);
         }
     }
 }

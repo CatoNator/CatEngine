@@ -48,6 +48,7 @@
     <Compile Include="CSettings.cs" />
     <Compile Include="CContentManager.cs" />
     <Compile Include="CTile.cs" />
+    <Compile Include="CTileManager.cs" />
     <Compile Include="fmod.cs" />
     <Compile Include="fmod_dsp.cs" />
     <Compile Include="fmod_errors.cs" />

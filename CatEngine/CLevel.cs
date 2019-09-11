@@ -43,9 +43,7 @@ namespace CatEngine
         {
             Debug.WriteLine("Opening prop data");
             string xmlText = System.IO.File.ReadAllText("AssetData/PropData.xml");
-            Debug.WriteLine("Text file loaded");
             XDocument file = XDocument.Parse(xmlText);
-            Debug.WriteLine("XML parsed");
 
             foreach (XElement element in file.Descendants("prop"))
             {
@@ -61,9 +59,7 @@ namespace CatEngine
         {
             Debug.WriteLine("Opening level data");
             string xmlText = System.IO.File.ReadAllText("AssetData/"+fileName);
-            Debug.WriteLine("Text file loaded");
             XDocument file = XDocument.Parse(xmlText);
-            Debug.WriteLine("XML parsed");
 
             //loading walls
             foreach (XElement element in file.Descendants("wall"))
@@ -90,8 +86,6 @@ namespace CatEngine
                 int colW = sPropColW[propInd];
                 int colH = sPropColH[propInd];
                 int health = sPropHealth[propInd];
-
-                Debug.Print("spritename " + sprite);
 
                 CProp prop = (CProp)CObjectManager.Instance.CreateInstance(typeof(CProp), x, y);
                 prop.SetProperties((float)x, (float)y, sprite, dir, colW, colH, health);

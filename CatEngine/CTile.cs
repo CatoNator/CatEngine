@@ -6,7 +6,20 @@ using System.Threading.Tasks;
 
 namespace CatEngine
 {
-    class CTile
+    public class CTile
     {
+        int x;
+        int y;
+        int left;
+        int top;
+
+        public CTile ()
+        {
+        }
+
+        public void Render()
+        {
+            CSprite.Instance.RenderTile(x, y, left, top);
+        }
     }
 }

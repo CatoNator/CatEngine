@@ -50,7 +50,7 @@ namespace CatEngine
             graphics = new GraphicsDeviceManager(this);
 
             CSettings.Instance.SetGameViewSize();
-            CSettings.Instance.SetBackbufferSize(720);
+            CSettings.Instance.SetBackbufferSize(960);
 
             graphics.PreferredBackBufferWidth = CSettings.Instance.iBackBufferWidth;
             graphics.PreferredBackBufferHeight = CSettings.Instance.iBackBufferHeight;

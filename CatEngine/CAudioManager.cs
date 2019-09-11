@@ -124,8 +124,6 @@ namespace CatEngine
                     soundId = SoundFX.IndexOf(i);
             }
 
-            Console.WriteLine("soundId " + soundId);
-
             if (SoundFX[soundId].sound != null)
             {
                 FMOD.RESULT r = FMODSystem.playSound(SoundFX[soundId].sound, null, false, out SoundChannel);
@@ -133,7 +131,7 @@ namespace CatEngine
                 SoundChannel.setMode(FMOD.MODE.LOOP_OFF);
                 SoundChannel.setLoopCount(-1);
 
-                Console.WriteLine("Playing sound " + soundId + ", got result " + r);
+                //Console.WriteLine("Playing sound " + soundId + ", got result " + r);
 
                 iCurrentSongID = soundId;
             }
@@ -151,8 +149,6 @@ namespace CatEngine
                     songId = Music.IndexOf(i);
             }
 
-            Console.WriteLine("songId " + songId);
-
             if (iCurrentSongID != songId)
             {
                 Stop();
@@ -164,7 +160,7 @@ namespace CatEngine
                     MusicChannel.setMode(FMOD.MODE.LOOP_NORMAL);
                     MusicChannel.setLoopCount(-1);
 
-                    Console.WriteLine("Playing track " + songId + ", got result" + r);
+                    //Console.WriteLine("Playing track " + songId + ", got result" + r);
 
                     iCurrentSongID = songId;
                 }

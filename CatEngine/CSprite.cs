@@ -169,5 +169,16 @@ namespace CatEngine
             //drawing the sprite
             sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, color, rotation, Origin, spriteEffect, layerDepth);
         }
+
+        public void RenderTile(int x, int y, int left, int top)
+        {
+            Rectangle sourceRectangle = new Rectangle(left, top, 16, 16);
+            Rectangle destRectangle = new Rectangle(x, y, 16,16);
+
+            Texture2D texture = dTextureDict["Tiles"];
+
+            //drawing the sprite
+            sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 1.0f);
+        }
     }
 }

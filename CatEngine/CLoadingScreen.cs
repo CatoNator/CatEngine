@@ -14,8 +14,6 @@ namespace CatEngine
 {
     class CLoadingScreen
     {
-        private Random myRandom = new Random();
-
         private struct Command<T>
         {
             public T Instance;
@@ -49,6 +47,7 @@ namespace CatEngine
             sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" }));
             sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" }));
             sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Lights" }));
+            sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Tiles" }));
             sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSound", new List<string>() { "normalshot.wav" }));
             sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSound", new List<string>() { "rapidfireshot.wav" }));
             sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSong", new List<string>() { "dreamland.it" }));
@@ -95,8 +94,6 @@ namespace CatEngine
 
         private void LoadData()
         {
-            Thread.Sleep(3000);
-
             foreach (Command<CContentManager> i in sCommands)
             {
                 //load data;
@@ -106,7 +103,6 @@ namespace CatEngine
 
                 Interlocked.Increment(ref iExecutedFunctions);
                 Debug.Print("performed command " + iExecutedFunctions + ", " + i.MethodName);
-                Thread.Sleep(myRandom.Next(10)*100);
             }
 
             CAudioManager.Instance.PlaySong("dreamland.it");

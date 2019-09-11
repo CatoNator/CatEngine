@@ -11,7 +11,7 @@ namespace CatEngine
     public sealed class CSettings
     {
         public int GAME_VIEW_WIDTH = 416;
-        public const int GAME_VIEW_HEIGHT = 240;
+        public const int GAME_VIEW_HEIGHT = 480;
 
         private int iAspectRatioH = 16;
         private int iAspectRatioV = 9;
