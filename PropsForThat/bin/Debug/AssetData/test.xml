@@ -1,0 +1,23 @@
+<propdata>
+  <prop>
+    <name>propCopCar</name>
+    <sprite>sprCopCar</sprite>
+    <col_width>97</col_width>
+    <col_width>44</col_width>
+    <health>-1</health>
+  </prop>
+  <prop>
+    <name>propNewProp</name>
+    <sprite>sprTest</sprite>
+    <col_width>16</col_width>
+    <col_width>16</col_width>
+    <health>-1</health>
+  </prop>
+  <prop>
+    <name>propNewProp69</name>
+    <sprite>sprTest</sprite>
+    <col_width>16</col_width>
+    <col_width>16</col_width>
+    <health>-1</health>
+  </prop>
+</propdata>

@@ -48,6 +48,7 @@ namespace CatEngine
             sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" }));
             sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Lights" }));
             sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Tiles" }));
+            sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" }));
             sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSound", new List<string>() { "normalshot.wav" }));
             sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSound", new List<string>() { "rapidfireshot.wav" }));
             sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSong", new List<string>() { "dreamland.it" }));

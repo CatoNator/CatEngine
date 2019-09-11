@@ -43,7 +43,7 @@ namespace CatEngine
         {
             //CSprite.Instance.DrawRect(rCollisionRectangle, Color.Green);
 
-            CSprite.Instance.Render("sprTest", x, y, 0, false, -degToRad(fAimDirection), 1.0f, Color.White);
+            CSprite.Instance.Render("sprEnemyBullet", x, y, 1, false, -degToRad(fAimDirection), 1.0f, Color.White);
         }
     }
 }

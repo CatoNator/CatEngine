@@ -1,0 +1,9 @@
+<propdata>
+	<prop>
+		<name>propCopCar</name>
+		<sprite>sprCopCar</sprite>
+		<col_width>97</col_width>
+		<col_height>44</col_height>
+		<health>-1</health>
+	</prop>
+</propdata>

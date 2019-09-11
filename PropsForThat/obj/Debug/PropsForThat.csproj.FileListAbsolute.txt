@@ -1,0 +1,10 @@
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\bin\Debug\PropsForThat.exe.config
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\bin\Debug\PropsForThat.exe
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\bin\Debug\PropsForThat.pdb
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\obj\Debug\PropsForThat.csprojAssemblyReference.cache
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\obj\Debug\PropsForThat.Form1.resources
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\obj\Debug\PropsForThat.Properties.Resources.resources
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\obj\Debug\PropsForThat.csproj.GenerateResource.cache
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\obj\Debug\PropsForThat.csproj.CoreCompileInputs.cache
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\obj\Debug\PropsForThat.exe
+C:\Users\OMISTAJA\source\repos\PropsForThat\PropsForThat\obj\Debug\PropsForThat.pdb
