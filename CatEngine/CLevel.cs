@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace CatEngine
 {
-    class CLevel : CGameObject
+    class CLevel : CContentManager
     {
         private List<String> sPropName = new List<String>();
         private List<String> sPropSprite = new List<String>();
@@ -23,13 +23,23 @@ namespace CatEngine
 		<col_height>44</col_height>
 		<health>-1</health>*/
 
-        public override void InstanceSpawn()
+        private CLevel()
         {
-            LoadPropData();
-            LoadLevelData("LevelTest.xml");
         }
 
-        private void LoadPropData()
+        //singletoning the singleton
+        public static CLevel Instance { get { return Nested.instance; } }
+
+        private class Nested
+        {
+            static Nested()
+            {
+            }
+
+            internal static readonly CLevel instance = new CLevel();
+        }
+
+        public void LoadPropData()
         {
             Debug.WriteLine("Opening prop data");
             string xmlText = System.IO.File.ReadAllText("AssetData/PropData.xml");
@@ -47,7 +57,7 @@ namespace CatEngine
             }
         }
 
-        private void LoadLevelData(string fileName)
+        public void LoadLevelData(string fileName)
         {
             Debug.WriteLine("Opening level data");
             string xmlText = System.IO.File.ReadAllText("AssetData/"+fileName);

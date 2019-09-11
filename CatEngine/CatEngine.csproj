@@ -43,8 +43,10 @@
     <Compile Include="CHud.cs" />
     <Compile Include="CLevel.cs" />
     <Compile Include="CLight.cs" />
+    <Compile Include="CLoadingScreen.cs" />
     <Compile Include="CObjectManager.cs" />
     <Compile Include="CSettings.cs" />
+    <Compile Include="CContentManager.cs" />
     <Compile Include="CTile.cs" />
     <Compile Include="fmod.cs" />
     <Compile Include="fmod_dsp.cs" />

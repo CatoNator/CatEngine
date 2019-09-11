@@ -52,3 +52,7 @@ XML-based level files
 		<y2>0</y2>
 	</wall>
 </root>
+
+update()
+
+if (currentgamestate = gamestate.startmenu)

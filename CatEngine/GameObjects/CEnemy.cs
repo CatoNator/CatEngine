@@ -54,6 +54,7 @@ namespace CatEngine
                     {
                         CEnemyBullet bullet = (CEnemyBullet)CObjectManager.Instance.CreateInstance(typeof(CEnemyBullet), this.x, this.y);
                         bullet.SetAimdir(fAimDirection);
+                        CAudioManager.Instance.PlaySound("rapidfireshot.wav");
                         iShotTimer = 0;
                     }
                     else
@@ -61,7 +62,7 @@ namespace CatEngine
 
                     iFSpeed = 0;
                     vTarget = new Vector2(player.x, player.y);
-                    Debug.Print("set target to " + vTarget.X + " " + vTarget.Y);
+                    //Debug.Print("set target to " + vTarget.X + " " + vTarget.Y);
                     fAimDirection = -(float)PointDirection(this.x, this.y, vTarget.X, vTarget.Y);
                     bChasing = true;
                 }
@@ -107,14 +108,14 @@ namespace CatEngine
                 (CollisionRectangle(new Rectangle(rCollisionRectangle.X, rCollisionRectangle.Y + rCollisionRectangle.Height, rCollisionRectangle.Width, collisionSafeZone), typeof(CWall), true) != null && fVerSpeed > 0))
                 fVerSpeed = 0;*/
 
-            CGameObject coll = CollisionCircle(typeof(CWall), 16);
+            /*CGameObject coll = CollisionCircle(typeof(CWall), 16);
 
             while (coll != null)
             {
                 x += (float)distDirX((float)2, -(float)PointDirection(this.x, this.y, coll.x, coll.y));
                 y += (float)distDirY((float)2, -(float)PointDirection(this.x, this.y, coll.x, coll.y));
                 coll = CollisionCircle(typeof(CWall), 16);
-            }
+            }*/
             
             x += fHorSpeed;
             y += fVerSpeed;

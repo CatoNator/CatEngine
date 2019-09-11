@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CatEngine
 {
-    class CAudioManager
+    class CAudioManager : CContentManager
     {
         public const int NUM_SONGS = 0;
 
@@ -28,8 +28,21 @@ namespace CatEngine
         private FMOD.System FMODSystem;
         private FMOD.Channel MusicChannel;
         private FMOD.Channel SoundChannel;
-        private FMOD.Sound[] Music;
-        private FMOD.Sound[] SoundFX;
+
+        private struct Sound
+        {
+            public String name;
+            public FMOD.Sound sound;
+
+            public Sound(String nm, FMOD.Sound snd)
+            {
+                name = nm;
+                sound = snd;
+            }
+        }
+
+        private List<Sound> Music = new List<Sound>();
+        private List<Sound> SoundFX = new List<Sound>();
         
         private CAudioManager()
         {
@@ -37,10 +50,6 @@ namespace CatEngine
 
             FMODSystem.setDSPBufferSize(1024, 10);
             FMODSystem.init(32, FMOD.INITFLAGS.NORMAL, (IntPtr)0);
-            
-            Music = new FMOD.Sound[NUM_SONGS];
-
-            SoundFX = new FMOD.Sound[NUM_SFX];
         }
         
         public static CAudioManager Instance { get { return Nested.instance; } }
@@ -54,7 +63,7 @@ namespace CatEngine
             internal static readonly CAudioManager instance = new CAudioManager();
         }
 
-        public void LoadAudio()
+        /*public void LoadAudio()
         {
             LoadSong(GAME_SONG, "game.it");
             LoadSong(MENU_SONG, "menu.it");
@@ -68,7 +77,7 @@ namespace CatEngine
             LoadSound(SFX_POWERUP, "powerup");
             LoadSound(SFX_MULTISHOT, "multishot");
             LoadSound(SFX_RAPIDFIRE, "rapidfire");
-        }
+        }*/
 
         public void Unload()
         {
@@ -77,34 +86,23 @@ namespace CatEngine
             FMODSystem.release();
         }
 
-        public void PlaySound(int soundId)
+        public void LoadSong(string name)
         {
-            if (soundId >= 0 && soundId < NUM_SFX && SoundFX[soundId] != null)
-            {
-                FMOD.RESULT r = FMODSystem.playSound(SoundFX[soundId], null, false, out SoundChannel);
-                //UpdateVolume(1.0f);
-                SoundChannel.setMode(FMOD.MODE.LOOP_OFF);
-                SoundChannel.setLoopCount(-1);
-
-                Console.WriteLine("Playing sound " + soundId + ", got result " + r);
-
-                m_iCurrentSongID = soundId;
-            }
+            FMOD.Sound snd;
+            FMOD.RESULT r = FMODSystem.createStream("AssetData/Music/" + name, FMOD.MODE.DEFAULT, out snd);
+            Music.Add(new Sound(name, snd));
+            Console.WriteLine("loaded track " + name + ", got result " + r);
         }
 
-        private void LoadSong(int songId, string name)
+        public void LoadSound(string name)
         {
-            FMOD.RESULT r = FMODSystem.createStream("Music/" + name, FMOD.MODE.DEFAULT, out Music[songId]);
-            //Console.WriteLine("loading " + songId + ", got result " + r);
+            FMOD.Sound snd;
+            FMOD.RESULT r = FMODSystem.createStream("AssetData/Sounds/" + name, FMOD.MODE.DEFAULT, out snd);
+            SoundFX.Add(new Sound(name, snd));
+            Console.WriteLine("loaded sound " + name + ", got result " + r);
         }
 
-        private void LoadSound(int soundId, string name)
-        {
-            FMOD.RESULT r = FMODSystem.createStream("Sounds/" + name + ".wav", FMOD.MODE.DEFAULT, out SoundFX[soundId]);
-            Console.WriteLine("loading " + name + ", got result " + r);
-        }
-
-        private int m_iCurrentSongID = -1;
+        private int iCurrentSongID = -1;
 
         public bool IsPlaying()
         {
@@ -116,23 +114,62 @@ namespace CatEngine
             return isPlaying;
         }
 
-        public void Play(int songId)
+        public void PlaySound(String name)
         {
-            if (m_iCurrentSongID != songId)
+            int soundId = 0;
+
+            foreach (Sound i in SoundFX)
+            {
+                if (i.name.Equals(name))
+                    soundId = SoundFX.IndexOf(i);
+            }
+
+            Console.WriteLine("soundId " + soundId);
+
+            if (SoundFX[soundId].sound != null)
+            {
+                FMOD.RESULT r = FMODSystem.playSound(SoundFX[soundId].sound, null, false, out SoundChannel);
+                //UpdateVolume(1.0f);
+                SoundChannel.setMode(FMOD.MODE.LOOP_OFF);
+                SoundChannel.setLoopCount(-1);
+
+                Console.WriteLine("Playing sound " + soundId + ", got result " + r);
+
+                iCurrentSongID = soundId;
+            }
+            else
+                Console.WriteLine("sound was null");
+        }
+
+        public void PlaySong(String name)
+        {
+            int songId = 0;
+
+            foreach (Sound i in Music)
+            {
+                if (i.name.Equals(name))
+                    songId = Music.IndexOf(i);
+            }
+
+            Console.WriteLine("songId " + songId);
+
+            if (iCurrentSongID != songId)
             {
                 Stop();
 
-                if (songId >= 0 && songId < NUM_SONGS && Music[songId] != null)
+                if (Music[songId].sound != null)
                 {
-                    FMOD.RESULT r = FMODSystem.playSound(Music[songId], null, false, out MusicChannel);
+                    FMOD.RESULT r = FMODSystem.playSound(Music[songId].sound, null, false, out MusicChannel);
                     UpdateVolume(1.0f);
                     MusicChannel.setMode(FMOD.MODE.LOOP_NORMAL);
                     MusicChannel.setLoopCount(-1);
 
-                    //Console.WriteLine("Playing track " + songId + ", got result" + r);
+                    Console.WriteLine("Playing track " + songId + ", got result" + r);
 
-                    m_iCurrentSongID = songId;
+                    iCurrentSongID = songId;
                 }
+                else
+                    Console.WriteLine("song was null");
             }
         }
 
@@ -147,7 +184,7 @@ namespace CatEngine
             if (IsPlaying())
                 MusicChannel.stop();
 
-            m_iCurrentSongID = -1;
+            iCurrentSongID = -1;
         }
     }
 }

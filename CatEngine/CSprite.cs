@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace CatEngine
 {
-    public class CSprite
+    public class CSprite : CContentManager
     {
         public Texture2D txTexture;
+
+        public ContentManager content;
 
         public SpriteBatch sbSpriteBatch;
 
@@ -52,8 +55,6 @@ namespace CatEngine
             this.sbSpriteBatch = CObjectManager.Instance.sbSpriteBatch;
 
             this.graphics = CObjectManager.Instance.graphics;
-
-            AllocateSprites();
         }
 
         //singletoning the singleton
@@ -68,7 +69,7 @@ namespace CatEngine
             internal static readonly CSprite instance = new CSprite();
         }
 
-        private void AllocateSprites()
+        public void AllocateSprites()
         {
             //opening the xml file
             Debug.WriteLine("Opening SpriteData");
@@ -112,6 +113,11 @@ namespace CatEngine
 
                 Debug.Print(index + " w " + iSpriteWidth[index] + " h " + iSpriteHeight[index]);
             }
+        }
+
+        public void LoadTextureSheet(String sheetName)
+        {
+            CSprite.Instance.dTextureDict.Add(sheetName, content.Load<Texture2D>(sheetName));
         }
 
         //mem leak, texture2ds won't get deleted once they fall out of scope

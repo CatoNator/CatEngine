@@ -1,0 +1,53 @@
+//setting up the original resolution draw
+            //RenderTarget2D lightMap = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
+
+            GraphicsDevice.SetRenderTarget(renderTarget);
+
+            //the actual game engine draw calls            
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            //CSprite.Instance.sbSpriteBatch = spriteBatch;
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+
+            //rendering the objects
+            CObjectManager.Instance.Render();
+
+            spriteBatch.End();
+
+            /*GraphicsDevice.SetRenderTarget(lightMap);
+            GraphicsDevice.Clear(Color.White);
+
+            CSprite.Instance.sbSpriteBatch = lightBatch;
+
+            //subtractive rensdering is broken as fuck so no lights for now
+
+            lightBatch.Begin(SpriteSortMode.Immediate, bsSubtract, SamplerState.PointClamp, null, null, null, null);
+
+            //rendering the lights
+            CObjectManager.Instance.RenderLights();
+
+            lightBatch.End();*/
+
+            /*GraphicsDevice.SetRenderTarget(renderTarget);
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp, null, null, null, null);
+
+            //rendering the HUD
+            CHud.Instance.Render();
+
+            spriteBatch.End();*/
+
+
+            GraphicsDevice.SetRenderTarget(null);
+
+            //drawing the screen scaled on the window
+            screenBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+            screenBatch.Draw(renderTarget, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            screenBatch.End();
+
+            //screenBatch.Begin(SpriteSortMode.Immediate, bsSubtract, SamplerState.PointClamp, null, null, null, null);
+            //screenBatch.Draw(lightMap, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            //screenBatch.End();
+
+            base.Draw(gameTime);

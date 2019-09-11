@@ -23,7 +23,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:EnemyTest.png
+/build:EnemyTest.png;Enemy.png
 
 #begin Lights.png
 /importer:TextureImporter
@@ -59,7 +59,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:PlayerTest.png
+/build:PlayerTest.png;Player.png
 
 #begin Props.png
 /importer:TextureImporter

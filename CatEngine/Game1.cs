@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,16 @@ namespace CatEngine
     /// </summary>
     public class Game1 : Game
     {
+        enum GameState
+        {
+            Menu,
+            Loading,
+            Game,
+            Paused
+        };
+
+        GameState CurrentGameState = GameState.Loading;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteBatch lightBatch;
@@ -73,24 +84,28 @@ namespace CatEngine
 
             screenBatch = new SpriteBatch(GraphicsDevice);
             renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
+            CSprite.Instance.content = Content;
 
-            CSprite.Instance.dTextureDict.Add("Player", Content.Load<Texture2D>("PlayerTest"));
-            CSprite.Instance.dTextureDict.Add("Enemy", Content.Load<Texture2D>("EnemyTest"));
+            //loading generic data here for now, these could be loaded in runtime later, though
+            /*CSprite.Instance.dTextureDict.Add("Player", Content.Load<Texture2D>("Player"));
+            CSprite.Instance.dTextureDict.Add("Enemy", Content.Load<Texture2D>("Enemy"));
             CSprite.Instance.dTextureDict.Add("Props", Content.Load<Texture2D>("Props"));
-            CSprite.Instance.dTextureDict.Add("Lights", Content.Load<Texture2D>("Lights"));
+            CSprite.Instance.dTextureDict.Add("Lights", Content.Load<Texture2D>("Lights"));*/
+
+            //also all sound effects
 
             //CSprite.Instance.txTexture = Content.Load<Texture2D>("PlayerTest");
             CSprite.Instance.sbSpriteBatch = spriteBatch;
             CSprite.Instance.graphics = graphics;
 
             //DEBUG: creating a player and some platforms
-            CObjectManager.Instance.CreateInstance(typeof(CLevel), 0, 0);
+            //CObjectManager.Instance.CreateInstance(typeof(CLevel), 0, 0);
             CObjectManager.Instance.CreateInstance(typeof(CPlayer), 64, 64);
 
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 256, 180);
             CObjectManager.Instance.CreateInstance(typeof(CEnemy), 300, 180);
 
-            CObjectManager.Instance.CreateLight(78, 78);
+            //CObjectManager.Instance.CreateLight(78, 78);
 
             // TODO: use this.Content to load your game content here
         }
@@ -114,8 +129,21 @@ namespace CatEngine
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            if (CurrentGameState == GameState.Menu)
+            {
+                //CMainMenu.Instance.Update();
+            }
+            else if (CurrentGameState == GameState.Loading)
+            {
+                CLoadingScreen.Instance.Update();
+                if (CLoadingScreen.Instance.hasFinishedLoading)
+                    CurrentGameState = GameState.Game;
+            }
+            else if (CurrentGameState == GameState.Game)
+            {
+                CObjectManager.Instance.Update();
+            }
             //updating the object list
-            CObjectManager.Instance.Update();
 
             //updating the HUD
             //CHud.Instance.Update();
@@ -131,9 +159,6 @@ namespace CatEngine
 
         protected override void Draw(GameTime gameTime)
         {
-            //setting up the original resolution draw
-            //RenderTarget2D lightMap = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
-
             GraphicsDevice.SetRenderTarget(renderTarget);
 
             //the actual game engine draw calls            
@@ -143,34 +168,27 @@ namespace CatEngine
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
-            //rendering the objects
-            CObjectManager.Instance.Render();
+            if (CurrentGameState == GameState.Menu)
+            {
+                //CMainMenu.Instance.Render();
+            }
+            else if (CurrentGameState == GameState.Loading)
+            {
+                CLoadingScreen.Instance.Render();
+            }
+            else if (CurrentGameState == GameState.Game)
+            {
+                //rendering the objects
+                CObjectManager.Instance.Render();
+            }
+            else if (CurrentGameState == GameState.Paused)
+            {
+                //rendering the objects
+                CObjectManager.Instance.Render();
+                //CPauseMenu.Instance.Render();
+            }
 
             spriteBatch.End();
-
-            /*GraphicsDevice.SetRenderTarget(lightMap);
-            GraphicsDevice.Clear(Color.White);
-
-            CSprite.Instance.sbSpriteBatch = lightBatch;
-
-            //subtractive rensdering is broken as fuck so no lights for now
-
-            lightBatch.Begin(SpriteSortMode.Immediate, bsSubtract, SamplerState.PointClamp, null, null, null, null);
-
-            //rendering the lights
-            CObjectManager.Instance.RenderLights();
-
-            lightBatch.End();*/
-
-            /*GraphicsDevice.SetRenderTarget(renderTarget);
-
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp, null, null, null, null);
-
-            //rendering the HUD
-            CHud.Instance.Render();
-
-            spriteBatch.End();*/
-
 
             GraphicsDevice.SetRenderTarget(null);
 
