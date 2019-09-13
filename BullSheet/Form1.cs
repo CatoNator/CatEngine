@@ -94,13 +94,17 @@ namespace BullSheet
                 spriteList[SpriteListBox.SelectedIndex].Name = SpriteNameBox.Text;
                 SpriteListBox.Items[SpriteListBox.SelectedIndex] = SpriteNameBox.Text;
                 SpriteNameBox.SelectionStart = SpriteNameBox.Text.Length;
+                UpdateSprite();
             }
         }
 
         private void SpriteTexBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (SpriteListBox.SelectedIndex >= 0)
+            {
                 spriteList[SpriteListBox.SelectedIndex].TextureSheet = SpriteTexBox.Items[SpriteTexBox.SelectedIndex].ToString();
+                UpdateSprite();
+            }
         }
 
         private void SpriteLeftBox_TextChanged(object sender, EventArgs e)
@@ -111,6 +115,8 @@ namespace BullSheet
                     spriteList[SpriteListBox.SelectedIndex].Left = Int32.Parse(SpriteLeftBox.Text);
                 else
                     spriteList[SpriteListBox.SelectedIndex].Left = 0;
+
+                UpdateSprite();
             }
         }
 
@@ -122,6 +128,8 @@ namespace BullSheet
                     spriteList[SpriteListBox.SelectedIndex].Top = Int32.Parse(SpriteTopBox.Text);
                 else
                     spriteList[SpriteListBox.SelectedIndex].Top = 0;
+
+                UpdateSprite();
             }
         }
 
@@ -133,6 +141,8 @@ namespace BullSheet
                     spriteList[SpriteListBox.SelectedIndex].Width = Int32.Parse(SpriteWidthBox.Text);
                 else
                     spriteList[SpriteListBox.SelectedIndex].Width = 0;
+
+                UpdateSprite();
             }
         }
 
@@ -144,6 +154,8 @@ namespace BullSheet
                     spriteList[SpriteListBox.SelectedIndex].Height = Int32.Parse(SpriteHeightBox.Text);
                 else
                     spriteList[SpriteListBox.SelectedIndex].Height = 0;
+
+                UpdateSprite();
             }
         }
 
@@ -155,6 +167,8 @@ namespace BullSheet
                     spriteList[SpriteListBox.SelectedIndex].Images = Int32.Parse(SpriteImgBox.Text);
                 else
                     spriteList[SpriteListBox.SelectedIndex].Images = 0;
+
+                UpdateSprite();
             }
         }
 
@@ -166,6 +180,8 @@ namespace BullSheet
                     spriteList[SpriteListBox.SelectedIndex].XOrig = Int32.Parse(SpriteXorigBox.Text);
                 else
                     spriteList[SpriteListBox.SelectedIndex].XOrig = 0;
+
+                UpdateSprite();
             }
         }
 
@@ -177,6 +193,8 @@ namespace BullSheet
                     spriteList[SpriteListBox.SelectedIndex].YOrig = Int32.Parse(SpriteYorigBox.Text);
                 else
                     spriteList[SpriteListBox.SelectedIndex].YOrig = 0;
+
+                UpdateSprite();
             }
         }
 
@@ -295,6 +313,10 @@ namespace BullSheet
 
         private void UpdateSprite()
         {
+            TextureSheetPreview.SetSprite(spriteList[SpriteListBox.SelectedIndex].TextureSheet, spriteList[SpriteListBox.SelectedIndex].Left,
+                spriteList[SpriteListBox.SelectedIndex].Top, spriteList[SpriteListBox.SelectedIndex].Width, spriteList[SpriteListBox.SelectedIndex].Height,
+                spriteList[SpriteListBox.SelectedIndex].Images, spriteList[SpriteListBox.SelectedIndex].XOrig, spriteList[SpriteListBox.SelectedIndex].YOrig, iImg);
+
             SpritePreview.SetSprite(spriteList[SpriteListBox.SelectedIndex].TextureSheet, spriteList[SpriteListBox.SelectedIndex].Left,
                 spriteList[SpriteListBox.SelectedIndex].Top, spriteList[SpriteListBox.SelectedIndex].Width, spriteList[SpriteListBox.SelectedIndex].Height,
                 spriteList[SpriteListBox.SelectedIndex].Images, spriteList[SpriteListBox.SelectedIndex].XOrig, spriteList[SpriteListBox.SelectedIndex].YOrig, iImg);
