@@ -1,0 +1,6 @@
+all the commonly used level stuff goes here
+
+- propdata/textures
+- player textures
+- enemy textures
+- all the other textures except tiles

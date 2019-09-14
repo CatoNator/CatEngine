@@ -1,0 +1,5 @@
+all stuff used on initial loading screen goes here
+NOT LOADING SCREEN GRAPHICS!
+those are separate
+
+fonts, that stufdf

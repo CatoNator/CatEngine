@@ -15,6 +15,8 @@ namespace BullSheet
 
         private bool Loaded = false;
 
+        private SpriteBatch spriteBatch;
+
         private String sTex = "Weapons";
         private int iLeft = 0;
         private int iTop = 0;
@@ -27,6 +29,7 @@ namespace BullSheet
         protected override void Initialize()
         {
             base.Initialize();
+            spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         public void Load()
@@ -60,7 +63,7 @@ namespace BullSheet
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Editor.spriteBatch.Begin();
+            spriteBatch.Begin();
 
             if (!Loaded)
             {
@@ -74,14 +77,14 @@ namespace BullSheet
             Rectangle sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Rectangle destRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             //drawing the sprite
-            Editor.spriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White*0.5f, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
+            spriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White*0.5f, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
 
             sourceRectangle = new Rectangle(iLeft, iTop, iWidth*(iImages+1), iHeight);
             destRectangle = new Rectangle(iLeft, iTop, iWidth*(iImages+1), iHeight);
             //drawing the sprite
-            Editor.spriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
+            spriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
 
-            Editor.spriteBatch.End();
+            spriteBatch.End();
         }
     }
 }

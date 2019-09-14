@@ -84,6 +84,8 @@ namespace BullSheet
             //mathsssss
             Rectangle sourceRectangle = new Rectangle(Left + (Width * iImg), Top, Width, Height);
             Rectangle destRectangle = new Rectangle(Editor.graphics.Viewport.Width / 2, Editor.graphics.Viewport.Height/2, Width*2, Height*2);
+
+            //Rectangle destRectangle = new Rectangle(0, 0, Editor.graphics.Viewport.Width, Editor.graphics.Viewport.Height);
             Vector2 Origin = new Vector2(Width/2, Height/2);
 
             if (!Loaded)
