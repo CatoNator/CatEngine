@@ -30,6 +30,7 @@ namespace BullSheet
         {
             base.Initialize();
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            Editor.Content.RootDirectory = "Content";
         }
 
         public void Load()
