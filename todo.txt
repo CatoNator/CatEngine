@@ -56,3 +56,13 @@ XML-based level files
 update()
 
 if (currentgamestate = gamestate.startmenu)
+
+CatEd Tabs
+
+Level | Tiles | Entities
+
+Level: Contains basic level info, not much. maybe default high score etc.
+
+Tiles: contains list of tiles in the room and some kind of view of tiles to place
+
+Entities: contains list of entities in the room and list of entities to place

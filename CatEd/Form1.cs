@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace CatEd
 {
-    public partial class Form1 : Form
+    public partial class CatEdMainForm : Form
     {
-        public Form1()
+        public CatEdMainForm()
         {
             InitializeComponent();
         }
