@@ -20,18 +20,16 @@ namespace CatEngine
 
         private bool bChasing = false;
 
-        private int iShotCooldown = 120;
+        private int iShotCooldown = 20;
 
         private int iShotTimer = 0;
 
         private int timer = 120;
 
-        int iDir = 0;
-
         public override void InstanceSpawn()
         {
-            vCollisionOrigin = new Vector2(0, 0);
-            rCollisionRectangle = new Rectangle(0, 0, 16, 16);
+            vCollisionOrigin = new Vector2(16, 16);
+            rCollisionRectangle = new Rectangle(0, 0, 32, 32);
             vTarget = new Vector2(this.x, this.y);
         }
 
@@ -49,44 +47,51 @@ namespace CatEngine
 
             if (timer <= 0)
             {
-                if ((int)x % 16 == 0 && (int)y % 16 == 0)
+                if (playerInSight)
                 {
-                    //new direction is picked
-                    iDir = PickDirection(new Vector2(player.x, player.y));
-                    Debug.Print("Picked new direction, " + iDir);
-                }
-                /*x += 16 * Math.Sign(distDirX(10, fAimDirection));
-                y += 16 * Math.Sign(distDirY(10, fAimDirection));*/
-                if (iDir == 0)
-                {
-                    x += 16;
-                }
-                else if (iDir == 1)
-                {
-                    y -= 16;
-                }
-                else if (iDir == 2)
-                {
-                    x -= 16;
-                }
-                else if (iDir == 3)
-                {
-                    y += 16;
-                }
+                    //fire gun
+                    if (iShotTimer >= iShotCooldown)
+                    {
+                        CEnemyBullet bullet = (CEnemyBullet)CObjectManager.Instance.CreateInstance(typeof(CEnemyBullet), this.x, this.y);
+                        bullet.SetAimdir(fAimDirection);
+                        CAudioManager.Instance.PlaySound("rapidfireshot.wav");
+                        iShotTimer = 0;
+                    }
+                    else
+                        iShotTimer++;
 
-                Debug.Print("moved to location (" + x + ", " + y +")");
+                    iFSpeed = 0;
+                    vTarget = new Vector2(player.x, player.y);
+                    //Debug.Print("set target to " + vTarget.X + " " + vTarget.Y);
+                    fAimDirection = -(float)PointDirection(this.x, this.y, vTarget.X, vTarget.Y);
+                    bChasing = true;
+                }
+                else
+                {
 
-                timer = iShotCooldown;
+                    if (bChasing)
+                    {
+                        ChaseTarget(vTarget, 1);
+
+                        Rectangle rect = new Rectangle((int)vTarget.X - 2, (int)vTarget.Y - 2, 4, 4);
+
+                        if (rect.Contains((int)x, (int)y))
+                        {
+                            iFSpeed = 0;
+                            bChasing = false;
+                            Debug.Print("stopped chasing");
+                        }
+                    }
+
+                }
             }
             else
             {
                 timer--;
             }
 
-            //if the ghost aligns with the grid
-
-            //fHorSpeed = (float)distDirX(0.1f, fAimDirection);
-            //fVerSpeed = (float)distDirY(0.1f, fAimDirection);
+            fHorSpeed = (float)distDirX((float)iFSpeed, fAimDirection);
+            fVerSpeed = (float)distDirY((float)iFSpeed, fAimDirection);
 
             //note! current collision model only supports recantular collisions, no pixel perfect shapes
             //collision always gets stuck, needs adjusting
@@ -118,9 +123,9 @@ namespace CatEngine
 
         public override void Render()
         {
-            CSprite.Instance.DrawRect(rCollisionRectangle, Color.Red);
+            //CSprite.Instance.DrawRect(rCollisionRectangle, Color.Green);
 
-            //CSprite.Instance.Render("sprEnemyTest", x, y, 0, false, -fAimDirection, 1.0f, Color.White);
+            CSprite.Instance.Render("sprEnemyTest", x, y, 0, false, -fAimDirection, 1.0f, Color.White);
         }
 
         private void ChaseTarget(Vector2 target, int speed)
@@ -134,41 +139,6 @@ namespace CatEngine
         {
             bool success = !CollisionLine((int)this.x, (int)this.y, (int)target.X, (int)target.Y, typeof(CWall));
             return success;
-        }
-
-        private int PickDirection(Vector2 target)
-        {
-            int dir = 0; //returns dir between 0-3, dir*90 = movemnt direction
-            int gridX = (int)x / 16;
-            int gridY = (int)y / 16;
-
-            float[] dist = new float[4];
-            
-            for (int i= 0; i <= 3; i++)
-            {
-                //check if grid tile ahead is free
-                if (PointCollider((int)x + (int)distDirX(16, i * 90), (int)y + (int)distDirY(16, i * 90), typeof(CWall)) == null)
-                {
-                    //it is free, so calculate the distance from said tile
-                    dist[i] = (float)(Math.Pow((target.X - (x + distDirX(16, i * 90))), 2) + Math.Pow((target.Y - (y + distDirY(16, i * 90))), 2));
-                }
-                else
-                    dist[i] = 666666666;
-            }
-
-            float min = dist[0];
-            for (int i = 0; i <= 3; i++)
-            {
-
-                Debug.Print("dir " + i + " dist " + dist[i]);
-                if (dist[i] < min)
-                {
-                    min = dist[i];
-                    dir = i;
-                }
-            }
-
-            return dir;
         }
 
         private Vector2 EnemyCollision(Type instanceType, double collisionRadius)

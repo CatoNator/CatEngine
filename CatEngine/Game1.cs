@@ -100,10 +100,10 @@ namespace CatEngine
 
             //DEBUG: creating a player and some platforms
             //CObjectManager.Instance.CreateInstance(typeof(CLevel), 0, 0);
-            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 64, 64);
+            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 256, 256);
 
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 256, 180);
-            CObjectManager.Instance.CreateInstance(typeof(CEnemy), 300, 180);
+            CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
             //CObjectManager.Instance.CreateLight(78, 78);
 

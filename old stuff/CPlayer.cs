@@ -19,8 +19,8 @@ namespace CatEngine
         
         public override void InstanceSpawn()
         {
-            vCollisionOrigin = new Vector2(8, 8);
-            rCollisionRectangle = new Rectangle(0, 0, 16, 16);
+            vCollisionOrigin = new Vector2(16, 16);
+            rCollisionRectangle = new Rectangle(0, 0, 32, 32);
         }
         
         public override void Update()
@@ -40,8 +40,8 @@ namespace CatEngine
 
             //Debug.Print("player aim dir " + fAimDirection);
 
-            //fHorSpeed = (float)distDirX((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirX((float)iSSpeed, degToRad(fAimDirection+90.0f));
-            //fVerSpeed = (float)distDirY((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirY((float)iSSpeed, degToRad(fAimDirection+90.0f));
+            fHorSpeed = (float)distDirX((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirX((float)iSSpeed, degToRad(fAimDirection+90.0f));
+            fVerSpeed = (float)distDirY((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirY((float)iSSpeed, degToRad(fAimDirection+90.0f));
 
             //note! current collision model only supports recantular collisions, no pixel perfect shapes
             //collision always gets stuck, needs adjusting
@@ -64,46 +64,37 @@ namespace CatEngine
 
         public override void Render()
         {
-            float dir = (float)PointDirection(0, 0, fHorSpeed, fVerSpeed);
+            //CSprite.Instance.DrawRect(rCollisionRectangle, Color.Green);
 
-            CSprite.Instance.Render("sprTest", x, y, 0, false, dir, 1.0f, Color.White);
+            CSprite.Instance.Render("sprTest", x, y, 0, false, -degToRad(fAimDirection), 1.0f, Color.White);
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)
         {
-            float maxSpeed = 2.0f;
-            
-            //moving
-            //up
-            if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveForward))
-            {
-                fHorSpeed = 0;
-                fVerSpeed = -maxSpeed;
-            }
-            //down
-            else if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveBackward))
-            {
-                fHorSpeed = 0;
-                fVerSpeed = maxSpeed;
-            }
-            //left
-            else if(keyboardState.IsKeyDown(CSettings.Instance.kPTurnLeft))
-            {
-                fHorSpeed = -maxSpeed;
-                fVerSpeed = 0;
-            }
-            //right
+            //rename this var
+            int maxSpeed = 2;
+
+            //turning
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPTurnLeft))
+                fAimDirection += 2.0f;
             else if (keyboardState.IsKeyDown(CSettings.Instance.kPTurnRight))
-            {
-                fHorSpeed = maxSpeed;
-                fVerSpeed = 0;
-            }
-            //DEBUG!!!!!!!!!!!!!
+                fAimDirection -= 2.0f;
+
+            //moving forward/backward
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveForward))
+                iFSpeed = maxSpeed;
+            else if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveBackward))
+                iFSpeed = -maxSpeed;
             else
-            {
-                fHorSpeed = 0;
-                fVerSpeed = 0;
-            }
+                iFSpeed = 0;
+
+            //strafing??
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPStrafeLeft))
+                iSSpeed = maxSpeed;
+            else if (keyboardState.IsKeyDown(CSettings.Instance.kPStrafeRight))
+                iSSpeed = -maxSpeed;
+            else
+                iSSpeed = 0;
         }
     }
 }

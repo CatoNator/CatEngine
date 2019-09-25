@@ -17,6 +17,9 @@ namespace CatEngine
         private List<int> sPropColH = new List<int>();
         private List<int> sPropHealth = new List<int>();
 
+        public int iLevelWidth = 100;
+        public int iLevelHeight = 100;
+
         /*<name>PropCopCar</name>
 		<sprite>sprCopCar</sprite>
 		<col_width>97</col_width>
