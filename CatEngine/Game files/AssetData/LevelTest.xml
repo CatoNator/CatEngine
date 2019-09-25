@@ -20,6 +20,25 @@
 		<dir>1</dir>
 		<health>-1</health>
 	</prop>
+	
+	<enemy>
+		<type>EnemyType1</type>
+		<x>0</x>
+		<y>0</y>
+		<dir>1</dir>
+	</enemy>
+	
+	<item>
+		<type>PowerUpPellet</type>
+		<x>0</x>
+		<y>0</y>
+	</item>
+	
+	<playerspawn>
+		<x>96</x>
+		<y>128</y>
+		<dir>1</dir>
+	</playerspawn>
 </spritedata>
 
 
@@ -39,6 +58,16 @@ dir (int) the range is 0-3, the rotation of the prop. can only be rotaed in 90 d
 
 enemy data:
 type (tbd) enemy type, tbd
+x (int)
+y (int)
+dir (tbd) possibly same as prop but idk yet
+
+item data:
+type (tbd) item type, tbd
+x (int)
+y (int)
+
+player spawn data:
 x (int)
 y (int)
 dir (tbd) possibly same as prop but idk yet

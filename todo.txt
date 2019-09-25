@@ -63,6 +63,6 @@ Level | Tiles | Entities
 
 Level: Contains basic level info, not much. maybe default high score etc.
 
-Tiles: contains list of tiles in the room and some kind of view of tiles to place
+Tiles: contains list of tiles in the room and some kind of view of tiles to place (possibly not needed for pacman)
 
 Entities: contains list of entities in the room and list of entities to place
