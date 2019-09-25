@@ -51,7 +51,7 @@ namespace CatEngine
             sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" }));
             sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSound", new List<string>() { "normalshot.wav" }));
             sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSound", new List<string>() { "rapidfireshot.wav" }));
-            sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSong", new List<string>() { "dreamland.it" }));
+            sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" }));
             sCommands.Add(new Command<CContentManager>(CLevel.Instance, "LoadPropData", new List<string>()));
             sCommands.Add(new Command<CContentManager>(CLevel.Instance, "LoadLevelData", new List<string>() { "LevelTest.xml" }));
 
@@ -106,7 +106,7 @@ namespace CatEngine
                 Debug.Print("performed command " + iExecutedFunctions + ", " + i.MethodName);
             }
 
-            CAudioManager.Instance.PlaySong("dreamland.it");
+            //CAudioManager.Instance.PlaySong("test.xm");
 
             hasFinishedLoading = true;
         }
