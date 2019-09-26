@@ -142,29 +142,43 @@ namespace CatEngine
             int gridX = (int)x / 16;
             int gridY = (int)y / 16;
 
-            float[] dist = new float[4];
-            
-            for (int i= 0; i <= 3; i++)
-            {
-                //check if grid tile ahead is free
-                if (PointCollider((int)x + (int)distDirX(16, i * 90), (int)y + (int)distDirY(16, i * 90), typeof(CWall)) == null)
-                {
-                    //it is free, so calculate the distance from said tile
-                    dist[i] = (float)(Math.Pow((target.X - (x + distDirX(16, i * 90))), 2) + Math.Pow((target.Y - (y + distDirY(16, i * 90))), 2));
-                }
-                else
-                    dist[i] = 666666666;
-            }
+            bool[] canMoveInDir = new bool[4];
 
-            float min = dist[0];
             for (int i = 0; i <= 3; i++)
             {
+                CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(i * 90)), (int)y + (int)distDirY(16, degToRad(i * 90)), 16, 16), typeof(CWall), true);
 
-                Debug.Print("dir " + i + " dist " + dist[i]);
-                if (dist[i] < min)
+                //check if grid tile ahead is free
+                if (col == null && i != (iDir + 2) % 4)
                 {
-                    min = dist[i];
-                    dir = i;
+                    //it is free, so calculate the distance from said tile
+                    canMoveInDir[i] = true;
+                }
+                else
+                {
+                    if (col != null)
+                        Debug.Print("did not move in dir " + i + ", col was not null");
+                    else if (i == (iDir + 2) % 4)
+                        Debug.Print("did not move in dir " + i + ", it was backtracking");
+                    else
+                        Debug.Print("lol what the fuck");
+                }
+            }
+
+            float min = 666666666;
+            for (int i = 0; i <= 3; i++)
+            {
+                if (canMoveInDir[i])
+                {
+                    
+                    float dist = (float)(Math.Pow((target.X - (x + distDirX(16, degToRad(i * 90)))), 2) + Math.Pow((target.Y - (y + distDirY(16, degToRad(i * 90)))), 2));
+
+                    if (dist < min)
+                    {
+                        min = dist;
+                        Debug.Print("dir " + i + " dist " + dist);
+                        dir = i;
+                    }
                 }
             }
 
