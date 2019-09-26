@@ -82,6 +82,8 @@ namespace CatEngine
             spriteBatch = new SpriteBatch(GraphicsDevice);
             //lightBatch = new SpriteBatch(GraphicsDevice);
 
+            this.IsMouseVisible = true;
+
             screenBatch = new SpriteBatch(GraphicsDevice);
             renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
             CSprite.Instance.content = Content;

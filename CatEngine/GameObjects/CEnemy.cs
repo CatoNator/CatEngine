@@ -46,33 +46,11 @@ namespace CatEngine
 
             bool playerInSight = FreeSightline(new Vector2(player.x, player.y));
 
+            EnemyMovement(1, new Vector2(player.x, player.y));
 
-            if (timer <= 0)
+            /*if (timer <= 0)
             {
-                if ((int)x % 16 == 0 && (int)y % 16 == 0)
-                {
-                    //new direction is picked
-                    iDir = PickDirection(new Vector2(player.x, player.y));
-                    Debug.Print("Picked new direction, " + iDir);
-                }
-                /*x += 16 * Math.Sign(distDirX(10, fAimDirection));
-                y += 16 * Math.Sign(distDirY(10, fAimDirection));*/
-                if (iDir == 0)
-                {
-                    x += 16;
-                }
-                else if (iDir == 1)
-                {
-                    y -= 16;
-                }
-                else if (iDir == 2)
-                {
-                    x -= 16;
-                }
-                else if (iDir == 3)
-                {
-                    y += 16;
-                }
+                EnemyMovement(1, new Vector2(player.x, player.y));
 
                 Debug.Print("moved to location (" + x + ", " + y +")");
 
@@ -81,7 +59,7 @@ namespace CatEngine
             else
             {
                 timer--;
-            }
+            }*/
 
             //if the ghost aligns with the grid
 
@@ -111,7 +89,7 @@ namespace CatEngine
                 y += (float)distDirY((float)2, -(float)PointDirection(this.x, this.y, coll.x, coll.y));
                 coll = CollisionCircle(typeof(CWall), 16);
             }*/
-            
+
             x += fHorSpeed;
             y += fVerSpeed;
         }
@@ -183,6 +161,34 @@ namespace CatEngine
             }
 
             return dir;
+        }
+
+        private void EnemyMovement(int spd, Vector2 Target)
+        {
+            if ((int)x % 16 == 0 && (int)y % 16 == 0)
+            {
+                //new direction is picked
+                iDir = PickDirection(new Vector2(Target.X, Target.Y));
+                Debug.Print("Picked new direction, " + iDir);
+            }
+            /*x += 16 * Math.Sign(distDirX(10, fAimDirection));
+            y += 16 * Math.Sign(distDirY(10, fAimDirection));*/
+            if (iDir == 0)
+            {
+                x += spd;
+            }
+            else if (iDir == 1)
+            {
+                y -= spd;
+            }
+            else if (iDir == 2)
+            {
+                x -= spd;
+            }
+            else if (iDir == 3)
+            {
+                y += spd;
+            }
         }
 
         private Vector2 EnemyCollision(Type instanceType, double collisionRadius)
