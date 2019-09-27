@@ -83,12 +83,29 @@ namespace CatEngine
         public void Render()
         {
             dir += Math.PI/60;
-            //dir %= 2*Math.PI;
+            dir %= 2*Math.PI;
 
-            float length = 160.0f * ((float)iExecutedFunctions / (float)sCommands.Count());
+            float maxLength = 160.0f;
+            int xpos = (CSettings.Instance.GAME_VIEW_WIDTH / 2) - (int)(maxLength / 2);
+            int ypos = (CSettings.GAME_VIEW_HEIGHT / 4) * 3;
 
-            CSprite.Instance.DrawRect(new Rectangle(10, 10, 160, 16), Color.Gray);
-            CSprite.Instance.DrawRect(new Rectangle(10, 10, (int)length+1, 16), Color.White);
+            float length = maxLength * ((float)iExecutedFunctions / (float)sCommands.Count());
+
+            /*CSprite.Instance.DrawRect(new Rectangle(xpos, ypos, (int)maxLength+69, 12), Color.Gray);
+            CSprite.Instance.DrawRect(new Rectangle(xpos, ypos, (int)length+69, 12), Color.White);*/
+
+            CSprite.Instance.Render("sprLoadBar", xpos, ypos+(int)(Math.Sin(dir)*6), 0, false, 0.0f, 1.0f, Color.White);
+            CSprite.Instance.Render("sprLoadBar", xpos+maxLength, ypos + (int)(Math.Sin(dir+(maxLength/10)) * 3), 2, false, 0.0f, 1.0f, Color.White);
+
+            for (int i = 1; i <= (int)maxLength/2; i++)
+            {
+                int img = 1;
+
+                if (length >= i*2)
+                    img = 3;
+
+                CSprite.Instance.Render("sprLoadBar", xpos+i*2, ypos + (int)(Math.Sin(dir+(i/5)) * 3), img, false, 0.0f, 1.0f, Color.White);
+            }
 
             //CSprite.Instance.Render("sprTest", 160+64, 30, 0, false, (float)dir, 1.0f, Color.White);
         }
@@ -104,6 +121,8 @@ namespace CatEngine
 
                 Interlocked.Increment(ref iExecutedFunctions);
                 CConsole.Instance.Print("performed command " + iExecutedFunctions + ", " + i.MethodName);
+
+                Thread.Sleep(1000);
             }
 
             //CAudioManager.Instance.PlaySong("test.xm");
@@ -111,7 +130,7 @@ namespace CatEngine
             //clearing the list so we don't accidentally load the same stuff twice...
             sCommands.Clear();
 
-            hasFinishedLoading = true;
+            //hasFinishedLoading = true;
         }
     }
 }
