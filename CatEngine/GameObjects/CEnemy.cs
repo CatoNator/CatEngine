@@ -20,13 +20,13 @@ namespace CatEngine
 
         private bool bChasing = false;
 
-        private int iShotCooldown = 120;
+        private int iAnimCoolDown = 15;
 
-        private int iShotTimer = 0;
+        private int iAnimTimer = 0;
 
-        private int timer = 120;
+        private int iDir = 0;
 
-        int iDir = 0;
+        private bool bAnim = false;
 
         public override void InstanceSpawn()
         {
@@ -48,47 +48,17 @@ namespace CatEngine
 
             EnemyMovement(1, new Vector2(player.x, player.y));
 
-            /*if (timer <= 0)
+            //animation for the ghost floating anim...
+            if (iAnimTimer <= 0)
             {
-                EnemyMovement(1, new Vector2(player.x, player.y));
+                bAnim = !bAnim;
 
-                Debug.Print("moved to location (" + x + ", " + y +")");
-
-                timer = iShotCooldown;
+                iAnimTimer = iAnimCoolDown;
             }
             else
             {
-                timer--;
-            }*/
-
-            //if the ghost aligns with the grid
-
-            //fHorSpeed = (float)distDirX(0.1f, fAimDirection);
-            //fVerSpeed = (float)distDirY(0.1f, fAimDirection);
-
-            //note! current collision model only supports recantular collisions, no pixel perfect shapes
-            //collision always gets stuck, needs adjusting
-
-            //int collisionSafeZone = 4;
-
-            //collisions to the left and right
-            /*if ((CollisionRectangle(new Rectangle(rCollisionRectangle.X - collisionSafeZone, rCollisionRectangle.Y, collisionSafeZone, rCollisionRectangle.Height), typeof(CWall), true) != null && fHorSpeed < 0) ||
-              (CollisionRectangle(new Rectangle(rCollisionRectangle.X + rCollisionRectangle.Width, rCollisionRectangle.Y, collisionSafeZone, rCollisionRectangle.Height), typeof(CWall), true) != null && fHorSpeed > 0))
-                fHorSpeed = 0;
-
-            //collisions above and below
-            if ((CollisionRectangle(new Rectangle(rCollisionRectangle.X, rCollisionRectangle.Y - collisionSafeZone, rCollisionRectangle.Width, collisionSafeZone), typeof(CWall), true) != null && fVerSpeed < 0) ||
-                (CollisionRectangle(new Rectangle(rCollisionRectangle.X, rCollisionRectangle.Y + rCollisionRectangle.Height, rCollisionRectangle.Width, collisionSafeZone), typeof(CWall), true) != null && fVerSpeed > 0))
-                fVerSpeed = 0;*/
-
-            /*CGameObject coll = CollisionCircle(typeof(CWall), 16);
-
-            while (coll != null)
-            {
-                x += (float)distDirX((float)2, -(float)PointDirection(this.x, this.y, coll.x, coll.y));
-                y += (float)distDirY((float)2, -(float)PointDirection(this.x, this.y, coll.x, coll.y));
-                coll = CollisionCircle(typeof(CWall), 16);
-            }*/
+                iAnimTimer--;
+            }
 
             x += fHorSpeed;
             y += fVerSpeed;
@@ -96,9 +66,10 @@ namespace CatEngine
 
         public override void Render()
         {
+            //debug render box
             CSprite.Instance.DrawRect(rCollisionRectangle, Color.Red);
 
-            //CSprite.Instance.Render("sprEnemyTest", x, y, 0, false, -fAimDirection, 1.0f, Color.White);
+            CSprite.Instance.Render("sprEnemyA" + (bAnim ? "1" : "2") , x, y, iDir, false, -0.0f, 1.0f, Color.White);
         }
 
         private void ChaseTarget(Vector2 target, int speed)

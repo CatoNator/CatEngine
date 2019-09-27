@@ -16,10 +16,22 @@ namespace CatEngine
 
         private int iFSpeed = 0;
         private int iSSpeed = 0;
+
+        private int iDir = 0;
+
+        private int iNextDir = 0;
+
+        private int iAnimCoolDown = 5;
+
+        private int iAnimTimer = 0;
+
+        private int iAnimFrame = 0;
+
+        private bool bCanMove = false;
         
         public override void InstanceSpawn()
         {
-            vCollisionOrigin = new Vector2(8, 8);
+            vCollisionOrigin = new Vector2(0, 0);
             rCollisionRectangle = new Rectangle(0, 0, 16, 16);
         }
         
@@ -35,75 +47,87 @@ namespace CatEngine
 
             MovementKeyboard(keyboardState);
 
-            //capping the player rotation to [0.0f, 360.0f]
-            fAimDirection = fAimDirection % 360;
+            //check for collision on next tile
+            if ((int)x % 16 == 0 && (int)y % 16 == 0)
+            {
+                CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(iDir * 90)), (int)y + (int)distDirY(16, degToRad(iDir * 90)), 16, 16), typeof(CWall), true);
 
-            //Debug.Print("player aim dir " + fAimDirection);
+                if (col == null)
+                    bCanMove = true;
+                else
+                    bCanMove = false;
+            }
 
-            //fHorSpeed = (float)distDirX((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirX((float)iSSpeed, degToRad(fAimDirection+90.0f));
-            //fVerSpeed = (float)distDirY((float)iFSpeed, degToRad(fAimDirection)) + (float)distDirY((float)iSSpeed, degToRad(fAimDirection+90.0f));
+            
+            if (bCanMove)
+            {
+                int spd = 1;
 
-            //note! current collision model only supports recantular collisions, no pixel perfect shapes
-            //collision always gets stuck, needs adjusting
+                if (iDir == 0)
+                {
+                    x += spd;
+                }
+                else if (iDir == 1)
+                {
+                    y -= spd;
+                }
+                else if (iDir == 2)
+                {
+                    x -= spd;
+                }
+                else if (iDir == 3)
+                {
+                    y += spd;
+                }
 
-            int collisionSafeZone = 4;
+                if (iAnimTimer <= 0)
+                {
+                    iAnimFrame++;
 
-            //collisions to the left and right
-            if ((CollisionRectangle(new Rectangle(rCollisionRectangle.X - collisionSafeZone, rCollisionRectangle.Y, collisionSafeZone, rCollisionRectangle.Height), typeof(CWall), true) != null && fHorSpeed < 0) || 
-              (CollisionRectangle(new Rectangle(rCollisionRectangle.X + rCollisionRectangle.Width, rCollisionRectangle.Y, collisionSafeZone, rCollisionRectangle.Height), typeof(CWall), true) != null && fHorSpeed > 0))
-                fHorSpeed = 0;
+                    iAnimTimer = iAnimCoolDown;
+                }
+                else
+                {
+                    iAnimTimer--;
+                }
 
-            //collisions above and below
-            if ((CollisionRectangle(new Rectangle(rCollisionRectangle.X, rCollisionRectangle.Y - collisionSafeZone, rCollisionRectangle.Width, collisionSafeZone), typeof(CWall), true) != null && fVerSpeed < 0)||
-                (CollisionRectangle(new Rectangle(rCollisionRectangle.X, rCollisionRectangle.Y + rCollisionRectangle.Height, rCollisionRectangle.Width, collisionSafeZone), typeof(CWall), true) != null && fVerSpeed > 0))
-                fVerSpeed = 0;
-
-            x += fHorSpeed;
-            y += fVerSpeed;
+                iAnimFrame %= 5;
+            }
         }
 
         public override void Render()
         {
-            float dir = (float)PointDirection(0, 0, fHorSpeed, fVerSpeed);
-
-            CSprite.Instance.Render("sprTest", x, y, 0, false, dir, 1.0f, Color.White);
+            CSprite.Instance.Render("sprPlayer", x+8, y+8, iAnimFrame % 4, false, -(float)(iDir*(Math.PI/2)), 1.0f, Color.White);
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)
         {
-            float maxSpeed = 2.0f;
-            
             //moving
-            //up
-            if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveForward))
+            //right
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPTurnRight))
             {
-                fHorSpeed = 0;
-                fVerSpeed = -maxSpeed;
+                iNextDir = 0;
+            }
+            //up
+            else if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveForward))
+            {
+                iNextDir = 1;
+            }
+            //left
+            else if (keyboardState.IsKeyDown(CSettings.Instance.kPTurnLeft))
+            {
+                iNextDir = 2;
             }
             //down
             else if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveBackward))
             {
-                fHorSpeed = 0;
-                fVerSpeed = maxSpeed;
+                iNextDir = 3;
             }
-            //left
-            else if(keyboardState.IsKeyDown(CSettings.Instance.kPTurnLeft))
-            {
-                fHorSpeed = -maxSpeed;
-                fVerSpeed = 0;
-            }
-            //right
-            else if (keyboardState.IsKeyDown(CSettings.Instance.kPTurnRight))
-            {
-                fHorSpeed = maxSpeed;
-                fVerSpeed = 0;
-            }
-            //DEBUG!!!!!!!!!!!!!
-            else
-            {
-                fHorSpeed = 0;
-                fVerSpeed = 0;
-            }
+
+            CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(iNextDir * 90)), (int)y + (int)distDirY(16, degToRad(iNextDir * 90)), 16, 16), typeof(CWall), true);
+
+            if (col == null)
+                iDir = iNextDir;
         }
     }
 }

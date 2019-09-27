@@ -21,32 +21,34 @@ namespace CatEngine
 
         public GraphicsDeviceManager graphics;
 
-        private Dictionary<string, int> dSpriteNameDict = new Dictionary<string,int>();
+        private Dictionary<string, Sprite> dSpriteNameDict = new Dictionary<string, Sprite>();
 
         public Dictionary<string, Texture2D> dTextureDict = new Dictionary<string, Texture2D>();
 
-        private int iSprites;
-
-        private string[] sSpriteTexture;
-        private int[] iSpriteLeft;
-        private int[] iSpriteTop;
-        private int[] iSpriteWidth;
-        private int[] iSpriteHeight;
-        private int[] iSpriteImages;
-        private int[] iSpriteXOrigin;
-        private int[] iSpriteYOrigin;
-
-        private class SpriteDataHolder
+        private class Sprite
         {
-            public int index { get; set; }
-            public string sSpriteTexture { get; set; }
-            public int iSpriteLeft { get; set; }
-            public int iSpriteTop { get; set; }
-            public int iSpriteWidth { get; set; }
-            public int iSpriteHeight { get; set; }
-            public int iSpriteImages { get; set; }
-            public int iSpriteXOrigin { get; set; }
-            public int iSpriteYOrigin { get; set; }
+            public String Name;
+            public String TextureSheet;
+            public int Left;
+            public int Top;
+            public int Width;
+            public int Height;
+            public int Images;
+            public int XOrig;
+            public int YOrig;
+
+            public Sprite(String name, String tex, int left, int top, int w, int h, int img, int xorig, int yorig)
+            {
+                Name = name;
+                TextureSheet = tex;
+                Left = left;
+                Top = top;
+                Width = w;
+                Height = h;
+                Images = img;
+                XOrig = xorig;
+                YOrig = yorig;
+            }
         }
 
         private CSprite()
@@ -79,7 +81,7 @@ namespace CatEngine
             Debug.WriteLine("XML parsed");
             
             //this is going to be loaded from an ini later on
-            iSprites = Int32.Parse(file.Root.Element("sprites").Value);
+            /*iSprites = Int32.Parse(file.Root.Element("sprites").Value);
 
             //allocating the arrays
             sSpriteTexture = new string[iSprites];
@@ -89,12 +91,27 @@ namespace CatEngine
             iSpriteHeight = new int[iSprites];
             iSpriteImages = new int[iSprites];
             iSpriteXOrigin = new int[iSprites];
-            iSpriteYOrigin = new int[iSprites];
+            iSpriteYOrigin = new int[iSprites];*/
 
             //loading the data using a foreach loop
             Debug.WriteLine("Entering Spritedata loop");
 
             foreach (XElement element in file.Descendants("sprite"))
+            {
+                String name = element.Element("name").Value;
+                String tex = element.Element("texture").Value;
+                int l = Int32.Parse(element.Element("left").Value);
+                int t = Int32.Parse(element.Element("top").Value);
+                int w = Int32.Parse(element.Element("width").Value);
+                int h = Int32.Parse(element.Element("height").Value);
+                int img = Int32.Parse(element.Element("images").Value);
+                int xo = Int32.Parse(element.Element("xorig").Value);
+                int yo = Int32.Parse(element.Element("yorig").Value);
+
+                dSpriteNameDict.Add(name, new Sprite(name, tex, l, t, w, h, img, xo, yo));
+            }
+
+            /*foreach (XElement element in file.Descendants("sprite"))
             {
                 int index = Int32.Parse(element.Element("index").Value);
 
@@ -112,7 +129,7 @@ namespace CatEngine
                 iSpriteYOrigin[index] = Int32.Parse(element.Element("yorig").Value);
 
                 Debug.Print(index + " w " + iSpriteWidth[index] + " h " + iSpriteHeight[index]);
-            }
+            }*/
         }
 
         public void LoadTextureSheet(String sheetName)
@@ -142,22 +159,22 @@ namespace CatEngine
         public void Render(string spriteName, float x, float y, int imageIndex, bool flip, float rotation, float layerDepth, Color color)
         {
             //getting the sprite index
-            int index = dSpriteNameDict[spriteName];
+            Sprite spr = dSpriteNameDict[spriteName];
 
             int imgIndex;
 
             //making sure the image index doesn't go out of bounds
-            if (imageIndex <= iSpriteImages[index])
+            if (imageIndex <= spr.Images)
                 imgIndex = imageIndex;
             else
-                imgIndex = iSpriteImages[index];
+                imgIndex = spr.Images;
 
             //mathsssss
-            Rectangle sourceRectangle = new Rectangle(iSpriteLeft[index]+(iSpriteWidth[index]*imgIndex), iSpriteTop[index], iSpriteWidth[index], iSpriteHeight[index]);
-            Rectangle destRectangle = new Rectangle((int)x, (int)y, iSpriteWidth[index], iSpriteHeight[index]);
-            Vector2 Origin = new Vector2(iSpriteXOrigin[index], iSpriteYOrigin[index]);
+            Rectangle sourceRectangle = new Rectangle(spr.Left + (spr.Width* imgIndex), spr.Top, spr.Width, spr.Height);
+            Rectangle destRectangle = new Rectangle((int)x, (int)y, spr.Width, spr.Height);
+            Vector2 Origin = new Vector2(spr.XOrig, spr.YOrig);
 
-            Texture2D texture = dTextureDict[sSpriteTexture[index]];
+            Texture2D texture = dTextureDict[spr.TextureSheet];
 
             SpriteEffects spriteEffect;
 

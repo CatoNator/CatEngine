@@ -86,30 +86,19 @@ namespace CatEngine
 
             screenBatch = new SpriteBatch(GraphicsDevice);
             renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
+
+            //setting up CSpritebasics...
             CSprite.Instance.content = Content;
-
-            //loading generic data here for now, these could be loaded in runtime later, though
-            /*CSprite.Instance.dTextureDict.Add("Player", Content.Load<Texture2D>("Player"));
-            CSprite.Instance.dTextureDict.Add("Enemy", Content.Load<Texture2D>("Enemy"));
-            CSprite.Instance.dTextureDict.Add("Props", Content.Load<Texture2D>("Props"));
-            CSprite.Instance.dTextureDict.Add("Lights", Content.Load<Texture2D>("Lights"));*/
-
-            //also all sound effects
-
-            //CSprite.Instance.txTexture = Content.Load<Texture2D>("PlayerTest");
             CSprite.Instance.sbSpriteBatch = spriteBatch;
             CSprite.Instance.graphics = graphics;
+            //loading screen stuff NEEDS to be loaded here! it can't be loaded in during runtime, it'll just crash.
 
-            //DEBUG: creating a player and some platforms
-            //CObjectManager.Instance.CreateInstance(typeof(CLevel), 0, 0);
-            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 256, 256);
-
-            //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 256, 180);
+            //DEBUG: creating objects that aren't configured in CLevel yet
+            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 16, 16);
             CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
+            //lights don't work lol
             //CObjectManager.Instance.CreateLight(78, 78);
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
