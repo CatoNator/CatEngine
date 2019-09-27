@@ -44,7 +44,7 @@ namespace CatEngine
 
         public void LoadPropData()
         {
-            Debug.WriteLine("Opening prop data");
+            CConsole.Instance.Print("Opening prop data");
             string xmlText = System.IO.File.ReadAllText("AssetData/PropData.xml");
             XDocument file = XDocument.Parse(xmlText);
 
@@ -60,7 +60,7 @@ namespace CatEngine
 
         public void LoadLevelData(string fileName)
         {
-            Debug.WriteLine("Opening level data");
+            CConsole.Instance.Print("Opening level data");
             string xmlText = System.IO.File.ReadAllText("AssetData/"+fileName);
             XDocument file = XDocument.Parse(xmlText);
 

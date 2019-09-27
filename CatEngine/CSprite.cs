@@ -79,7 +79,7 @@ namespace CatEngine
             Debug.WriteLine("Text file loaded");
             XDocument file = XDocument.Parse(xmlText);
             Debug.WriteLine("XML parsed");
-            
+
             //this is going to be loaded from an ini later on
             /*iSprites = Int32.Parse(file.Root.Element("sprites").Value);
 
@@ -92,6 +92,9 @@ namespace CatEngine
             iSpriteImages = new int[iSprites];
             iSpriteXOrigin = new int[iSprites];
             iSpriteYOrigin = new int[iSprites];*/
+
+            //hardcoded error sprite
+            dSpriteNameDict.Add("error", new Sprite("error", "empty", 0, 0, 16, 16, 0, 8, 8));
 
             //loading the data using a foreach loop
             Debug.WriteLine("Entering Spritedata loop");
@@ -134,7 +137,15 @@ namespace CatEngine
 
         public void LoadTextureSheet(String sheetName)
         {
-            CSprite.Instance.dTextureDict.Add(sheetName, content.Load<Texture2D>(sheetName));
+            try
+            {
+                CSprite.Instance.dTextureDict.Add(sheetName, content.Load<Texture2D>(sheetName));
+            }
+            catch(ContentLoadException e)
+            {
+                CSprite.Instance.dTextureDict.Add(sheetName, content.Load<Texture2D>("empty"));
+                CConsole.Instance.Print("Tried to load texture " + sheetName + " but failed, error " + e.ToString());
+            }
         }
 
         //mem leak, texture2ds won't get deleted once they fall out of scope
@@ -158,8 +169,29 @@ namespace CatEngine
         
         public void Render(string spriteName, float x, float y, int imageIndex, bool flip, float rotation, float layerDepth, Color color)
         {
+            Sprite spr;
+
             //getting the sprite index
-            Sprite spr = dSpriteNameDict[spriteName];
+            try
+            {
+                spr = dSpriteNameDict[spriteName];
+            }
+            catch(Exception e)
+            {
+                spr = dSpriteNameDict["error"];
+            }
+
+            Texture2D texture;
+            bool wrongTex = false;
+
+            try
+            {
+                texture = dTextureDict[spr.TextureSheet];
+            }
+            catch (Exception e)
+            {
+                texture = dTextureDict["empty"];
+            }
 
             int imgIndex;
 
@@ -169,12 +201,16 @@ namespace CatEngine
             else
                 imgIndex = spr.Images;
 
+            Rectangle sourceRectangle;
+
             //mathsssss
-            Rectangle sourceRectangle = new Rectangle(spr.Left + (spr.Width* imgIndex), spr.Top, spr.Width, spr.Height);
+            if (!wrongTex)
+                sourceRectangle = new Rectangle(spr.Left + (spr.Width * imgIndex), spr.Top, spr.Width, spr.Height);
+            else
+                sourceRectangle = new Rectangle(0, 0, 16, 16);
+
             Rectangle destRectangle = new Rectangle((int)x, (int)y, spr.Width, spr.Height);
             Vector2 Origin = new Vector2(spr.XOrig, spr.YOrig);
-
-            Texture2D texture = dTextureDict[spr.TextureSheet];
 
             SpriteEffects spriteEffect;
 

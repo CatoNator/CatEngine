@@ -63,22 +63,6 @@ namespace CatEngine
             internal static readonly CAudioManager instance = new CAudioManager();
         }
 
-        /*public void LoadAudio()
-        {
-            LoadSong(GAME_SONG, "game.it");
-            LoadSong(MENU_SONG, "menu.it");
-            LoadSong(GAMEOVER_SONG, "gameover.it");
-
-            LoadSound(SFX_PLAYERDEATH, "playerdeath");
-            LoadSound(SFX_EXPLOSION1, "explosion1");
-            LoadSound(SFX_EXPLOSION2, "explosion2");
-            LoadSound(SFX_BLASTERSHOT, "normalshot");
-            LoadSound(SFX_RAPIDSHOT, "rapidfireshot");
-            LoadSound(SFX_POWERUP, "powerup");
-            LoadSound(SFX_MULTISHOT, "multishot");
-            LoadSound(SFX_RAPIDFIRE, "rapidfire");
-        }*/
-
         public void Unload()
         {
             Stop();
@@ -91,7 +75,7 @@ namespace CatEngine
             FMOD.Sound snd;
             FMOD.RESULT r = FMODSystem.createStream("AssetData/Music/" + name, FMOD.MODE.DEFAULT, out snd);
             Music.Add(new Sound(name, snd));
-            Console.WriteLine("loaded track " + name + ", got result " + r);
+            CConsole.Instance.Print("loaded track " + name + ", got result " + r);
         }
 
         public void LoadSound(string name)
@@ -99,7 +83,7 @@ namespace CatEngine
             FMOD.Sound snd;
             FMOD.RESULT r = FMODSystem.createStream("AssetData/Sounds/" + name, FMOD.MODE.DEFAULT, out snd);
             SoundFX.Add(new Sound(name, snd));
-            Console.WriteLine("loaded sound " + name + ", got result " + r);
+            CConsole.Instance.Print("loaded sound " + name + ", got result " + r);
         }
 
         private int iCurrentSongID = -1;
@@ -131,12 +115,10 @@ namespace CatEngine
                 SoundChannel.setMode(FMOD.MODE.LOOP_OFF);
                 SoundChannel.setLoopCount(-1);
 
-                //Console.WriteLine("Playing sound " + soundId + ", got result " + r);
-
                 iCurrentSongID = soundId;
             }
             else
-                Console.WriteLine("sound was null");
+                CConsole.Instance.Print("sound " + name + " was null");
         }
 
         public void PlaySong(String name)
@@ -160,12 +142,10 @@ namespace CatEngine
                     MusicChannel.setMode(FMOD.MODE.LOOP_NORMAL);
                     MusicChannel.setLoopCount(-1);
 
-                    //Console.WriteLine("Playing track " + songId + ", got result" + r);
-
                     iCurrentSongID = songId;
                 }
                 else
-                    Console.WriteLine("song was null");
+                    CConsole.Instance.Print("song " + name + " was null");
             }
         }
 

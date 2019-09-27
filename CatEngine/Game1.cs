@@ -91,6 +91,8 @@ namespace CatEngine
             CSprite.Instance.content = Content;
             CSprite.Instance.sbSpriteBatch = spriteBatch;
             CSprite.Instance.graphics = graphics;
+            //loading the debug texture...
+            CSprite.Instance.LoadTextureSheet("empty");
             //loading screen stuff NEEDS to be loaded here! it can't be loaded in during runtime, it'll just crash.
 
             //DEBUG: creating objects that aren't configured in CLevel yet

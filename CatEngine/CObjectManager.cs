@@ -72,10 +72,8 @@ namespace CatEngine
                 }
             }
 
-            /*if (returnObject == null)
-                Console.WriteLine("Object creation failed!");
-            else
-                Console.WriteLine("Created object at slot " + debugObjSlot);*/
+            if (returnObject == null)
+                CConsole.Instance.Print("Object creation failed!");
 
             return returnObject;
         }
@@ -120,8 +118,8 @@ namespace CatEngine
 
                 //Console.WriteLine("Removed object with index of " + index);
             }
-            /*else
-                Console.WriteLine("Tried to remove a nonexistent object with index of " + index);*/
+            else
+                CConsole.Instance.Print("Tried to remove a nonexistent object with index of " + index);
         }
 
         //the gameobject updating loop

@@ -44,7 +44,7 @@ namespace CatEngine
 
             CGameObject player = FindInstance(typeof(CPlayer));
 
-            bool playerInSight = FreeSightline(new Vector2(player.x, player.y));
+            //bool playerInSight = FreeSightline(new Vector2(player.x, player.y));
 
             EnemyMovement(1, new Vector2(player.x, player.y));
 
@@ -75,7 +75,6 @@ namespace CatEngine
         private void ChaseTarget(Vector2 target, int speed)
         {
             fAimDirection = -(float)PointDirection(this.x, this.y, target.X, target.Y);
-            //Debug.Print("atan angle in deg " + (fAimDirection * 180 / Math.PI));
             iFSpeed = speed;
         }
 
@@ -103,7 +102,7 @@ namespace CatEngine
                     //it is free, so calculate the distance from said tile
                     canMoveInDir[i] = true;
                 }
-                else
+                /*else
                 {
                     if (col != null)
                         Debug.Print("did not move in dir " + i + ", col was not null");
@@ -111,7 +110,7 @@ namespace CatEngine
                         Debug.Print("did not move in dir " + i + ", it was backtracking");
                     else
                         Debug.Print("lol what the fuck");
-                }
+                }*/
             }
 
             float min = 666666666;
@@ -125,7 +124,7 @@ namespace CatEngine
                     if (dist < min)
                     {
                         min = dist;
-                        Debug.Print("dir " + i + " dist " + dist);
+                        //Debug.Print("dir " + i + " dist " + dist);
                         dir = i;
                     }
                 }
@@ -140,7 +139,7 @@ namespace CatEngine
             {
                 //new direction is picked
                 iDir = PickDirection(new Vector2(Target.X, Target.Y));
-                Debug.Print("Picked new direction, " + iDir);
+                //Debug.Print("Picked new direction, " + iDir);
             }
             /*x += 16 * Math.Sign(distDirX(10, fAimDirection));
             y += 16 * Math.Sign(distDirY(10, fAimDirection));*/

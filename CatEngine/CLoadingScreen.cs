@@ -14,13 +14,13 @@ namespace CatEngine
 {
     class CLoadingScreen
     {
-        private struct Command<T>
+        private struct Command
         {
-            public T Instance;
+            public CContentManager Instance;
             public String MethodName;
             public List<String> Params;
 
-            public Command(T instance, String method, List<String> paramList)
+            public Command(CContentManager instance, String method, List<String> paramList)
             {
                 Instance = instance;
                 MethodName = method;
@@ -28,7 +28,7 @@ namespace CatEngine
             }
         }
 
-        private List<Command<CContentManager>> sCommands = new List<Command<CContentManager>>();
+        private List<Command> sCommands = new List<Command>();
         private int iExecutedFunctions = 0;
 
         public bool hasFinishedLoading = false;
@@ -37,23 +37,18 @@ namespace CatEngine
 
         private CLoadingScreen()
         {
-            /*CSprite.Instance.dTextureDict.Add("Player", Content.Load<Texture2D>("Player"));
-            CSprite.Instance.dTextureDict.Add("Enemy", Content.Load<Texture2D>("Enemy"));
-            CSprite.Instance.dTextureDict.Add("Props", Content.Load<Texture2D>("Props"));
-            CSprite.Instance.dTextureDict.Add("Lights", Content.Load<Texture2D>("Lights"));*/
-
-            sCommands.Add(new Command<CContentManager>(CSprite.Instance, "AllocateSprites", new List<string>()));
-            sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Player" }));
-            sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" }));
-            sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" }));
-            sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Lights" }));
-            sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Tiles" }));
-            sCommands.Add(new Command<CContentManager>(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" }));
-            sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSound", new List<string>() { "normalshot.wav" }));
-            sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSound", new List<string>() { "rapidfireshot.wav" }));
-            sCommands.Add(new Command<CContentManager>(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" }));
-            sCommands.Add(new Command<CContentManager>(CLevel.Instance, "LoadPropData", new List<string>()));
-            sCommands.Add(new Command<CContentManager>(CLevel.Instance, "LoadLevelData", new List<string>() { "LevelTest.xml" }));
+            QueueLoadCommand(CSprite.Instance, "AllocateSprites", new List<string>());
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Player" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Lights" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Tiles" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "normalshot.wav" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "rapidfireshot.wav" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
+            QueueLoadCommand(CLevel.Instance, "LoadPropData", new List<string>());
+            QueueLoadCommand(CLevel.Instance, "LoadLevelData", new List<string>() { "LevelTest.xml" });
 
             Load();
         }
@@ -80,6 +75,11 @@ namespace CatEngine
             loaderThread.Start();
         }
 
+        public void QueueLoadCommand(CContentManager instance, String command, List<String> commands)
+        {
+            sCommands.Add(new Command(instance, command, commands));
+        }
+
         public void Render()
         {
             dir += Math.PI/60;
@@ -95,7 +95,7 @@ namespace CatEngine
 
         private void LoadData()
         {
-            foreach (Command<CContentManager> i in sCommands)
+            foreach (Command i in sCommands)
             {
                 //load data;
                 
@@ -103,10 +103,13 @@ namespace CatEngine
                 method.Invoke(i.Instance, i.Params.ToArray());
 
                 Interlocked.Increment(ref iExecutedFunctions);
-                Debug.Print("performed command " + iExecutedFunctions + ", " + i.MethodName);
+                CConsole.Instance.Print("performed command " + iExecutedFunctions + ", " + i.MethodName);
             }
 
             //CAudioManager.Instance.PlaySong("test.xm");
+
+            //clearing the list so we don't accidentally load the same stuff twice...
+            sCommands.Clear();
 
             hasFinishedLoading = true;
         }

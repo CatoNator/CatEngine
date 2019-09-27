@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CAudioManager.cs" />
+    <Compile Include="CConsole.cs" />
     <Compile Include="CGameObject.cs" />
     <Compile Include="CHud.cs" />
     <Compile Include="CLevel.cs" />
