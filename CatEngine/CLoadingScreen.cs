@@ -122,7 +122,7 @@ namespace CatEngine
                 Interlocked.Increment(ref iExecutedFunctions);
                 CConsole.Instance.Print("performed command " + iExecutedFunctions + ", " + i.MethodName);
 
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
             }
 
             //CAudioManager.Instance.PlaySong("test.xm");
@@ -130,7 +130,7 @@ namespace CatEngine
             //clearing the list so we don't accidentally load the same stuff twice...
             sCommands.Clear();
 
-            //hasFinishedLoading = true;
+            hasFinishedLoading = true;
         }
     }
 }
