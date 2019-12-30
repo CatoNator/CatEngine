@@ -192,6 +192,7 @@ namespace CatEngine
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 GraphicsDevice.BlendState = BlendState.Opaque;
+                CLevel.Instance.Render(GraphicsDevice);
                 CObjectManager.Instance.Render();
 
                 //rendering 2D objects

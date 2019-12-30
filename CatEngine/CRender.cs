@@ -116,6 +116,33 @@ namespace CatEngine
             }
         }
 
+        public void DrawTile(GraphicsDevice graphicsDevice, int[] iPosition, float[]fCornerHeights, int iTileSize)
+        {
+            VertexPositionColor[] tileVertices = new VertexPositionColor[3];
+            tileVertices[0] = new VertexPositionColor(new Vector3(iPosition[0] * iTileSize, 0, iPosition[1] * iTileSize), Color.Red);
+            tileVertices[1] = new VertexPositionColor(new Vector3(iPosition[0] * iTileSize, 0, iPosition[1] * iTileSize + iTileSize), Color.Green);
+            tileVertices[2] = new VertexPositionColor(new Vector3(iPosition[0] * iTileSize + iTileSize, 0, iPosition[1] * iTileSize), Color.Blue);
+            //tileVertices[3] = new VertexPositionColor(new Vector3(iPosition[0]*iTileSize+iTileSize, fCornerHeights[3], iPosition[1]*iTileSize + iTileSize), Color.Yellow);
+
+            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
+            vertexBuffer.SetData<VertexPositionColor>(tileVertices);
+
+            BasicEffect basicEffect = new BasicEffect(graphicsDevice);
+            basicEffect.Alpha = 1f;
+            basicEffect.VertexColorEnabled = true;
+            basicEffect.LightingEnabled = false;
+
+            basicEffect.Projection = projectionMatrix;
+            basicEffect.View = viewMatrix;
+            basicEffect.World = worldMatrix;
+
+            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
+            }
+        }
+
         public void UpdateCamera()
         {
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);

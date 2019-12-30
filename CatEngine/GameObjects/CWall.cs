@@ -29,7 +29,7 @@ namespace CatEngine
         {
             UpdateCollision();
 
-            CRender.Instance.DrawModel("board", new Vector3(x, z, y), 0.0f);
+            //CRender.Instance.DrawModel("board", new Vector3(x, z, y), 0.0f);
         }
 
         public override void Render2D()

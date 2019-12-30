@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CatEngine
 {
@@ -17,8 +18,10 @@ namespace CatEngine
         private List<int> sPropColH = new List<int>();
         private List<int> sPropHealth = new List<int>();
 
-        public int iLevelWidth = 100;
-        public int iLevelHeight = 100;
+        public static int iLevelWidth = 3;
+        public static int iLevelHeight = 3;
+
+        private FloorTile[,] oFloorTileArray = new FloorTile[iLevelWidth, iLevelHeight];
 
         /*<name>PropCopCar</name>
 		<sprite>sprCopCar</sprite>
@@ -40,6 +43,69 @@ namespace CatEngine
             }
 
             internal static readonly CLevel instance = new CLevel();
+        }
+
+
+
+        private class FloorTile
+        {
+            public int iTileSize;
+            public int[] iPosition = new int[2];
+            public float[] fCornerHeights = new float[4];
+
+            private Random random = new Random();
+
+            /*
+            0-----1
+            |     |
+            |     |
+            2-----3
+            */
+
+            public FloorTile(int x, int y, int tileSize)
+            {
+                iPosition[0] = x;
+                iPosition[0] = y;
+                iTileSize = tileSize;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    fCornerHeights[i] = -10.0f + (float)random.NextDouble() * 20.0f;
+                }
+            }
+
+            public void RenderTile(GraphicsDevice graphicsDevice)
+            {
+                CRender.Instance.DrawTile(graphicsDevice, iPosition, fCornerHeights, iTileSize);
+            }
+        }
+
+        private void GenerateLevel()
+        {
+            for(int i = 0; i < iLevelWidth; i++)
+            {
+                for (int a = 0; a < iLevelHeight; a++)
+                {
+                    oFloorTileArray[i, a] = new FloorTile(i, a, 10);
+                }
+            }
+        }
+
+        public void Render(GraphicsDevice graphicsDevice)
+        {
+            RasterizerState rasterizerState = new RasterizerState();
+            rasterizerState.CullMode = CullMode.None;
+            graphicsDevice.RasterizerState = rasterizerState;
+            for (int i = 0; i < iLevelWidth; i++)
+            {
+                for (int a = 0; a < iLevelHeight; a++)
+                {
+                    if (oFloorTileArray[i, a] != null)
+                    {
+                        oFloorTileArray[i, a].RenderTile(graphicsDevice);
+                    }
+                }
+            }
         }
 
         public void LoadPropData()
