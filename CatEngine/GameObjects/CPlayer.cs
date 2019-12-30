@@ -59,7 +59,7 @@ namespace CatEngine
 
             if (fHInput != 0 || fVInput != 0)
             {
-                fDir = -degToRad(fCameraRotation + 90.0f) + fInputDir;
+                fDir = degToRad(fCameraRotation + 90.0f) + fInputDir;
                 x += distDirX(fSpeed, fDir);
                 y += distDirY(fSpeed, fDir);
             }

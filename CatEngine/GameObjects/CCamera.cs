@@ -41,14 +41,12 @@ namespace CatEngine
                 iCameraRot = 0;
             }
 
-            //AutoCamera();
+            //PlayerCamera(iCameraRot);
 
             if (iCameraRot != 0)
                 PlayerCamera(iCameraRot);
             else
                 AutoCamera();
-
-            //fCameraRotation %= 360.0f;
 
             Vector3 targetPos = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -74,7 +72,12 @@ namespace CatEngine
         {
             float fCameraRotationSpeed = 4.0f;
 
-            fCameraRotation++;//(float)rotDir * fCameraRotationSpeed;
+            fCameraRotation += (float)rotDir * fCameraRotationSpeed;
+
+            if (fCameraRotation > 180.0f)
+                fCameraRotation -= 360.0f;
+            else if (fCameraRotation < -180.0f)
+                fCameraRotation += 360.0f;
 
             Vector3 targetPos = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -85,8 +88,8 @@ namespace CatEngine
 
             float camDist = PointDistance(cameraPos.X, cameraPos.Z, targetPos.X, targetPos.Z);
 
-            x = targetPos.X + distDirX(camDist, degToRad(fCameraRotation));
-            y = targetPos.Z + distDirY(camDist, degToRad(fCameraRotation));
+            x = targetPos.X + distDirX(fCameraDistance, degToRad(fCameraRotation));
+            y = targetPos.Z + distDirY(fCameraDistance, degToRad(fCameraRotation));
         }
 
         private void AutoCamera()
@@ -98,13 +101,13 @@ namespace CatEngine
 
             Vector3 cameraPos = new Vector3(x, 10.0f, y);
 
-            fCameraRotation = radToDeg(PointDirection(cameraPos.X, cameraPos.Z, targetPos.X, targetPos.Z));
+            fCameraRotation = -radToDeg(PointDirection(cameraPos.X, cameraPos.Z, targetPos.X, targetPos.Z)) + 180.0f;
             float camDist = PointDistance(cameraPos.X, cameraPos.Z, targetPos.X, targetPos.Z);
 
-            if (camDist > fCameraDistance)
+            if (camDist > fCameraDistance || camDist < fCameraDistance)
             {
-                x = targetPos.X + distDirX(fCameraDistance, -degToRad(fCameraRotation));
-                y = targetPos.Z + distDirY(fCameraDistance, -degToRad(fCameraRotation));
+                x = targetPos.X + distDirX(fCameraDistance, degToRad(fCameraRotation));
+                y = targetPos.Z + distDirY(fCameraDistance, degToRad(fCameraRotation));
             }
 
             //CRender.Instance.SetCameraTarget(new Vector3(distDirX(30.0f, degToRad(fCameraRotation)), 0.0f, distDirY(30.0f, degToRad(fCameraRotation))));
