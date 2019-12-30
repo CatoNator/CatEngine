@@ -21,6 +21,9 @@ namespace CatEngine
 
         private float fDir = 0;
 
+        float fMaxSpeed = 1.0f;
+        private float fAcceleration = 0.025f;
+
         private int iNextDir = 0;
 
         private int iAnimCoolDown = 5;
@@ -46,8 +49,10 @@ namespace CatEngine
 
             //input
             KeyboardState keyboardState = Keyboard.GetState();
+            GamePadState gamepadState = GamePad.GetState(PlayerIndex.One);
 
             MovementKeyboard(keyboardState);
+            //MovementGamepad(gamepadState);
             //CameraDebug(keyboardState);
 
             CCamera camera = (CCamera)FindInstance(typeof(CCamera));
@@ -60,6 +65,7 @@ namespace CatEngine
             if (fHInput != 0 || fVInput != 0)
             {
                 fDir = degToRad(fCameraRotation + 90.0f) + fInputDir;
+
                 x += distDirX(fSpeed, fDir);
                 y += distDirY(fSpeed, fDir);
             }
@@ -107,6 +113,12 @@ namespace CatEngine
             //CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(iNextDir * 90)), (int)y + (int)distDirY(16, degToRad(iNextDir * 90)), 16, 16), typeof(CWall), true);
 
             //if (col == null)
+        }
+
+        private void MovementGamepad(GamePadState gamepadState)
+        {
+            fHInput = gamepadState.ThumbSticks.Left.X;
+            fVInput = gamepadState.ThumbSticks.Left.Y;
         }
     }
 }

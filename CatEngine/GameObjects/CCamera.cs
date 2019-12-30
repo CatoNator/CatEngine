@@ -27,12 +27,13 @@ namespace CatEngine
             int iCameraRot = 0;
 
             KeyboardState keyboardState = Keyboard.GetState();
+            GamePadState gamepadState = GamePad.GetState(PlayerIndex.One);
 
-            if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamRight))
+            if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamRight) || gamepadState.IsButtonDown(Buttons.DPadRight))
             {
                 iCameraRot = 1;
             }
-            else if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamLeft))
+            else if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamLeft) || gamepadState.IsButtonDown(Buttons.DPadLeft))
             {
                 iCameraRot = -1;
             }
