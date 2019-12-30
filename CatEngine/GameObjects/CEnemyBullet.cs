@@ -39,7 +39,7 @@ namespace CatEngine
             fAimDirection = dir;
         }
 
-        public override void Render()
+        public override void Render2D()
         {
             //CSprite.Instance.DrawRect(rCollisionRectangle, Color.Green);
 

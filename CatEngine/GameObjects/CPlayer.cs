@@ -14,10 +14,12 @@ namespace CatEngine
     {
         public float fAimDirection = 0.0f;
 
-        private int iFSpeed = 0;
-        private int iSSpeed = 0;
-
         private int iDir = 0;
+
+        private float fHInput = 0.0f;
+        private float fVInput = 0.0f;
+
+        private float fDir = 0;
 
         private int iNextDir = 0;
 
@@ -46,58 +48,27 @@ namespace CatEngine
             KeyboardState keyboardState = Keyboard.GetState();
 
             MovementKeyboard(keyboardState);
+            //CameraDebug(keyboardState);
 
-            //check for collision on next tile
-            if ((int)x % 16 == 0 && (int)y % 16 == 0)
+            CCamera camera = (CCamera)FindInstance(typeof(CCamera));
+            camera.SetTarget(this);
+            float fCameraRotation = camera.GetCameraDirection();
+
+            float fInputDir = PointDirection(0, 0, fHInput, fVInput);
+            float fSpeed = 0.5f;
+
+            if (fHInput != 0 || fVInput != 0)
             {
-                CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(iDir * 90)), (int)y + (int)distDirY(16, degToRad(iDir * 90)), 16, 16), typeof(CWall), true);
-
-                if (col == null)
-                    bCanMove = true;
-                else
-                    bCanMove = false;
-            }
-
-            
-            if (bCanMove)
-            {
-                int spd = 1;
-
-                if (iDir == 0)
-                {
-                    x += spd;
-                }
-                else if (iDir == 1)
-                {
-                    y -= spd;
-                }
-                else if (iDir == 2)
-                {
-                    x -= spd;
-                }
-                else if (iDir == 3)
-                {
-                    y += spd;
-                }
-
-                if (iAnimTimer <= 0)
-                {
-                    iAnimFrame++;
-
-                    iAnimTimer = iAnimCoolDown;
-                }
-                else
-                {
-                    iAnimTimer--;
-                }
-
-                iAnimFrame %= 5;
+                fDir = -degToRad(fCameraRotation + 90.0f) + fInputDir;
+                x += distDirX(fSpeed, fDir);
+                y += distDirY(fSpeed, fDir);
             }
         }
 
         public override void Render()
         {
-            CSprite.Instance.Render("sprPlayer", x+8, y+8, iAnimFrame % 4, false, -(float)(iDir*(Math.PI/2)), 1.0f, Color.White);
+            //CSprite.Instance.Render("sprPlayer", x+8, y+8, iAnimFrame % 4, false, -(float)(iDir*(Math.PI/2)), 1.0f, Color.White);
+            CRender.Instance.DrawModel("textured_cube", new Vector3(x, z, y), fDir);
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)
@@ -106,28 +77,36 @@ namespace CatEngine
             //right
             if (keyboardState.IsKeyDown(CSettings.Instance.kPTurnRight))
             {
-                iNextDir = 0;
-            }
-            //up
-            else if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveForward))
-            {
-                iNextDir = 1;
+                fHInput = 1.0f;
             }
             //left
             else if (keyboardState.IsKeyDown(CSettings.Instance.kPTurnLeft))
             {
-                iNextDir = 2;
+                fHInput = -1.0f;
+            }
+            else
+            {
+                fHInput = 0.0f;
+            }
+
+            //up
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveForward))
+            {
+                fVInput = 1.0f;
             }
             //down
             else if (keyboardState.IsKeyDown(CSettings.Instance.kPMoveBackward))
             {
-                iNextDir = 3;
+                fVInput = -1.0f;
+            }
+            else
+            {
+                fVInput = 0.0f;
             }
 
-            CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(iNextDir * 90)), (int)y + (int)distDirY(16, degToRad(iNextDir * 90)), 16, 16), typeof(CWall), true);
+            //CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(iNextDir * 90)), (int)y + (int)distDirY(16, degToRad(iNextDir * 90)), 16, 16), typeof(CWall), true);
 
-            if (col == null)
-                iDir = iNextDir;
+            //if (col == null)
         }
     }
 }

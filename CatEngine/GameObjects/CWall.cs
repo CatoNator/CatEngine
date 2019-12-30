@@ -29,9 +29,12 @@ namespace CatEngine
         {
             UpdateCollision();
 
-            CSprite.Instance.DrawRect(rCollisionRectangle, Color.Gray);
+            CRender.Instance.DrawModel("board", new Vector3(x, z, y), 0.0f);
+        }
 
-            //sprSprite.Render(x, y, 0.0f, 1.0f, myColor);
+        public override void Render2D()
+        {
+            CSprite.Instance.DrawRect(rCollisionRectangle, Color.Gray);
         }
     }
 }

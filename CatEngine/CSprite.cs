@@ -80,19 +80,6 @@ namespace CatEngine
             XDocument file = XDocument.Parse(xmlText);
             Debug.WriteLine("XML parsed");
 
-            //this is going to be loaded from an ini later on
-            /*iSprites = Int32.Parse(file.Root.Element("sprites").Value);
-
-            //allocating the arrays
-            sSpriteTexture = new string[iSprites];
-            iSpriteLeft = new int[iSprites];
-            iSpriteTop = new int[iSprites];
-            iSpriteWidth = new int[iSprites];
-            iSpriteHeight = new int[iSprites];
-            iSpriteImages = new int[iSprites];
-            iSpriteXOrigin = new int[iSprites];
-            iSpriteYOrigin = new int[iSprites];*/
-
             //hardcoded error sprite
             dSpriteNameDict.Add("error", new Sprite("error", "empty", 0, 0, 16, 16, 0, 8, 8));
 
@@ -113,26 +100,6 @@ namespace CatEngine
 
                 dSpriteNameDict.Add(name, new Sprite(name, tex, l, t, w, h, img, xo, yo));
             }
-
-            /*foreach (XElement element in file.Descendants("sprite"))
-            {
-                int index = Int32.Parse(element.Element("index").Value);
-
-                Debug.WriteLine("Reading element index " + index);
-
-                dSpriteNameDict.Add(element.Element("name").Value, index);
-
-                sSpriteTexture[index] = element.Element("texture").Value;
-                iSpriteLeft[index] = Int32.Parse(element.Element("left").Value);
-                iSpriteTop[index] = Int32.Parse(element.Element("top").Value);
-                iSpriteWidth[index] = Int32.Parse(element.Element("width").Value);
-                iSpriteHeight[index] = Int32.Parse(element.Element("height").Value);
-                iSpriteImages[index] = Int32.Parse(element.Element("images").Value);
-                iSpriteXOrigin[index] = Int32.Parse(element.Element("xorig").Value);
-                iSpriteYOrigin[index] = Int32.Parse(element.Element("yorig").Value);
-
-                Debug.Print(index + " w " + iSpriteWidth[index] + " h " + iSpriteHeight[index]);
-            }*/
         }
 
         public void LoadTextureSheet(String sheetName)
@@ -220,7 +187,7 @@ namespace CatEngine
                 spriteEffect = SpriteEffects.None;
 
             //drawing the sprite
-            sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, color, rotation, Origin, spriteEffect, layerDepth);
+            //sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, color, rotation, Origin, spriteEffect, layerDepth);
         }
 
         public void RenderTile(int x, int y, int left, int top)
@@ -231,7 +198,7 @@ namespace CatEngine
             Texture2D texture = dTextureDict["Tiles"];
 
             //drawing the sprite
-            sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 1.0f);
+            //sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 1.0f);
         }
     }
 }

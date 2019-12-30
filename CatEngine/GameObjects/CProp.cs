@@ -23,7 +23,7 @@ namespace CatEngine
             rCollisionRectangle = new Rectangle(0, 0, 16, 16);
         }
 
-        public void SetProperties(float x, float y, string spriteName, int dir, int colWidth, int colHeight, int health)
+        public void SetProperties(float x, float z, float y, string spriteName, int dir, int colWidth, int colHeight, int health)
         {
             
             this.sSpriteName = spriteName;
@@ -38,7 +38,7 @@ namespace CatEngine
                 rCollisionRectangle = new Rectangle(0, 0, colHeight, colWidth);
         }
 
-        public override void Render()
+        public override void Render2D()
         {
             UpdateCollision();
 

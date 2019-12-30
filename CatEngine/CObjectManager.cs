@@ -46,7 +46,7 @@ namespace CatEngine
         }
 
         //creates a new instance and returns a reference to that instance
-        public CGameObject CreateInstance(Type instanceType, float x, float y)
+        public CGameObject CreateInstance(Type instanceType, float x, float z, float y)
         {
             CGameObject returnObject = null;
 
@@ -64,7 +64,7 @@ namespace CatEngine
                     returnObject = pGameObjectList[i];
 
                     //here we make sure the object spawns correctly
-                    returnObject.Spawn(x, y, i);
+                    returnObject.Spawn(x, z, y, i);
 
                     //debugObjSlot = i;
 
@@ -147,7 +147,21 @@ namespace CatEngine
             for (int i = 0; i < MAX_INSTANCES; i++)
             {
                 if (pGameObjectList[i] != null)
+                {
                     pGameObjectList[i].Render();
+                }
+            }
+        }
+
+        public void Render2D()
+        {
+            //rendering them fuckos
+            for (int i = 0; i < MAX_INSTANCES; i++)
+            {
+                if (pGameObjectList[i] != null)
+                {
+                    pGameObjectList[i].Render2D();
+                }
             }
         }
 

@@ -19,6 +19,8 @@ namespace CatEngine
         public int iBackBufferWidth = 1280;
         public int iBackBufferHeight = 720;
 
+        public int iFovAngle = 45;
+
         public float fMusicVolume = 1.0f;
         public float fSoundVolume = 1.0f;
 
@@ -26,8 +28,8 @@ namespace CatEngine
         public Keys kPTurnRight = Keys.D;
         public Keys kPMoveForward = Keys.W;
         public Keys kPMoveBackward = Keys.S;
-        public Keys kPStrafeLeft = Keys.Q;
-        public Keys kPStrafeRight = Keys.E;
+        public Keys kCRotateCamLeft = Keys.Q;
+        public Keys kCRotateCamRight = Keys.E;
 
         public Keys kPFire = Keys.Space;
 
@@ -59,6 +61,11 @@ namespace CatEngine
             iBackBufferHeight = bufferHeight;
 
             iBackBufferWidth = iBackBufferHeight * iAspectRatioH / iAspectRatioV;
+        }
+
+        public float GetAspectRatio()
+        {
+            return (float)iAspectRatioH / (float)iAspectRatioV;
         }
     }
 }

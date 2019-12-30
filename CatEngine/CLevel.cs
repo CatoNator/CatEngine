@@ -68,11 +68,12 @@ namespace CatEngine
             foreach (XElement element in file.Descendants("wall"))
             {
                 int x = Int32.Parse(element.Element("x").Value);
+                int z = 0;
                 int y = Int32.Parse(element.Element("y").Value);
                 int xscale = Int32.Parse(element.Element("xscale").Value);
                 int yscale = Int32.Parse(element.Element("yscale").Value);
 
-                CWall wall = (CWall)CObjectManager.Instance.CreateInstance(typeof(CWall), x, y);
+                CWall wall = (CWall)CObjectManager.Instance.CreateInstance(typeof(CWall), x, z, y);
                 wall.SetScale(xscale, yscale);
             }
 
@@ -80,6 +81,7 @@ namespace CatEngine
             {
                 String name = element.Element("name").Value;
                 int x = Int32.Parse(element.Element("x").Value);
+                int z = 0;
                 int y = Int32.Parse(element.Element("y").Value);
                 int dir = Int32.Parse(element.Element("dir").Value);
 
@@ -90,8 +92,8 @@ namespace CatEngine
                 int colH = sPropColH[propInd];
                 int health = sPropHealth[propInd];
 
-                CProp prop = (CProp)CObjectManager.Instance.CreateInstance(typeof(CProp), x, y);
-                prop.SetProperties((float)x, (float)y, sprite, dir, colW, colH, health);
+                CProp prop = (CProp)CObjectManager.Instance.CreateInstance(typeof(CProp), x, z, y);
+                prop.SetProperties((float)x, (float)z, (float)y, sprite, dir, colW, colH, health);
             }
         }
     }

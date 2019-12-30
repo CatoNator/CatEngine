@@ -64,7 +64,7 @@ namespace CatEngine
             y += fVerSpeed;
         }
 
-        public override void Render()
+        public override void Render2D()
         {
             //debug render box
             CSprite.Instance.DrawRect(rCollisionRectangle, Color.Red);

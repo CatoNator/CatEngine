@@ -14,6 +14,7 @@ namespace CatEngine
 
         public float x;
         public float y;
+        public float z;
 
         public int iIndex;
 
@@ -33,9 +34,10 @@ namespace CatEngine
         }
 
         //creating the instance
-        public void Spawn(float t_x, float t_y, int index)
+        public void Spawn(float t_x, float t_z, float t_y, int index)
         {
             this.x = t_x;
+            this.z = t_z;
             this.y = t_y;
             this.fHorSpeed = 0;
             this.fVerSpeed = 0;
@@ -62,22 +64,32 @@ namespace CatEngine
         //trig math
         public float degToRad(float degrees)
         {
-            return degrees * ((float)Math.PI) / 180.0f;
+            return degrees * ((float)Math.PI / 180.0f);
         }
 
-        public double distDirX(float dist, float dir)
+        public float radToDeg(float radians)
         {
-            return (Math.Cos(dir) * dist);
+            return radians * (180.0f / (float)Math.PI);
         }
 
-        public double distDirY(float dist, float dir)
+        public float distDirX(float dist, float dir)
         {
-            return (-Math.Sin(dir) * dist);
+            return (float)(Math.Cos(dir) * dist);
         }
 
-        public double PointDirection(float x1, float y1, float x2, float y2)
+        public float distDirY(float dist, float dir)
         {
-            return Math.Atan2((double)(y2 - y1), (double)(x2 - x1));
+            return (float)(-Math.Sin(dir) * dist);
+        }
+
+        public float PointDirection(float x1, float y1, float x2, float y2)
+        {
+            return (float)Math.Atan2((double)(y2 - y1), (double)(x2 - x1));
+        }
+
+        public float PointDistance(float x1, float y1, float x2, float y2)
+        {
+            return (float)Math.Sqrt(Math.Pow((double)(x2 - x1), 2) + Math.Pow((double)(y2 - y1), 2));
         }
 
         //how many instances of a certain type are there
@@ -382,6 +394,11 @@ namespace CatEngine
 
         //the rendering code called once per frame
         public virtual void Render()
+        {
+        }
+
+        //BECAUSE you can't mix spritebatches and 3d you can't have the same routine for both so here's render2D
+        public virtual void Render2D()
         {
         }
     }

@@ -26,13 +26,15 @@ namespace CatEngine
         GameState CurrentGameState = GameState.Loading;
 
         GraphicsDeviceManager graphics;
+        VertexBuffer vertexBuffer;
+        DepthStencilState depthBuffer = new DepthStencilState() { DepthBufferEnable = true, DepthBufferFunction = CompareFunction.Less };
         SpriteBatch spriteBatch;
         SpriteBatch lightBatch;
 
         SpriteBatch screenBatch;
         RenderTarget2D renderTarget;
 
-        private Random myRandom = new Random();
+        Model cube;
 
         public readonly static BlendState
             bsSubtract = new BlendState
@@ -70,6 +72,8 @@ namespace CatEngine
             // TODO: Add your initialization logic here
 
             base.Initialize();
+
+            vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
         }
 
         /// <summary>
@@ -85,7 +89,7 @@ namespace CatEngine
             this.IsMouseVisible = true;
 
             screenBatch = new SpriteBatch(GraphicsDevice);
-            renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT);
+            renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT, false, SurfaceFormat.Color, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
 
             //setting up CSpritebasics...
             CSprite.Instance.content = Content;
@@ -96,9 +100,17 @@ namespace CatEngine
             CSprite.Instance.LoadTextureSheet("LoadingScreen");
             //loading screen stuff NEEDS to be loaded here! it can't be loaded in during runtime, it'll just crash.
 
+            //setting up 3D and loading debug cube
+            CRender.Instance.content = Content;
+            CRender.Instance.graphics = graphics;
+            CRender.Instance.LoadModel("textured_cube");
+            CRender.Instance.LoadModel("board");
+            CRender.Instance.LoadTexture("cube_tex");
+
             //DEBUG: creating objects that aren't configured in CLevel yet
-            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 16, 16);
-            CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
+            CObjectManager.Instance.CreateInstance(typeof(CCamera), 0, 10, -30);
+            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 0, 1, 0);
+            //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
             //lights don't work lol
             //CObjectManager.Instance.CreateLight(78, 78);
@@ -154,37 +166,56 @@ namespace CatEngine
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.SetRenderTarget(renderTarget);
+            GraphicsDevice.SetVertexBuffer(vertexBuffer);
 
             //the actual game engine draw calls            
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //CSprite.Instance.sbSpriteBatch = spriteBatch;
+            CSprite.Instance.sbSpriteBatch = spriteBatch;
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+            CRender.Instance.UpdateCamera();
 
             if (CurrentGameState == GameState.Menu)
             {
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 //CMainMenu.Instance.Render();
+                spriteBatch.End();
             }
             else if (CurrentGameState == GameState.Loading)
             {
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 CLoadingScreen.Instance.Render();
+                spriteBatch.End();
             }
             else if (CurrentGameState == GameState.Game)
             {
-                //rendering the objects
+                //rendering 3D objects
+                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                GraphicsDevice.BlendState = BlendState.Opaque;
                 CObjectManager.Instance.Render();
+
+                //rendering 2D objects
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+                CObjectManager.Instance.Render2D();
+                CHud.Instance.Render();
+                spriteBatch.End();
             }
             else if (CurrentGameState == GameState.Paused)
             {
-                //rendering the objects
+                //rendering 3D objects
+                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                GraphicsDevice.BlendState = BlendState.Opaque;
                 CObjectManager.Instance.Render();
+
+                //rendering 2D objects
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+                //CObjectManager.Instance.Render2D();
                 //CPauseMenu.Instance.Render();
+                spriteBatch.End();
             }
 
-            spriteBatch.End();
-
             GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.SetVertexBuffer(null);
 
             //drawing the screen scaled on the window
             screenBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
