@@ -93,9 +93,6 @@ namespace CatEngine
 
         public void Render(GraphicsDevice graphicsDevice)
         {
-            RasterizerState rasterizerState = new RasterizerState();
-            rasterizerState.CullMode = CullMode.None;
-            graphicsDevice.RasterizerState = rasterizerState;
             for (int i = 0; i < iLevelWidth; i++)
             {
                 for (int a = 0; a < iLevelHeight; a++)
@@ -126,6 +123,9 @@ namespace CatEngine
 
         public void LoadLevelData(string fileName)
         {
+            //debug
+            GenerateLevel();
+
             CConsole.Instance.Print("Opening level data");
             string xmlText = System.IO.File.ReadAllText("AssetData/"+fileName);
             XDocument file = XDocument.Parse(xmlText);

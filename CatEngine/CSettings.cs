@@ -28,8 +28,10 @@ namespace CatEngine
         public Keys kPTurnRight = Keys.D;
         public Keys kPMoveForward = Keys.W;
         public Keys kPMoveBackward = Keys.S;
-        public Keys kCRotateCamLeft = Keys.Q;
-        public Keys kCRotateCamRight = Keys.E;
+        public Keys kCRotateCamLeft = Keys.Left;
+        public Keys kCRotateCamRight = Keys.Right;
+        public Keys kCRotateCamUp = Keys.Up;
+        public Keys kCRotateCamDown = Keys.Down;
 
         public bool bGamepadEnabled = true;
 

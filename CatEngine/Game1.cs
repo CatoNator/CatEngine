@@ -192,6 +192,9 @@ namespace CatEngine
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 GraphicsDevice.BlendState = BlendState.Opaque;
+                RasterizerState rasterizerState = new RasterizerState();
+                rasterizerState.CullMode = CullMode.None;
+                GraphicsDevice.RasterizerState = rasterizerState;
                 CLevel.Instance.Render(GraphicsDevice);
                 CObjectManager.Instance.Render();
 

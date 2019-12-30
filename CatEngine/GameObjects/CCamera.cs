@@ -11,6 +11,7 @@ namespace CatEngine
     class CCamera : CGameObject
     {
         private float fCameraRotation = 90.0f;
+        private float fCameraVRotation = 0.0f;
         private float fCameraDistance = 30.0f;
         private float fCameraBufferRange = 5.0f;
 
@@ -42,6 +43,15 @@ namespace CatEngine
                 iCameraRot = 0;
             }
 
+            if (keyboardState.IsKeyDown(Keys.Up) || gamepadState.IsButtonDown(Buttons.DPadUp))
+            {
+                z += 0.1f;
+            }
+            else if (keyboardState.IsKeyDown(Keys.Down) || gamepadState.IsButtonDown(Buttons.DPadDown))
+            {
+                z -= 0.1f;
+            }
+
             //PlayerCamera(iCameraRot);
 
             if (iCameraRot != 0)
@@ -55,7 +65,7 @@ namespace CatEngine
                 targetPos = new Vector3(oTarget.x, oTarget.z, oTarget.y);
 
             CRender.Instance.SetCameraTarget(targetPos);
-            CRender.Instance.SetCameraPosition(new Vector3(x, 10.0f, y));
+            CRender.Instance.SetCameraPosition(new Vector3(x, z, y));
             CConsole.Instance.Print("camera rotation " + fCameraRotation + " x "+x+" y "+y);
         }
 
@@ -85,7 +95,7 @@ namespace CatEngine
             if (oTarget != null)
                 targetPos = new Vector3(oTarget.x, oTarget.z, oTarget.y);
 
-            Vector3 cameraPos = new Vector3(x, 10.0f, y);
+            Vector3 cameraPos = new Vector3(x, z, y);
 
             float camDist = PointDistance(cameraPos.X, cameraPos.Z, targetPos.X, targetPos.Z);
 

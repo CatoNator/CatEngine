@@ -118,11 +118,13 @@ namespace CatEngine
 
         public void DrawTile(GraphicsDevice graphicsDevice, int[] iPosition, float[]fCornerHeights, int iTileSize)
         {
-            VertexPositionColor[] tileVertices = new VertexPositionColor[3];
-            tileVertices[0] = new VertexPositionColor(new Vector3(iPosition[0] * iTileSize, 0, iPosition[1] * iTileSize), Color.Red);
-            tileVertices[1] = new VertexPositionColor(new Vector3(iPosition[0] * iTileSize, 0, iPosition[1] * iTileSize + iTileSize), Color.Green);
-            tileVertices[2] = new VertexPositionColor(new Vector3(iPosition[0] * iTileSize + iTileSize, 0, iPosition[1] * iTileSize), Color.Blue);
-            //tileVertices[3] = new VertexPositionColor(new Vector3(iPosition[0]*iTileSize+iTileSize, fCornerHeights[3], iPosition[1]*iTileSize + iTileSize), Color.Yellow);
+            /*VertexPositionColor[] tileVertices = new VertexPositionColor[3]
+            {
+                new VertexPositionColor(new Vector3(iPosition[0] * iTileSize, fCornerHeights[0], iPosition[1] * iTileSize), Color.Red),
+                new VertexPositionColor(new Vector3(iPosition[0] * iTileSize, fCornerHeights[1], iPosition[1] * iTileSize + iTileSize), Color.Green),
+                new VertexPositionColor(new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[2], iPosition[1] * iTileSize), Color.Blue)
+                //new VertexPositionColor(new Vector3(iPosition[0]*iTileSize+iTileSize, fCornerHeights[3], iPosition[1]*iTileSize + iTileSize), Color.Yellow);
+            };
 
             VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
             vertexBuffer.SetData<VertexPositionColor>(tileVertices);
@@ -140,7 +142,9 @@ namespace CatEngine
             {
                 pass.Apply();
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
-            }
+            }*/
+
+            DrawModel("board", new Vector3(iPosition[0], (int)fCornerHeights[0], iPosition[1]), 0.0f);
         }
 
         public void UpdateCamera()
