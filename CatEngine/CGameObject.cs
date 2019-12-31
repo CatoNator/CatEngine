@@ -92,6 +92,26 @@ namespace CatEngine
             return (float)Math.Sqrt(Math.Pow((double)(x2 - x1), 2) + Math.Pow((double)(y2 - y1), 2));
         }
 
+        public float Lerp(float f1, float f2, float amount)
+        {
+            return f1 + (f2 - f1) * amount;
+        }
+
+        public Vector2 Lerp(Vector2 V1, Vector2 V2, float amount)
+        {
+            float retX = Lerp(V1.X, V2.X, amount);
+            float retY = Lerp(V1.Y, V2.Y, amount);
+            return new Vector2(retX, retY);
+        }
+
+        public Vector3 Lerp(Vector3 V1, Vector3 V2, float amount)
+        {
+            float retX = Lerp(V1.X, V2.X, amount);
+            float retY = Lerp(V1.Y, V2.Y, amount);
+            float retZ = Lerp(V1.Z, V2.Z, amount);
+            return new Vector3(retX, retY, retZ);
+        }
+
         //how many instances of a certain type are there
         public int InstanceNumber(Type instanceType)
         {

@@ -19,11 +19,13 @@ namespace CatEngine
 
         private Vector3 TargetVector = new Vector3(0, 0, 0);
 
-        private enum CameraState
+        private enum CameraStates
         {
             PlayerControlled,
-            Automatic
+            LevelStart
         };
+
+        private CameraStates cameraState = CameraStates.LevelStart;
 
         public override void Update()
         {
@@ -52,22 +54,27 @@ namespace CatEngine
                 iCameraVRot = -1;
             }
 
+            if (keyboardState.IsKeyDown(Keys.Enter) && cameraState == CameraStates.LevelStart)
+            {
+                cameraState = CameraStates.PlayerControlled;
+            }
+
             //PlayerCamera(iCameraRot, iCameraVRot);
 
-            LevelCamera();
+            if (cameraState == CameraStates.LevelStart)
+                LevelCamera();
+            else if (cameraState == CameraStates.PlayerControlled)
+            {
+                if (iCameraRot != 0 || iCameraVRot != 0)
+                    PlayerCamera(iCameraRot, iCameraVRot);
+                else
+                    AutoCamera();
+            }
 
-            /*if (iCameraRot != 0 || iCameraVRot != 0)
-                PlayerCamera(iCameraRot, iCameraVRot);
-            else
-                AutoCamera();*/
-
-            Vector3 targetPos = new Vector3(0.0f, 0.0f, 0.0f);
-
-            if (oTarget != null)
-                targetPos = new Vector3(oTarget.x, oTarget.z, oTarget.y);
+            Vector3 lerpVector = Lerp(new Vector3(x, z, y), CRender.Instance.GetCameraPosition(), 0.9f);
 
             CRender.Instance.SetCameraTarget(TargetVector);
-            CRender.Instance.SetCameraPosition(new Vector3(x, z, y));
+            CRender.Instance.SetCameraPosition(lerpVector);
             //CConsole.Instance.Print("camera rotation " + fCameraVRotation + " rot " + iCameraVRot);
         }
 
@@ -111,6 +118,8 @@ namespace CatEngine
             x = targetPos.X + distDirX(fCameraDistance, degToRad(fCameraRotation));
             y = targetPos.Z + distDirY(fCameraDistance, degToRad(fCameraRotation));
             z = targetPos.Y + -distDirY(fCameraDistance, degToRad(fCameraVRotation));
+
+            TargetVector = targetPos;
         }
 
         private void AutoCamera()
@@ -131,6 +140,8 @@ namespace CatEngine
                 y = targetPos.Z + distDirY(fCameraDistance, degToRad(fCameraRotation));
                 z = targetPos.Y + -distDirY(fCameraDistance, degToRad(fCameraVRotation));
             }
+
+            TargetVector = targetPos;
 
             //CRender.Instance.SetCameraTarget(new Vector3(distDirX(30.0f, degToRad(fCameraRotation)), 0.0f, distDirY(30.0f, degToRad(fCameraRotation))));
         }
