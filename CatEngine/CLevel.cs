@@ -18,8 +18,8 @@ namespace CatEngine
         private List<int> sPropColH = new List<int>();
         private List<int> sPropHealth = new List<int>();
 
-        public static int iLevelWidth = 3;
-        public static int iLevelHeight = 3;
+        public static int iLevelWidth = 4;
+        public static int iLevelHeight = 4;
 
         private FloorTile[,] oFloorTileArray = new FloorTile[iLevelWidth, iLevelHeight];
 
@@ -53,8 +53,6 @@ namespace CatEngine
             public int[] iPosition = new int[2];
             public float[] fCornerHeights = new float[4];
 
-            private Random random = new Random();
-
             /*
             0-----1
             |     |
@@ -65,13 +63,17 @@ namespace CatEngine
             public FloorTile(int x, int y, int tileSize)
             {
                 iPosition[0] = x;
-                iPosition[0] = y;
+                iPosition[1] = y;
                 iTileSize = tileSize;
+
+                Random random = new Random((x+y)*tileSize);
 
                 for (int i = 0; i < 4; i++)
                 {
-                    fCornerHeights[i] = -10.0f + (float)random.NextDouble() * 20.0f;
+                    fCornerHeights[i] = -2.5f + (float)random.NextDouble() * 5.0f;
                 }
+
+                fCornerHeights[2] = -fCornerHeights[1];
             }
 
             public void RenderTile(GraphicsDevice graphicsDevice)

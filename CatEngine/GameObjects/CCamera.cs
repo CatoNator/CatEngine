@@ -66,7 +66,7 @@ namespace CatEngine
 
             CRender.Instance.SetCameraTarget(targetPos);
             CRender.Instance.SetCameraPosition(new Vector3(x, z, y));
-            CConsole.Instance.Print("camera rotation " + fCameraRotation + " x "+x+" y "+y);
+            //CConsole.Instance.Print("camera rotation " + fCameraRotation + " x "+x+" y "+y);
         }
 
         public void SetTarget(CGameObject targetObject)

@@ -118,33 +118,35 @@ namespace CatEngine
 
         public void DrawTile(GraphicsDevice graphicsDevice, int[] iPosition, float[]fCornerHeights, int iTileSize)
         {
-            /*VertexPositionColor[] tileVertices = new VertexPositionColor[3]
+            VertexPositionColor[] tileVertices = new VertexPositionColor[6]
             {
-                new VertexPositionColor(new Vector3(iPosition[0] * iTileSize, fCornerHeights[0], iPosition[1] * iTileSize), Color.Red),
-                new VertexPositionColor(new Vector3(iPosition[0] * iTileSize, fCornerHeights[1], iPosition[1] * iTileSize + iTileSize), Color.Green),
-                new VertexPositionColor(new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[2], iPosition[1] * iTileSize), Color.Blue)
-                //new VertexPositionColor(new Vector3(iPosition[0]*iTileSize+iTileSize, fCornerHeights[3], iPosition[1]*iTileSize + iTileSize), Color.Yellow);
+                new VertexPositionColor(new Vector3(iPosition[0]*iTileSize, fCornerHeights[0], iPosition[1]*iTileSize), Color.Red),
+                new VertexPositionColor(new Vector3(iPosition[0]*iTileSize, fCornerHeights[2], iPosition[1]*iTileSize + iTileSize), Color.Green),
+                new VertexPositionColor(new Vector3(iPosition[0]*iTileSize + iTileSize, fCornerHeights[1], iPosition[1]*iTileSize), Color.Blue),
+                new VertexPositionColor(new Vector3(iPosition[0]*iTileSize + iTileSize, fCornerHeights[1], iPosition[1]*iTileSize), Color.Yellow),
+                new VertexPositionColor(new Vector3(iPosition[0]*iTileSize, fCornerHeights[2], iPosition[1]*iTileSize + iTileSize), Color.Cyan),
+                new VertexPositionColor(new Vector3(iPosition[0]*iTileSize + iTileSize, fCornerHeights[3], iPosition[1]*iTileSize + iTileSize), Color.Purple)
             };
 
-            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
+            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColor), 6, BufferUsage.WriteOnly);
             vertexBuffer.SetData<VertexPositionColor>(tileVertices);
 
             BasicEffect basicEffect = new BasicEffect(graphicsDevice);
-            basicEffect.Alpha = 1f;
-            basicEffect.VertexColorEnabled = true;
-            basicEffect.LightingEnabled = false;
-
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
             basicEffect.World = worldMatrix;
+            basicEffect.VertexColorEnabled = true;
+            basicEffect.LightingEnabled = false;
+
+            graphicsDevice.SetVertexBuffer(vertexBuffer);
 
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
-            }*/
+            }
 
-            DrawModel("board", new Vector3(iPosition[0], (int)fCornerHeights[0], iPosition[1]), 0.0f);
+            //DrawModel("board", new Vector3(iPosition[0], (int)fCornerHeights[0], iPosition[1]), 0.0f);
         }
 
         public void UpdateCamera()

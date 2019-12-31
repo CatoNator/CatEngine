@@ -28,6 +28,7 @@ namespace CatEngine
         public Keys kPTurnRight = Keys.D;
         public Keys kPMoveForward = Keys.W;
         public Keys kPMoveBackward = Keys.S;
+        public Keys kPJump = Keys.Space;
         public Keys kCRotateCamLeft = Keys.Left;
         public Keys kCRotateCamRight = Keys.Right;
         public Keys kCRotateCamUp = Keys.Up;

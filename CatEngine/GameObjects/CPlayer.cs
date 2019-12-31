@@ -24,6 +24,15 @@ namespace CatEngine
         float fMaxSpeed = 1.0f;
         private float fAcceleration = 0.025f;
 
+        private float fMinHeight = 0.0f;
+        private float fHeightBufferZone = 0.5f;
+
+        private float fZSpeed = 0.0f;
+
+        private float fGravity = 0.025f;
+
+        private bool bLanded = false;
+
         private int iNextDir = 0;
 
         private int iAnimCoolDown = 5;
@@ -69,6 +78,10 @@ namespace CatEngine
                 x += distDirX(fSpeed, fDir);
                 y += distDirY(fSpeed, fDir);
             }
+
+            PlayerPhysics();
+
+            CConsole.Instance.Print("plr zspeed " + fZSpeed + " z " + z);
         }
 
         public override void Render()
@@ -110,9 +123,39 @@ namespace CatEngine
                 fVInput = 0.0f;
             }
 
+            //yump
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPJump))
+            {
+                fZSpeed = 1;
+            }
+
             //CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(iNextDir * 90)), (int)y + (int)distDirY(16, degToRad(iNextDir * 90)), 16, 16), typeof(CWall), true);
 
             //if (col == null)
+        }
+
+        private void PlayerPhysics()
+        {
+            if (z > fMinHeight)
+            {
+                bLanded = false;
+                fZSpeed -= fGravity;
+            }
+            else
+            {
+                if (!bLanded)
+                {
+                    bLanded = true;
+                    fZSpeed = 0f;
+                }
+
+                while (z < fMinHeight - fHeightBufferZone)
+                {
+                    z += 0.1f;
+                }
+            }
+
+            z += fZSpeed;
         }
 
         private void MovementGamepad(GamePadState gamepadState)
