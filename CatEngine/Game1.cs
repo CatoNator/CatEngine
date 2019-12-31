@@ -106,7 +106,8 @@ namespace CatEngine
             CRender.Instance.LoadModel("textured_cube");
             CRender.Instance.LoadModel("board");
             CRender.Instance.LoadTexture("cube_tex");
-
+            CRender.Instance.LoadTexture("grassside");
+            CRender.Instance.LoadTexture("grasstop");
             //DEBUG: creating objects that aren't configured in CLevel yet
             CObjectManager.Instance.CreateInstance(typeof(CCamera), 0, 10, -30);
             CObjectManager.Instance.CreateInstance(typeof(CPlayer), 0, 20, 0);

@@ -11,11 +11,13 @@ namespace CatEngine
     class CCamera : CGameObject
     {
         private float fCameraRotation = 90.0f;
-        private float fCameraVRotation = 0.0f;
+        private float fCameraVRotation = 20.0f;
         private float fCameraDistance = 30.0f;
         private float fCameraBufferRange = 5.0f;
 
         private CGameObject oTarget;
+
+        private Vector3 TargetVector = new Vector3(0, 0, 0);
 
         private enum CameraState
         {
@@ -32,41 +34,41 @@ namespace CatEngine
 
             if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamRight) || gamepadState.IsButtonDown(Buttons.DPadRight))
             {
-                iCameraRot = 1;
+                iCameraRot = -1;
             }
             else if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamLeft) || gamepadState.IsButtonDown(Buttons.DPadLeft))
             {
-                iCameraRot = -1;
+                iCameraRot = 1;
             }
+
+            int iCameraVRot = 0;
+
+            if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamUp) || gamepadState.IsButtonDown(Buttons.DPadUp))
+            {
+                iCameraVRot = 1;
+            }
+            else if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamDown) || gamepadState.IsButtonDown(Buttons.DPadDown))
+            {
+                iCameraVRot = -1;
+            }
+
+            //PlayerCamera(iCameraRot, iCameraVRot);
+
+            LevelCamera();
+
+            /*if (iCameraRot != 0 || iCameraVRot != 0)
+                PlayerCamera(iCameraRot, iCameraVRot);
             else
-            {
-                iCameraRot = 0;
-            }
-
-            if (keyboardState.IsKeyDown(Keys.Up) || gamepadState.IsButtonDown(Buttons.DPadUp))
-            {
-                z += 0.1f;
-            }
-            else if (keyboardState.IsKeyDown(Keys.Down) || gamepadState.IsButtonDown(Buttons.DPadDown))
-            {
-                z -= 0.1f;
-            }
-
-            //PlayerCamera(iCameraRot);
-
-            if (iCameraRot != 0)
-                PlayerCamera(iCameraRot);
-            else
-                AutoCamera();
+                AutoCamera();*/
 
             Vector3 targetPos = new Vector3(0.0f, 0.0f, 0.0f);
 
             if (oTarget != null)
                 targetPos = new Vector3(oTarget.x, oTarget.z, oTarget.y);
 
-            CRender.Instance.SetCameraTarget(targetPos);
+            CRender.Instance.SetCameraTarget(TargetVector);
             CRender.Instance.SetCameraPosition(new Vector3(x, z, y));
-            //CConsole.Instance.Print("camera rotation " + fCameraRotation + " x "+x+" y "+y);
+            //CConsole.Instance.Print("camera rotation " + fCameraVRotation + " rot " + iCameraVRot);
         }
 
         public void SetTarget(CGameObject targetObject)
@@ -79,7 +81,7 @@ namespace CatEngine
             return fCameraRotation;
         }
 
-        private void PlayerCamera(int rotDir)
+        private void PlayerCamera(int rotDir, int rotDirV)
         {
             float fCameraRotationSpeed = 4.0f;
 
@@ -89,6 +91,13 @@ namespace CatEngine
                 fCameraRotation -= 360.0f;
             else if (fCameraRotation < -180.0f)
                 fCameraRotation += 360.0f;
+
+            fCameraVRotation += (float)rotDirV * fCameraRotationSpeed;
+
+            if (fCameraVRotation > 80.0f)
+                fCameraVRotation = 80.0f;
+            else if (fCameraVRotation < 5.0f)
+                fCameraVRotation = 5.0f;
 
             Vector3 targetPos = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -101,6 +110,7 @@ namespace CatEngine
 
             x = targetPos.X + distDirX(fCameraDistance, degToRad(fCameraRotation));
             y = targetPos.Z + distDirY(fCameraDistance, degToRad(fCameraRotation));
+            z = targetPos.Y + -distDirY(fCameraDistance, degToRad(fCameraVRotation));
         }
 
         private void AutoCamera()
@@ -119,9 +129,31 @@ namespace CatEngine
             {
                 x = targetPos.X + distDirX(fCameraDistance, degToRad(fCameraRotation));
                 y = targetPos.Z + distDirY(fCameraDistance, degToRad(fCameraRotation));
+                z = targetPos.Y + -distDirY(fCameraDistance, degToRad(fCameraVRotation));
             }
 
             //CRender.Instance.SetCameraTarget(new Vector3(distDirX(30.0f, degToRad(fCameraRotation)), 0.0f, distDirY(30.0f, degToRad(fCameraRotation))));
+        }
+
+        private void LevelCamera()
+        {
+            int LevelW = CLevel.Instance.iLevelWidth;
+            int LevelH = CLevel.Instance.iLevelHeight;
+            int TileS = CLevel.Instance.iTileSize;
+
+            Vector3 targetPos = new Vector3((LevelW / 2 ) * TileS, 10.0f, (LevelH / 2) * TileS);
+
+            float fCameraRotationSpeed = 1.0f;
+            float fLevelCamDist = LevelW * TileS + 30.0f;
+
+            fCameraRotation += fCameraRotationSpeed;
+            fCameraVRotation = 80.0f;
+
+            x = targetPos.X + distDirX(fLevelCamDist, degToRad(fCameraRotation));
+            y = targetPos.Z + distDirY(fLevelCamDist, degToRad(fCameraRotation));
+            z = targetPos.Y + -distDirY(fLevelCamDist, degToRad(fCameraVRotation));
+
+            TargetVector = targetPos;
         }
     }
 }

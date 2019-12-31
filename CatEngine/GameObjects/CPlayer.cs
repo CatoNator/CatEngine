@@ -25,13 +25,15 @@ namespace CatEngine
         private float fAcceleration = 0.025f;
 
         private float fMinHeight = 0.0f;
-        private float fHeightBufferZone = 0.5f;
+        private float fHeightBufferZone = 0.6f;
 
         private float fZSpeed = 0.0f;
 
-        private float fGravity = 0.025f;
+        private float fGravity = 0.05f;
 
         private bool bLanded = false;
+
+        private float fPlayerHeight = 1.0f;
 
         private int iNextDir = 0;
 
@@ -81,7 +83,7 @@ namespace CatEngine
 
             PlayerPhysics();
 
-            CConsole.Instance.Print("plr zspeed " + fZSpeed + " z " + z);
+            //CConsole.Instance.Print("plr zspeed " + fZSpeed + " z " + z + " minheight " + fMinHeight);
         }
 
         public override void Render()
@@ -124,9 +126,10 @@ namespace CatEngine
             }
 
             //yump
-            if (keyboardState.IsKeyDown(CSettings.Instance.kPJump))
+            if (keyboardState.IsKeyDown(CSettings.Instance.kPJump) && bLanded)
             {
-                fZSpeed = 1;
+                fZSpeed = 0.6f;
+                //bLanded = false;
             }
 
             //CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(iNextDir * 90)), (int)y + (int)distDirY(16, degToRad(iNextDir * 90)), 16, 16), typeof(CWall), true);
@@ -136,6 +139,8 @@ namespace CatEngine
 
         private void PlayerPhysics()
         {
+            fMinHeight = CLevel.Instance.GetMapHeightAt(x, y) + fPlayerHeight;
+
             if (z > fMinHeight)
             {
                 bLanded = false;
@@ -149,9 +154,10 @@ namespace CatEngine
                     fZSpeed = 0f;
                 }
 
-                while (z < fMinHeight - fHeightBufferZone)
+                z = (float)Math.Floor(z);
+                while (z < fMinHeight-fGravity*2)
                 {
-                    z += 0.1f;
+                    z += fGravity;
                 }
             }
 
