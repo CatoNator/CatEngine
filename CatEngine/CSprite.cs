@@ -118,7 +118,7 @@ namespace CatEngine
         //mem leak, texture2ds won't get deleted once they fall out of scope
         public void DrawRect(Rectangle rectangle, Color color)
         {
-            Texture2D rect = new Texture2D(graphics.GraphicsDevice, rectangle.Width, rectangle.Height);
+            /*Texture2D rect = new Texture2D(graphics.GraphicsDevice, rectangle.Width, rectangle.Height);
 
             Color[] data = new Color[rectangle.Width*rectangle.Height];
             for (int i = 0; i < data.Length; ++i) data[i] = color;
@@ -131,7 +131,7 @@ namespace CatEngine
 
             rect.Dispose();
 
-            sbSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+            sbSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);*/
         }
         
         public void Render(string spriteName, float x, float y, int imageIndex, bool flip, float rotation, float layerDepth, Color color)

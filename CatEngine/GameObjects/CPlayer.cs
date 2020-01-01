@@ -82,8 +82,7 @@ namespace CatEngine
             }
 
             PlayerPhysics();
-
-            //CConsole.Instance.Print("plr zspeed " + fZSpeed + " z " + z + " minheight " + fMinHeight);
+            PlayerCollision(0.5f);
         }
 
         public override void Render()
@@ -168,6 +167,31 @@ namespace CatEngine
         {
             fHInput = gamepadState.ThumbSticks.Left.X;
             fVInput = gamepadState.ThumbSticks.Left.Y;
+        }
+
+        private void PlayerCollision(float bufferZone)
+        {
+            //set up like 4 to 8 points around the player checking for the heightmap height
+            //if the heightmap is higher than player's height +- buffer zone, push the player towards his own center axis until this is no longer the case
+            int playerCollisionPoints = 4; //square
+            float collisionSize = 1.0f;
+
+            for (int i = 0; i < playerCollisionPoints; i++)
+            {
+                float collisionX = x + distDirX(collisionSize, 45 + (90 * i));
+                float collisionY = y + distDirY(collisionSize, 45 + (90 * i));
+
+                float heightPoint = CLevel.Instance.GetMapHeightAt(collisionX, collisionY) + fPlayerHeight;
+
+
+                if (heightPoint > fMinHeight+bufferZone)
+                {
+                    x += distDirX(0.1f, PointDirection(collisionX, collisionY, x, y));
+                    y += distDirY(0.1f, PointDirection(collisionX, collisionY, x, y));
+                }
+
+                CConsole.Instance.Print("player x y " + x + " " + y + " col x y "+collisionX + " " + collisionY + " height " +heightPoint);
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -57,9 +58,6 @@ namespace CatEngine
 
             public float fAverageHeight = 10;
 
-            //size 4 array for 4 walls. Tuple holds 
-            public Tuple<float, float>[] tNeighboringCornerHeights = new Tuple<float, float>[4];
-
             /*
             0-----1
             |     |
@@ -92,63 +90,7 @@ namespace CatEngine
               |-----|
                  2
             */
-            public void GenerateWallMap(FloorTile[,] oFloorTileArray)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    int tileX = iPosition[0];
-                    int tileY = iPosition[1];
-
-                    if (i == 0)
-                    {
-                        tileX = iPosition[0];
-                        tileY = iPosition[1]-1;
-                    }
-                    else if (i == 1)
-                    {
-                        tileX = iPosition[0] - 1;
-                        tileY = iPosition[1];
-                    }
-                    else if (i == 2)
-                    {
-                        tileX = iPosition[0] + 1;
-                        tileY = iPosition[1];
-                    }
-                    else if (i == 3)
-                    {
-                        tileX = iPosition[0];
-                        tileY = iPosition[1] + 1;
-                    }
-
-                    if ((tileX >= 0 && tileX < oFloorTileArray.GetLength(0))
-                       && (tileY >= 0 && tileY < oFloorTileArray.GetLength(1))
-                       && oFloorTileArray[tileX, tileY] != null)
-                    {
-                        SetNeighborHeight(i, oFloorTileArray[tileX, tileY]);
-                    }
-                }
-            }
-
-            private void SetNeighborHeight(int wallIndex, FloorTile otherTile)
-            {
-                //fuck
-                if (wallIndex == 0)
-                {
-                    tNeighboringCornerHeights[wallIndex] = new Tuple<float, float>(otherTile.fCornerHeights[0], otherTile.fCornerHeights[1]);
-                }
-                else if(wallIndex == 1)
-                {
-                    tNeighboringCornerHeights[wallIndex] = new Tuple<float, float>(otherTile.fCornerHeights[0], otherTile.fCornerHeights[2]);
-                }
-                else if (wallIndex == 2)
-                {
-                    tNeighboringCornerHeights[wallIndex] = new Tuple<float, float>(otherTile.fCornerHeights[2], otherTile.fCornerHeights[3]);
-                }
-                else if (wallIndex == 3)
-                {
-                    tNeighboringCornerHeights[wallIndex] = new Tuple<float, float>(otherTile.fCornerHeights[1], otherTile.fCornerHeights[3]);
-                }
-            }
+            
 
             public void RenderTile(GraphicsDevice graphicsDevice)
             {
@@ -198,12 +140,20 @@ namespace CatEngine
                 }
             }
 
-            //mapping the walls
-            for (int i = 0; i < iLevelWidth; i++)
+
+            //this is where we save the level to a binary file as debug
+            using (FileStream stream = new FileStream("test.bin", FileMode.Create))
             {
-                for (int a = 0; a < iLevelHeight; a++)
+                using (BinaryWriter writer = new BinaryWriter(stream))
                 {
-                    oFloorTileArray[i, a].GenerateWallMap(oFloorTileArray);
+                    //write tilesize
+                    //write levelsize h
+                    //write levelsize v
+                    //pad the rest of 
+
+                    writer.Write((byte)0);
+                    writer.Write((byte)5);
+                    writer.Close();
                 }
             }
         }
@@ -224,11 +174,12 @@ namespace CatEngine
                         {
                             FloorTile currentTile = oFloorTileArray[i, a];
                             FloorTile belowTile = oFloorTileArray[i, a + 1];
+
                             CRender.Instance.DrawRectangle(graphicsDevice,
-                                new Vector3(i*iTileSize, currentTile.fCornerHeights[2], (a + 1)*iTileSize),
-                                new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize),
                                 new Vector3(i * iTileSize, belowTile.fCornerHeights[0], (a + 1) * iTileSize),
-                                new Vector3((i + 1) * iTileSize, belowTile.fCornerHeights[1], (a + 1) * iTileSize), Color.SandyBrown);
+                                new Vector3((i + 1) * iTileSize, belowTile.fCornerHeights[1], (a + 1) * iTileSize),
+                                new Vector3(i * iTileSize, currentTile.fCornerHeights[2], (a + 1) * iTileSize),
+                                new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize), "grassside", false);
                         }
 
                         //and the wall to the right of us
@@ -236,11 +187,12 @@ namespace CatEngine
                         {
                             FloorTile currentTile = oFloorTileArray[i, a];
                             FloorTile nextTile = oFloorTileArray[i + 1, a];
+
                             CRender.Instance.DrawRectangle(graphicsDevice,
                                 new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[1], a * iTileSize),
                                 new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize),
                                 new Vector3((i + 1) * iTileSize, nextTile.fCornerHeights[0], a * iTileSize),
-                                new Vector3((i + 1) * iTileSize, nextTile.fCornerHeights[2], (a + 1) * iTileSize), Color.SandyBrown);
+                                new Vector3((i + 1) * iTileSize, nextTile.fCornerHeights[2], (a + 1) * iTileSize), "grassside", false);
                         }
 
                         //if we're on the leftmost row, let's render a top wall
@@ -251,7 +203,7 @@ namespace CatEngine
                                 new Vector3(i, 0, a * iTileSize),
                                 new Vector3(i, 0, (a + 1) * iTileSize),
                                 new Vector3(i, currentTile.fCornerHeights[0], a * iTileSize),
-                                new Vector3(i, currentTile.fCornerHeights[2], (a + 1) * iTileSize), Color.SandyBrown);
+                                new Vector3(i, currentTile.fCornerHeights[2], (a + 1) * iTileSize), "grassside", true);
                         }
 
                         //if we're on the top row, let's draw a top wall
@@ -259,10 +211,10 @@ namespace CatEngine
                         {
                             FloorTile currentTile = oFloorTileArray[i, a];
                             CRender.Instance.DrawRectangle(graphicsDevice,
-                                new Vector3(i * iTileSize, 0, a),
-                                new Vector3((i + 1) * iTileSize, 0, a),
                                 new Vector3(i * iTileSize, currentTile.fCornerHeights[0], a),
-                                new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[1], a), Color.SandyBrown);
+                                new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[1], a),
+                                new Vector3(i * iTileSize, 0, a),
+                                new Vector3((i + 1) * iTileSize, 0, a), "grassside", false);
                         }
 
                         //if we're on the rightmost row, let's render a right wall
@@ -270,10 +222,10 @@ namespace CatEngine
                         {
                             FloorTile currentTile = oFloorTileArray[i, a];
                             CRender.Instance.DrawRectangle(graphicsDevice,
-                                new Vector3((i+1) * iTileSize, currentTile.fCornerHeights[1], a * iTileSize),
+                                new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[1], a * iTileSize),
                                 new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize),
                                 new Vector3((i + 1) * iTileSize, 0, a * iTileSize),
-                                new Vector3((i + 1) * iTileSize, 0, (a + 1) * iTileSize), Color.SandyBrown);
+                                new Vector3((i + 1) * iTileSize, 0, (a + 1) * iTileSize), "grassside", false);
                         }
 
                         //if we're on the bottom row, let's draw a bottom wall
@@ -281,10 +233,10 @@ namespace CatEngine
                         {
                             FloorTile currentTile = oFloorTileArray[i, a];
                             CRender.Instance.DrawRectangle(graphicsDevice,
-                                new Vector3(i * iTileSize, currentTile.fCornerHeights[2], (a + 1) * iTileSize),
-                                new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize),
                                 new Vector3(i * iTileSize, 0, (a + 1) * iTileSize),
-                                new Vector3((i + 1) * iTileSize, 0, (a + 1) * iTileSize), Color.SandyBrown);
+                                new Vector3((i + 1) * iTileSize, 0, (a + 1) * iTileSize),
+                                new Vector3(i * iTileSize, currentTile.fCornerHeights[2], (a + 1) * iTileSize),
+                                new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize), "grassside", true);
                         }
                     }
                 }

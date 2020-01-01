@@ -110,7 +110,7 @@ namespace CatEngine
             CRender.Instance.LoadTexture("grasstop");
             //DEBUG: creating objects that aren't configured in CLevel yet
             CObjectManager.Instance.CreateInstance(typeof(CCamera), 0, 10, -30);
-            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 0, 20, 0);
+            CObjectManager.Instance.CreateInstance(typeof(CPlayer), 5, 20, 5);
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
             //lights don't work lol
@@ -193,13 +193,13 @@ namespace CatEngine
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 GraphicsDevice.BlendState = BlendState.Opaque;
-                GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+                //GraphicsDevice.RasterizerState = RasterizerState.CullNone;
                 CLevel.Instance.Render(GraphicsDevice);
                 CObjectManager.Instance.Render();
 
                 //rendering 2D objects
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
-                CObjectManager.Instance.Render2D();
+                //CObjectManager.Instance.Render2D();
                 CHud.Instance.Render();
                 spriteBatch.End();
             }

@@ -38,12 +38,12 @@ namespace CatEngine
         private CLoadingScreen()
         {
             QueueLoadCommand(CSprite.Instance, "AllocateSprites", new List<string>());
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Player" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Lights" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Tiles" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Player" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Lights" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Tiles" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "normalshot.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "rapidfireshot.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });

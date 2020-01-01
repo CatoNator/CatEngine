@@ -116,7 +116,7 @@ namespace CatEngine
             }
         }
 
-        private VertexBuffer RectanglePrimitive(GraphicsDevice graphicsDevice, Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, Color color)
+        private VertexBuffer RectanglePrimitive(GraphicsDevice graphicsDevice, Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, bool flipTexV)
         {
             /*
             1-----2
@@ -125,37 +125,44 @@ namespace CatEngine
             3-----4
             */
 
-            VertexPositionColor[] vertices = new VertexPositionColor[6]
+            int flipTexVInt = flipTexV ? 1 : 0;
+            int notFlipTexVInt = !flipTexV ? 1 : 0;
+
+            VertexPositionTexture[] vertices = new VertexPositionTexture[6]
             {
                 //polygon 1
-                new VertexPositionColor(new Vector3(C1.X, C1.Y, C1.Z), color),
-                new VertexPositionColor(new Vector3(C3.X, C3.Y, C3.Z), color),
-                new VertexPositionColor(new Vector3(C2.X, C2.Y, C2.Z), color),
+                new VertexPositionTexture(new Vector3(C1.X, C1.Y, C1.Z), new Vector2(0, 1*(flipTexVInt))),
+                new VertexPositionTexture(new Vector3(C3.X, C3.Y, C3.Z), new Vector2(0, 1*(notFlipTexVInt))),
+                new VertexPositionTexture(new Vector3(C2.X, C2.Y, C2.Z), new Vector2(1, 1*(flipTexVInt))),
 
                 //polygon 2
-                new VertexPositionColor(new Vector3(C2.X, C2.Y, C2.Z), color),
-                new VertexPositionColor(new Vector3(C3.X, C3.Y, C3.Z), color),
-                new VertexPositionColor(new Vector3(C4.X, C4.Y, C4.Z), color)
+                new VertexPositionTexture(new Vector3(C2.X, C2.Y, C2.Z), new Vector2(1, 1*(flipTexVInt))),
+                new VertexPositionTexture(new Vector3(C3.X, C3.Y, C3.Z), new Vector2(0, 1*(notFlipTexVInt))),
+                new VertexPositionTexture(new Vector3(C4.X, C4.Y, C4.Z), new Vector2(1, 1*(notFlipTexVInt)))
             };
 
-            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColor), 6, BufferUsage.WriteOnly);
-            vertexBuffer.SetData<VertexPositionColor>(vertices);
+            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
+            vertexBuffer.SetData<VertexPositionTexture>(vertices);
 
             return vertexBuffer;
         }
 
-        public void DrawRectangle(GraphicsDevice graphicsDevice, Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, Color color)
+        public void DrawRectangle(GraphicsDevice graphicsDevice, Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, String textureName, bool flipTexV)
         {
-            VertexBuffer vertexBuffer = RectanglePrimitive(graphicsDevice, C1, C2, C3, C4, color);
+            VertexBuffer vertexBuffer = RectanglePrimitive(graphicsDevice, C1, C2, C3, C4, flipTexV);
 
             BasicEffect basicEffect = new BasicEffect(graphicsDevice);
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
             basicEffect.World = worldMatrix;
-            basicEffect.VertexColorEnabled = true;
+            basicEffect.VertexColorEnabled = false;
             basicEffect.LightingEnabled = false;
+            basicEffect.TextureEnabled = true;
+            basicEffect.Texture = dTextureDict["grasstop"];
 
             graphicsDevice.SetVertexBuffer(vertexBuffer);
+
+            basicEffect.Texture = dTextureDict[textureName];
 
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
@@ -163,24 +170,27 @@ namespace CatEngine
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
             }
 
+            basicEffect.Dispose();
             vertexBuffer.Dispose();
         }
 
         public void DrawTile(GraphicsDevice graphicsDevice, int[] iPosition, float[]fCornerHeights, int iTileSize)
         {
             VertexBuffer tileBuffer = RectanglePrimitive(graphicsDevice,
-                new Vector3(iPosition[0] * iTileSize, fCornerHeights[0], iPosition[1] * iTileSize),
-                new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[1], iPosition[1] * iTileSize),
                 new Vector3(iPosition[0] * iTileSize, fCornerHeights[2], iPosition[1] * iTileSize + iTileSize),
-                new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[3], iPosition[1] * iTileSize + iTileSize), Color.Green);
+                new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[3], iPosition[1] * iTileSize + iTileSize),
+                new Vector3(iPosition[0] * iTileSize, fCornerHeights[0], iPosition[1] * iTileSize),
+                new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[1], iPosition[1] * iTileSize), false);
 
 
             BasicEffect basicEffect = new BasicEffect(graphicsDevice);
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
             basicEffect.World = worldMatrix;
-            basicEffect.VertexColorEnabled = true;
+            basicEffect.VertexColorEnabled = false;
             basicEffect.LightingEnabled = false;
+            basicEffect.TextureEnabled = true;
+            basicEffect.Texture = dTextureDict["grasstop"];
 
             graphicsDevice.SetVertexBuffer(tileBuffer);
 
@@ -190,16 +200,44 @@ namespace CatEngine
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
             }
 
+            basicEffect.Dispose();
             tileBuffer.Dispose();
+        }
+
+        public void DrawBillBoard(Vector3 position, Vector2 size, Vector2 origin, String textureName)
+        {
+            /*
+            C 
+            
+            VertexBuffer vertexBuffer = RectanglePrimitive(graphicsDevice, C1, C2, C3, C4, false);
+
+            BasicEffect basicEffect = new BasicEffect(graphicsDevice);
+            basicEffect.Projection = projectionMatrix;
+            basicEffect.View = viewMatrix;
+            basicEffect.World = worldMatrix;
+            basicEffect.VertexColorEnabled = false;
+            basicEffect.LightingEnabled = false;
+            basicEffect.TextureEnabled = true;
+            basicEffect.Texture = dTextureDict["grasstop"];
+
+            graphicsDevice.SetVertexBuffer(vertexBuffer);
+
+            basicEffect.Texture = dTextureDict[textureName];
+
+            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
+            }
+
+            basicEffect.Dispose();
+            vertexBuffer.Dispose();
+            */
         }
 
         public void UpdateCamera()
         {
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
-
-            /*RasterizerState rasterizerState = new RasterizerState();
-            rasterizerState.CullMode = CullMode.None;
-            graphicsDevice.RasterizerState = rasterizerState;*/
         }
     }
 }
