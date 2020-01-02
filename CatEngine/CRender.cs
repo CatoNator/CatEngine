@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
@@ -14,6 +15,8 @@ namespace CatEngine
     public class CRender : CContentManager
     {
         public GraphicsDeviceManager graphics;
+
+        public GraphicsDevice graphicsDevice;
 
         public ContentManager content;
 
@@ -73,8 +76,37 @@ namespace CatEngine
             }
             catch (ContentLoadException e)
             {
-                CRender.Instance.dTextureDict.Add(textureName, null);
-                CConsole.Instance.Print("Tried to load texture " + textureName + " but failed, error " + e.ToString());
+                try
+                {
+                    CRender.Instance.dTextureDict.Add(textureName, content.Load<Texture2D>("empty"));
+                    CConsole.Instance.Print("Tried to load texture " + textureName + " but failed, error " + e.ToString());
+                }
+                catch (Exception a)
+                {
+                    CConsole.Instance.Print("Tried to add texture " + textureName + " but it was already there");
+                }
+            }
+        }
+
+        public void LoadTextureRaw(String path, String textureName)
+        {
+            try
+            {
+                FileStream fileStream = new FileStream(textureName+".png", FileMode.Open);
+                CRender.Instance.dTextureDict.Add(textureName, Texture2D.FromStream(graphicsDevice, fileStream));
+                fileStream.Dispose();
+            }
+            catch (ContentLoadException e)
+            {
+                try
+                {
+                    CRender.Instance.dTextureDict.Add(textureName, content.Load<Texture2D>("empty"));
+                    CConsole.Instance.Print("Tried to load texture " + textureName + " but failed, error " + e.ToString());
+                }
+                catch (Exception a)
+                {
+                    CConsole.Instance.Print("Tried to add texture " + textureName + " but it was already there");
+                }
             }
         }
 
@@ -116,7 +148,7 @@ namespace CatEngine
             }
         }
 
-        private VertexBuffer RectanglePrimitive(GraphicsDevice graphicsDevice, Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, bool flipTexV)
+        private VertexBuffer RectanglePrimitive(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, bool flipTexV)
         {
             /*
             1-----2
@@ -147,9 +179,9 @@ namespace CatEngine
             return vertexBuffer;
         }
 
-        public void DrawRectangle(GraphicsDevice graphicsDevice, Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, String textureName, bool flipTexV)
+        public void DrawRectangle(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, String textureName, bool flipTexV)
         {
-            VertexBuffer vertexBuffer = RectanglePrimitive(graphicsDevice, C1, C2, C3, C4, flipTexV);
+            VertexBuffer vertexBuffer = RectanglePrimitive(C1, C2, C3, C4, flipTexV);
 
             BasicEffect basicEffect = new BasicEffect(graphicsDevice);
             basicEffect.Projection = projectionMatrix;
@@ -158,7 +190,7 @@ namespace CatEngine
             basicEffect.VertexColorEnabled = false;
             basicEffect.LightingEnabled = false;
             basicEffect.TextureEnabled = true;
-            basicEffect.Texture = dTextureDict["grasstop"];
+            basicEffect.Texture = dTextureDict[textureName];
 
             graphicsDevice.SetVertexBuffer(vertexBuffer);
 
@@ -174,10 +206,9 @@ namespace CatEngine
             vertexBuffer.Dispose();
         }
 
-        public void DrawTile(GraphicsDevice graphicsDevice, int[] iPosition, float[]fCornerHeights, int iTileSize)
+        public void DrawTile(int[] iPosition, float[]fCornerHeights, int iTileSize)
         {
-            VertexBuffer tileBuffer = RectanglePrimitive(graphicsDevice,
-                new Vector3(iPosition[0] * iTileSize, fCornerHeights[2], iPosition[1] * iTileSize + iTileSize),
+            VertexBuffer tileBuffer = RectanglePrimitive(new Vector3(iPosition[0] * iTileSize, fCornerHeights[2], iPosition[1] * iTileSize + iTileSize),
                 new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[3], iPosition[1] * iTileSize + iTileSize),
                 new Vector3(iPosition[0] * iTileSize, fCornerHeights[0], iPosition[1] * iTileSize),
                 new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[1], iPosition[1] * iTileSize), false);

@@ -91,4 +91,16 @@
 		<xorig>4</xorig>
 		<yorig>4</yorig>
 	</sprite>
+	<sprite>
+		<index>6</index>
+		<name>sprLoadBar</name>
+		<texture>LoadingScreen</texture>
+		<left>0</left>
+		<top>0</top>
+		<width>3</width>
+		<height>12</height>
+		<images>2</images>
+		<xorig>0</xorig>
+		<yorig>0</yorig>
+	</sprite>
 </spritedata>

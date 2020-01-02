@@ -82,7 +82,7 @@ namespace CatEngine
             }
 
             PlayerPhysics();
-            PlayerCollision(0.5f);
+            //PlayerCollision(0.5f);
         }
 
         public override void Render()
@@ -173,6 +173,9 @@ namespace CatEngine
         {
             //set up like 4 to 8 points around the player checking for the heightmap height
             //if the heightmap is higher than player's height +- buffer zone, push the player towards his own center axis until this is no longer the case
+
+            //this is kind of fucked. I should do collision detection on tile edge
+
             int playerCollisionPoints = 4; //square
             float collisionSize = 1.0f;
 
@@ -190,7 +193,7 @@ namespace CatEngine
                     y += distDirY(0.1f, PointDirection(collisionX, collisionY, x, y));
                 }
 
-                CConsole.Instance.Print("player x y " + x + " " + y + " col x y "+collisionX + " " + collisionY + " height " +heightPoint);
+                //CConsole.Instance.Print("player x y " + x + " " + y + " col x y "+collisionX + " " + collisionY + " height " +heightPoint);
             }
         }
     }

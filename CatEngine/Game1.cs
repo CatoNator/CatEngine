@@ -103,12 +103,17 @@ namespace CatEngine
             //setting up 3D and loading debug cube
             CRender.Instance.content = Content;
             CRender.Instance.graphics = graphics;
+            CRender.Instance.graphicsDevice = GraphicsDevice;
+            //debug: loading some essential models
+            /*
             CRender.Instance.LoadModel("textured_cube");
             CRender.Instance.LoadModel("board");
             CRender.Instance.LoadTexture("cube_tex");
             CRender.Instance.LoadTexture("grassside");
             CRender.Instance.LoadTexture("grasstop");
-            //DEBUG: creating objects that aren't configured in CLevel yet
+            */
+
+            //DEBUG: creating objects that aren't configured to be loaded in CLevel yet
             CObjectManager.Instance.CreateInstance(typeof(CCamera), 0, 10, -30);
             CObjectManager.Instance.CreateInstance(typeof(CPlayer), 5, 20, 5);
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
@@ -136,6 +141,14 @@ namespace CatEngine
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.P))
+            {
+                if (CurrentGameState == GameState.Game)
+                    CurrentGameState = GameState.Paused;
+                else
+                    CurrentGameState = GameState.Game;
+            }
+
             if (CurrentGameState == GameState.Menu)
             {
                 //CMainMenu.Instance.Update();
@@ -149,6 +162,18 @@ namespace CatEngine
             else if (CurrentGameState == GameState.Game)
             {
                 CObjectManager.Instance.Update();
+
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.P))
+                {
+                    CurrentGameState = GameState.Paused;
+                }
+            }
+            else if (CurrentGameState == GameState.Paused)
+            {
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.P))
+                {
+                    CurrentGameState = GameState.Game;
+                }
             }
             //updating the object list
 
@@ -194,7 +219,7 @@ namespace CatEngine
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 GraphicsDevice.BlendState = BlendState.Opaque;
                 //GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-                CLevel.Instance.Render(GraphicsDevice);
+                CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
 
                 //rendering 2D objects
@@ -208,6 +233,7 @@ namespace CatEngine
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 GraphicsDevice.BlendState = BlendState.Opaque;
+                CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
 
                 //rendering 2D objects

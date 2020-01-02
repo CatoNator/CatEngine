@@ -25,6 +25,8 @@ namespace CatEngine
 
         public Dictionary<string, Texture2D> dTextureDict = new Dictionary<string, Texture2D>();
 
+        private SpriteFont testFont;
+
         private class Sprite
         {
             public String Name;
@@ -74,17 +76,17 @@ namespace CatEngine
         public void AllocateSprites()
         {
             //opening the xml file
-            Debug.WriteLine("Opening SpriteData");
+            CConsole.Instance.Print("Opening SpriteData");
             string xmlText = System.IO.File.ReadAllText("AssetData/SpriteData.xml");
-            Debug.WriteLine("Text file loaded");
+            CConsole.Instance.Print("Text file loaded");
             XDocument file = XDocument.Parse(xmlText);
-            Debug.WriteLine("XML parsed");
+            CConsole.Instance.Print("XML parsed");
 
             //hardcoded error sprite
             dSpriteNameDict.Add("error", new Sprite("error", "empty", 0, 0, 16, 16, 0, 8, 8));
 
             //loading the data using a foreach loop
-            Debug.WriteLine("Entering Spritedata loop");
+            CConsole.Instance.Print("Entering Spritedata loop");
 
             foreach (XElement element in file.Descendants("sprite"))
             {
@@ -100,6 +102,8 @@ namespace CatEngine
 
                 dSpriteNameDict.Add(name, new Sprite(name, tex, l, t, w, h, img, xo, yo));
             }
+
+            testFont = content.Load<SpriteFont>("testfont");
         }
 
         public void LoadTextureSheet(String sheetName)
@@ -133,6 +137,11 @@ namespace CatEngine
 
             sbSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);*/
         }
+
+        public void DrawText(String text, Vector2 location, Color color)
+        {
+            sbSpriteBatch.DrawString(testFont, text, location, color);
+        }
         
         public void Render(string spriteName, float x, float y, int imageIndex, bool flip, float rotation, float layerDepth, Color color)
         {
@@ -146,6 +155,7 @@ namespace CatEngine
             catch(Exception e)
             {
                 spr = dSpriteNameDict["error"];
+                CConsole.Instance.Print("tried to get data for sprite " + spriteName + ", but it does not exist");
             }
 
             Texture2D texture;
@@ -158,6 +168,7 @@ namespace CatEngine
             catch (Exception e)
             {
                 texture = dTextureDict["empty"];
+                CConsole.Instance.Print("tried to render texturesheet " + spr.TextureSheet + ", but it does not exist");
             }
 
             int imgIndex;

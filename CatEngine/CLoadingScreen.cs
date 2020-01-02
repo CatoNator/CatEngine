@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,17 +39,23 @@ namespace CatEngine
         private CLoadingScreen()
         {
             QueueLoadCommand(CSprite.Instance, "AllocateSprites", new List<string>());
-            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Player" });
-            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
-            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" });
-            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Lights" });
-            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Tiles" });
-            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Player" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Lights" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Tiles" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "normalshot.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "rapidfireshot.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
             QueueLoadCommand(CLevel.Instance, "LoadPropData", new List<string>());
-            QueueLoadCommand(CLevel.Instance, "LoadLevelData", new List<string>() { "test.bin" });
+            QueueLoadCommand(CRender.Instance, "LoadModel", new List<string>() { "textured_cube" });
+            QueueLoadCommand(CRender.Instance, "LoadModel", new List<string>() { "board" });
+            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "cube_tex" });
+            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
+            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
+
+            PrepareLevelData("Test");
 
             Load();
         }
@@ -69,6 +76,30 @@ namespace CatEngine
         {
         }
 
+        public void PrepareLevelData(String levelName)
+        {
+            String path = "AssetData/Levels/" + levelName;
+
+            CConsole.Instance.Print("preparing to load level " + path);
+
+            //pack textures
+            string[] textureFiles = Directory.GetFiles(path, "*.png", SearchOption.AllDirectories);
+
+            List<string> textureList = new List<string>();
+            
+            //load textures into memory
+            foreach (String texture in textureFiles)
+            {
+                String texNameShort = texture.Substring(0, texture.Length - 4);
+                QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { path, texNameShort });
+                textureList.Add(texNameShort);
+            }
+
+            //load terrain data
+            QueueLoadCommand(CLevel.Instance, "LoadTerrainData", new List<string>() { path+"/terrain.bin" });
+            CLevel.Instance.SetTextureArray(textureList.ToArray());
+        }
+
         private void Load()
         {
             Thread loaderThread = new Thread(new ThreadStart(LoadData));
@@ -86,16 +117,16 @@ namespace CatEngine
             dir %= 2*Math.PI;
 
             float maxLength = 160.0f;
-            int xpos = (CSettings.Instance.GAME_VIEW_WIDTH / 2) - (int)(maxLength / 2);
-            int ypos = (CSettings.GAME_VIEW_HEIGHT / 4) * 3;
+            int xpos = 10;
+            int ypos = 10;
 
             float length = maxLength * ((float)iExecutedFunctions / (float)sCommands.Count());
 
             /*CSprite.Instance.DrawRect(new Rectangle(xpos, ypos, (int)maxLength+69, 12), Color.Gray);
             CSprite.Instance.DrawRect(new Rectangle(xpos, ypos, (int)length+69, 12), Color.White);*/
 
-            CSprite.Instance.Render("sprLoadBar", xpos, ypos+(int)(Math.Sin(dir)*6), 0, false, 0.0f, 1.0f, Color.White);
-            CSprite.Instance.Render("sprLoadBar", xpos+maxLength, ypos + (int)(Math.Sin(dir+(maxLength/10)) * 3), 2, false, 0.0f, 1.0f, Color.White);
+            CSprite.Instance.Render("sprLoadBar", xpos, ypos, 0, false, 0.0f, 1.0f, Color.White);
+            CSprite.Instance.Render("sprLoadBar", xpos+maxLength, ypos, 2, false, 0.0f, 1.0f, Color.White);
 
             for (int i = 1; i <= (int)maxLength/2; i++)
             {
@@ -104,7 +135,7 @@ namespace CatEngine
                 if (length >= i*2)
                     img = 3;
 
-                CSprite.Instance.Render("sprLoadBar", xpos+i*2, ypos + (int)(Math.Sin(dir+(i/5)) * 3), img, false, 0.0f, 1.0f, Color.White);
+                CSprite.Instance.Render("sprLoadBar", xpos+i*2, ypos, img, false, 0.0f, 1.0f, Color.White); // + (int)(Math.Sin(dir+(i/5)) * 3)
             }
 
             //CSprite.Instance.Render("sprTest", 160+64, 30, 0, false, (float)dir, 1.0f, Color.White);
@@ -120,7 +151,7 @@ namespace CatEngine
                 method.Invoke(i.Instance, i.Params.ToArray());
 
                 Interlocked.Increment(ref iExecutedFunctions);
-                CConsole.Instance.Print("performed command " + iExecutedFunctions + ", " + i.MethodName);
+                CConsole.Instance.Print(i.MethodName+"("+i.Params.ToString()+")");
 
                 //Thread.Sleep(1000);
             }
