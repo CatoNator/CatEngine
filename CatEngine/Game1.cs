@@ -33,8 +33,6 @@ namespace CatEngine
         SpriteBatch screenBatch;
         RenderTarget2D renderTarget;
 
-        Model cube;
-
         public readonly static BlendState
             bsSubtract = new BlendState
             {

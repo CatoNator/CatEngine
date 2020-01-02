@@ -206,39 +206,13 @@ namespace CatEngine
             vertexBuffer.Dispose();
         }
 
-        public void DrawTile(int[] iPosition, float[]fCornerHeights, int iTileSize)
-        {
-            VertexBuffer tileBuffer = RectanglePrimitive(new Vector3(iPosition[0] * iTileSize, fCornerHeights[2], iPosition[1] * iTileSize + iTileSize),
-                new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[3], iPosition[1] * iTileSize + iTileSize),
-                new Vector3(iPosition[0] * iTileSize, fCornerHeights[0], iPosition[1] * iTileSize),
-                new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[1], iPosition[1] * iTileSize), false);
-
-
-            BasicEffect basicEffect = new BasicEffect(graphicsDevice);
-            basicEffect.Projection = projectionMatrix;
-            basicEffect.View = viewMatrix;
-            basicEffect.World = worldMatrix;
-            basicEffect.VertexColorEnabled = false;
-            basicEffect.LightingEnabled = false;
-            basicEffect.TextureEnabled = true;
-            basicEffect.Texture = dTextureDict["grasstop"];
-
-            graphicsDevice.SetVertexBuffer(tileBuffer);
-
-            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
-                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
-            }
-
-            basicEffect.Dispose();
-            tileBuffer.Dispose();
-        }
-
         public void DrawBillBoard(Vector3 position, Vector2 size, Vector2 origin, String textureName)
         {
             /*
-            C 
+            C1 =
+            C2 =
+            C3 =
+            C4 =
             
             VertexBuffer vertexBuffer = RectanglePrimitive(graphicsDevice, C1, C2, C3, C4, false);
 

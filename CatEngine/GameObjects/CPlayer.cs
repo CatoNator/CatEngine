@@ -21,8 +21,11 @@ namespace CatEngine
 
         private float fDir = 0;
 
-        float fMaxSpeed = 1.0f;
-        private float fAcceleration = 0.025f;
+        private float fMoveDir = 0.0f;
+
+        float fMaxSpeed = 0.5f;
+        private float fAcceleration = 0.03f;
+        private float fFriction = 0.05f;
 
         private float fMinHeight = 0.0f;
         private float fHeightBufferZone = 0.6f;
@@ -65,21 +68,6 @@ namespace CatEngine
             MovementKeyboard(keyboardState);
             //MovementGamepad(gamepadState);
             //CameraDebug(keyboardState);
-
-            CCamera camera = (CCamera)FindInstance(typeof(CCamera));
-            camera.SetTarget(this);
-            float fCameraRotation = camera.GetCameraDirection();
-
-            float fInputDir = PointDirection(0, 0, fHInput, fVInput);
-            float fSpeed = 0.5f;
-
-            if (fHInput != 0 || fVInput != 0)
-            {
-                fDir = degToRad(fCameraRotation + 90.0f) + fInputDir;
-
-                x += distDirX(fSpeed, fDir);
-                y += distDirY(fSpeed, fDir);
-            }
 
             PlayerPhysics();
             //PlayerCollision(0.5f);
@@ -138,6 +126,86 @@ namespace CatEngine
 
         private void PlayerPhysics()
         {
+            //handling movement
+
+            //temp I guess
+            CCamera camera = (CCamera)FindInstance(typeof(CCamera));
+            camera.SetTarget(this);
+            float fCamDir = degToRad(camera.GetCameraDirection() + 90.0f);
+
+            float fInputDir = PointDirection(0, 0, fHInput, fVInput);
+            float fInputDist = PointDistance(0, 0, fHInput, fVInput);
+            float fSpeed = 0.5f;
+
+            if (fHInput != 0 || fVInput != 0)
+            {
+                fDir = fCamDir + fInputDir;
+                fMoveDir = fCamDir;
+
+                fHorSpeed += distDirX(fAcceleration * 2, fInputDir);
+                fVerSpeed += distDirY(fAcceleration * 2, fInputDir);
+            }
+
+            //friction is only applied when inputs are not detected to avoid slowing the player down too much
+            if (fHInput == 0)
+            {
+                if (fHorSpeed > fFriction)
+                {
+                    fHorSpeed -= fFriction;
+                }
+                else if (fHorSpeed < -fFriction)
+                {
+                    fHorSpeed += fFriction;
+                }
+                else
+                {
+                    fHorSpeed = 0;
+                }
+            }
+
+            if (fVInput == 0)
+            {
+                if (fVerSpeed > (fFriction))
+                {
+                    fVerSpeed -= fFriction;
+                }
+                else if (fVerSpeed < -(fFriction))
+                {
+                    fVerSpeed += fFriction;
+                }
+                else
+                {
+                    fVerSpeed = 0;
+                }
+            }
+
+            //capping the speed
+            if (fHorSpeed > fMaxSpeed)
+            {
+                fHorSpeed = fMaxSpeed;
+            }
+            else if (fHorSpeed < -fMaxSpeed)
+            {
+                fHorSpeed = -fMaxSpeed;
+            }
+
+            if (fVerSpeed > fMaxSpeed)
+            {
+                fVerSpeed = fMaxSpeed;
+            }
+            else if (fVerSpeed < -fMaxSpeed)
+            {
+                fVerSpeed = -fMaxSpeed;
+            }
+
+            CConsole.Instance.Print("player hsp " + fHorSpeed + " vsp " + fVerSpeed + " dir " + radToDeg(fDir) % 360.0f + " inputdir " + fInputDir);
+
+            //if (x >= 0 && x <= CLevel.Instance.iLevelWidth * CLevel.Instance.iTileSize)
+            x += distDirX(fHorSpeed, fMoveDir) + distDirX(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
+            //if (y >= 0 && y <= CLevel.Instance.iLevelHeight * CLevel.Instance.iTileSize)
+            y += distDirY(fHorSpeed, fMoveDir) +distDirY(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
+
+            //handling gravity
             fMinHeight = CLevel.Instance.GetMapHeightAt(x, y) + fPlayerHeight;
 
             if (z > fMinHeight)

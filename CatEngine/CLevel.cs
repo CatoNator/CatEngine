@@ -236,16 +236,16 @@ namespace CatEngine
                 for (int a = 0; a < iLevelHeight; a++)
                 {
                     oFloorTileArray[i, a] = new FloorTile();
-                    oFloorTileArray[i, a].SetProperties(i, a, iTileSize, new float[] { 5.0f, 5.0f, 7.0f, 8.0f });
+                    oFloorTileArray[i, a].SetProperties(i, a, iTileSize, new float[] { 5.0f, 5.0f, 5.0f, 5.0f});
                 }
             }
         }
 
         //also testing
-        private void TestSaveLevel()
+        private void SaveTerrain()
         {
             //this is where we save the level to a binary file as debug
-            using (FileStream stream = new FileStream("test.bin", FileMode.Create))
+            using (FileStream stream = new FileStream("terrain.bin", FileMode.Create))
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
@@ -372,8 +372,8 @@ namespace CatEngine
 
         public void LoadTerrainData(string levelName)
         {
-            //GenerateLevel();
-            //TestSaveLevel();
+            GenerateLevel();
+            SaveTerrain();
 
             if (File.Exists(levelName))
             {
