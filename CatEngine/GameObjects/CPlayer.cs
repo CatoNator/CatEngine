@@ -198,7 +198,7 @@ namespace CatEngine
                 fVerSpeed = -fMaxSpeed;
             }
 
-            CConsole.Instance.Print("player hsp " + fHorSpeed + " vsp " + fVerSpeed + " dir " + radToDeg(fDir) % 360.0f + " inputdir " + fInputDir);
+            //CConsole.Instance.Print("player hsp " + fHorSpeed + " vsp " + fVerSpeed + " dir " + radToDeg(fDir) % 360.0f + " inputdir " + fInputDir);
 
             //if (x >= 0 && x <= CLevel.Instance.iLevelWidth * CLevel.Instance.iTileSize)
             x += distDirX(fHorSpeed, fMoveDir) + distDirX(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
