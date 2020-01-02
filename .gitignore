@@ -16,3 +16,4 @@ CatEd/Content/obj
 # files
 *.suo
 *.mgcontent
+*.cache
