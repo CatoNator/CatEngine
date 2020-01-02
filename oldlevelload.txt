@@ -1,0 +1,35 @@
+CConsole.Instance.Print("Opening level data");
+string xmlText = System.IO.File.ReadAllText("AssetData/"+fileName);
+XDocument file = XDocument.Parse(xmlText);
+
+//loading walls
+foreach (XElement element in file.Descendants("wall"))
+{
+	int x = Int32.Parse(element.Element("x").Value);
+	int z = 0;
+	int y = Int32.Parse(element.Element("y").Value);
+	int xscale = Int32.Parse(element.Element("xscale").Value);
+	int yscale = Int32.Parse(element.Element("yscale").Value);
+
+	CWall wall = (CWall)CObjectManager.Instance.CreateInstance(typeof(CWall), x, z, y);
+	wall.SetScale(xscale, yscale);
+}
+
+foreach (XElement element in file.Descendants("prop"))
+{
+	String name = element.Element("name").Value;
+	int x = Int32.Parse(element.Element("x").Value);
+	int z = 0;
+	int y = Int32.Parse(element.Element("y").Value);
+	int dir = Int32.Parse(element.Element("dir").Value);
+
+	int propInd = sPropName.IndexOf(name);
+
+	String sprite = sPropSprite[propInd];
+	int colW = sPropColW[propInd];
+	int colH = sPropColH[propInd];
+	int health = sPropHealth[propInd];
+
+	CProp prop = (CProp)CObjectManager.Instance.CreateInstance(typeof(CProp), x, z, y);
+	prop.SetProperties((float)x, (float)z, (float)y, sprite, dir, colW, colH, health);
+}

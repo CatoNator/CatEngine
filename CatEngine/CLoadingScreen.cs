@@ -48,7 +48,7 @@ namespace CatEngine
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "rapidfireshot.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
             QueueLoadCommand(CLevel.Instance, "LoadPropData", new List<string>());
-            QueueLoadCommand(CLevel.Instance, "LoadLevelData", new List<string>() { "LevelTest.xml" });
+            QueueLoadCommand(CLevel.Instance, "LoadLevelData", new List<string>() { "test.bin" });
 
             Load();
         }

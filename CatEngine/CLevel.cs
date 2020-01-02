@@ -65,22 +65,18 @@ namespace CatEngine
             2-----3
             */
 
-            public FloorTile(int x, int y, int tileSize)
+            public FloorTile()
+            {
+                
+            }
+
+            public void SetProperties(int x, int y, int tileSize, float[] cornerHeights)
             {
                 iPosition[0] = x;
                 iPosition[1] = y;
                 iTileSize = tileSize;
 
-                Random random = new Random((x+y)*tileSize);
-
-                fAverageHeight = 10.0f + (float)random.NextDouble() * 5.0f;
-
-                for (int i = 0; i < 4; i++)
-                {
-                    fCornerHeights[i] = fAverageHeight -2.5f + (float)random.NextDouble() * 5.0f;
-                }
-
-                //fCornerHeights[2] = -fCornerHeights[1];
+                fCornerHeights = cornerHeights;
             }
 
             /*
@@ -90,7 +86,7 @@ namespace CatEngine
               |-----|
                  2
             */
-            
+
 
             public void RenderTile(GraphicsDevice graphicsDevice)
             {
@@ -128,7 +124,7 @@ namespace CatEngine
             }
         }
 
-        //we make the level
+        //testing
         private void GenerateLevel()
         {
             //creating tiles
@@ -136,23 +132,50 @@ namespace CatEngine
             {
                 for (int a = 0; a < iLevelHeight; a++)
                 {
-                    oFloorTileArray[i, a] = new FloorTile(i, a, iTileSize);
+                    oFloorTileArray[i, a] = new FloorTile();
+                    oFloorTileArray[i, a].SetProperties(i, a, iTileSize, new float[] { 5.0f, 5.0f, 7.0f, 8.0f });
                 }
             }
+        }
 
-
+        //also testing
+        private void TestSaveLevel()
+        {
             //this is where we save the level to a binary file as debug
             using (FileStream stream = new FileStream("test.bin", FileMode.Create))
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
-                    //write tilesize
-                    //write levelsize h
-                    //write levelsize v
-                    //pad the rest of 
+                    writer.Write((byte)iTileSize);
+                    writer.Write((byte)iLevelWidth);
+                    writer.Write((byte)iLevelHeight);
 
-                    writer.Write((byte)0);
-                    writer.Write((byte)5);
+                    //padding
+                    writer.Write((byte)84); //T
+                    writer.Write((byte)73); //I
+                    writer.Write((byte)76); //L
+                    writer.Write((byte)69); //E
+                    writer.Write((byte)68); //D
+                    writer.Write((byte)65); //A
+                    writer.Write((byte)84); //T
+                    writer.Write((byte)65); //A
+                    writer.Write((byte)66); //B
+                    writer.Write((byte)69); //E
+                    writer.Write((byte)71); //G
+                    writer.Write((byte)73); //I
+                    writer.Write((byte)78); //N
+
+                    for (int i = 0; i < iLevelWidth; i++)
+                    {
+                        for (int a = 0; a < iLevelHeight; a++)
+                        {
+                            writer.Write((byte)oFloorTileArray[i, a].fCornerHeights[0]);
+                            writer.Write((byte)oFloorTileArray[i, a].fCornerHeights[1]);
+                            writer.Write((byte)oFloorTileArray[i, a].fCornerHeights[2]);
+                            writer.Write((byte)oFloorTileArray[i, a].fCornerHeights[3]);
+                        }
+                    }
+
                     writer.Close();
                 }
             }
@@ -281,43 +304,48 @@ namespace CatEngine
 
         public void LoadLevelData(string fileName)
         {
-            //debug
-            GenerateLevel();
-
-            CConsole.Instance.Print("Opening level data");
-            string xmlText = System.IO.File.ReadAllText("AssetData/"+fileName);
-            XDocument file = XDocument.Parse(xmlText);
-
-            //loading walls
-            foreach (XElement element in file.Descendants("wall"))
+            //GenerateLevel();
+            //TestSaveLevel();
+            
+            using (FileStream stream = new FileStream(fileName, FileMode.Open))
             {
-                int x = Int32.Parse(element.Element("x").Value);
-                int z = 0;
-                int y = Int32.Parse(element.Element("y").Value);
-                int xscale = Int32.Parse(element.Element("xscale").Value);
-                int yscale = Int32.Parse(element.Element("yscale").Value);
+                CConsole.Instance.Print("reading level data from file " + fileName);
 
-                CWall wall = (CWall)CObjectManager.Instance.CreateInstance(typeof(CWall), x, z, y);
-                wall.SetScale(xscale, yscale);
-            }
+                using (BinaryReader reader= new BinaryReader(stream))
+                {
+                    iTileSize = reader.ReadByte();
+                    iLevelWidth = reader.ReadByte();
+                    iLevelWidth = reader.ReadByte();
 
-            foreach (XElement element in file.Descendants("prop"))
-            {
-                String name = element.Element("name").Value;
-                int x = Int32.Parse(element.Element("x").Value);
-                int z = 0;
-                int y = Int32.Parse(element.Element("y").Value);
-                int dir = Int32.Parse(element.Element("dir").Value);
+                    //padding
+                    for (int i= 0; i < 13; i++)
+                    {
+                        int padding = reader.ReadByte();
+                    }
 
-                int propInd = sPropName.IndexOf(name);
+                    for (int i = 0; i < iLevelWidth; i++)
+                    {
+                        for (int a = 0; a < iLevelHeight; a++)
+                        {
+                            float[] cornerHeights = new float[4];
+                            float combinedCorners = 0;
 
-                String sprite = sPropSprite[propInd];
-                int colW = sPropColW[propInd];
-                int colH = sPropColH[propInd];
-                int health = sPropHealth[propInd];
+                            for(int e = 0; e < 4; e++)
+                            {
+                                cornerHeights[e] = reader.ReadByte();
+                                combinedCorners += cornerHeights[e];
+                            }
 
-                CProp prop = (CProp)CObjectManager.Instance.CreateInstance(typeof(CProp), x, z, y);
-                prop.SetProperties((float)x, (float)z, (float)y, sprite, dir, colW, colH, health);
+                            if (combinedCorners > 0)
+                            {
+                                oFloorTileArray[i, a] = new FloorTile();
+                                oFloorTileArray[i, a].SetProperties(i, a, iTileSize, cornerHeights);
+                            }
+                        }
+                    }
+
+                    reader.Close();
+                }
             }
         }
     }
