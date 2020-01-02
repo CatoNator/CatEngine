@@ -17,3 +17,7 @@ CatEd/Content/obj
 *.suo
 *.mgcontent
 *.cache
+CatEd/obj/Debug/CatEd.csproj.CoreCompileInputs.cache
+*.ide-shm
+*.cache
+*.ide-wal
