@@ -41,7 +41,7 @@ namespace CatEngine
 
             sMessages[sMessages.Length-1] = str;
 
-            //Debug.Print(str);
+            Debug.Print(str);
         }
 
         public void Render()

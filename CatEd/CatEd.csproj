@@ -58,6 +58,7 @@
     <Compile Include="CLevelView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="EdMath.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

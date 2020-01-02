@@ -26,7 +26,6 @@ namespace CatEngine
         GameState CurrentGameState = GameState.Loading;
 
         GraphicsDeviceManager graphics;
-        VertexBuffer vertexBuffer;
         DepthStencilState depthBuffer = new DepthStencilState() { DepthBufferEnable = true, DepthBufferFunction = CompareFunction.Less };
         SpriteBatch spriteBatch;
         SpriteBatch lightBatch;
@@ -72,8 +71,6 @@ namespace CatEngine
             // TODO: Add your initialization logic here
 
             base.Initialize();
-
-            vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
         }
 
         /// <summary>
@@ -192,7 +189,6 @@ namespace CatEngine
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.SetRenderTarget(renderTarget);
-            GraphicsDevice.SetVertexBuffer(vertexBuffer);
 
             //the actual game engine draw calls            
             GraphicsDevice.Clear(Color.CornflowerBlue);

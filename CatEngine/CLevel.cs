@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CatEngine
 {
-    class CLevel : CContentManager
+    public class CLevel : CContentManager
     {
         private List<String> sPropName = new List<String>();
         private List<String> sPropSprite = new List<String>();
@@ -228,7 +228,7 @@ namespace CatEngine
         }
 
         //testing
-        private void GenerateLevel()
+        public void GenerateLevel()
         {
             //creating tiles
             for (int i = 0; i < iLevelWidth; i++)
@@ -372,8 +372,8 @@ namespace CatEngine
 
         public void LoadTerrainData(string levelName)
         {
-            GenerateLevel();
-            TestSaveLevel();
+            //GenerateLevel();
+            //TestSaveLevel();
 
             if (File.Exists(levelName))
             {

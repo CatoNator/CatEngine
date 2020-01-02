@@ -33,34 +33,41 @@
             this.cLevelView1 = new CatEd.CLevelView();
             this.EditorTabControl = new System.Windows.Forms.TabControl();
             this.LevelTabPage = new System.Windows.Forms.TabPage();
-            this.WallsTab = new System.Windows.Forms.TabPage();
-            this.WallListBox = new System.Windows.Forms.CheckedListBox();
-            this.EnemyTab = new System.Windows.Forms.TabPage();
-            this.ItemsTab = new System.Windows.Forms.TabPage();
-            this.PropsTab = new System.Windows.Forms.TabPage();
+            this.LevelInfoBox = new System.Windows.Forms.GroupBox();
             this.PlayerInfoBox = new System.Windows.Forms.GroupBox();
             this.PXLocLabel = new System.Windows.Forms.Label();
-            this.PYLocLabel = new System.Windows.Forms.Label();
+            this.PDirBox = new System.Windows.Forms.TextBox();
             this.PDirLabel = new System.Windows.Forms.Label();
             this.PXLocBox = new System.Windows.Forms.TextBox();
+            this.PYLocLabel = new System.Windows.Forms.Label();
             this.PYLocBox = new System.Windows.Forms.TextBox();
-            this.PDirBox = new System.Windows.Forms.TextBox();
-            this.LevelInfoBox = new System.Windows.Forms.GroupBox();
-            this.EnemyListBox = new System.Windows.Forms.CheckedListBox();
+            this.WallsTab = new System.Windows.Forms.TabPage();
+            this.WallDataBox = new System.Windows.Forms.GroupBox();
+            this.WallYScaleBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.WallXScaleBox = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.WallXLocBox = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.WallYLocBox = new System.Windows.Forms.TextBox();
+            this.WallRemoveButton = new System.Windows.Forms.Button();
+            this.WallAddButton = new System.Windows.Forms.Button();
+            this.WallListBox = new System.Windows.Forms.CheckedListBox();
+            this.EnemyTab = new System.Windows.Forms.TabPage();
+            this.EnemyRemoveButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.EnemyTypeComboBox = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.EDirBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.EXLocbox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.EYLocBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.EnemyTypeComboBox = new System.Windows.Forms.ComboBox();
-            this.WallAddButton = new System.Windows.Forms.Button();
-            this.WallRemoveButton = new System.Windows.Forms.Button();
-            this.ItemListBox = new System.Windows.Forms.CheckedListBox();
-            this.ItemRemoveButton = new System.Windows.Forms.Button();
-            this.ItemAddButton = new System.Windows.Forms.Button();
+            this.EnemyAddButton = new System.Windows.Forms.Button();
+            this.EnemyListBox = new System.Windows.Forms.CheckedListBox();
+            this.ItemsTab = new System.Windows.Forms.TabPage();
             this.ItemDataBox = new System.Windows.Forms.GroupBox();
             this.ItemTypeComboBox = new System.Windows.Forms.ComboBox();
             this.ItemTypeLabel = new System.Windows.Forms.Label();
@@ -68,9 +75,10 @@
             this.ItemXLocBox = new System.Windows.Forms.TextBox();
             this.ItemYLocLabel = new System.Windows.Forms.Label();
             this.ItemYLocBox = new System.Windows.Forms.TextBox();
-            this.PropRemoveButton = new System.Windows.Forms.Button();
-            this.PropListBox = new System.Windows.Forms.CheckedListBox();
-            this.PropAddButton = new System.Windows.Forms.Button();
+            this.ItemRemoveButton = new System.Windows.Forms.Button();
+            this.ItemListBox = new System.Windows.Forms.CheckedListBox();
+            this.ItemAddButton = new System.Windows.Forms.Button();
+            this.PropsTab = new System.Windows.Forms.TabPage();
             this.PropDataBox = new System.Windows.Forms.GroupBox();
             this.PropTypeComboBox = new System.Windows.Forms.ComboBox();
             this.PropTypeLabel = new System.Windows.Forms.Label();
@@ -80,28 +88,20 @@
             this.PropXLocBox = new System.Windows.Forms.TextBox();
             this.PropYLocLabel = new System.Windows.Forms.Label();
             this.PropYLocBox = new System.Windows.Forms.TextBox();
-            this.EnemyRemoveButton = new System.Windows.Forms.Button();
-            this.EnemyAddButton = new System.Windows.Forms.Button();
-            this.WallDataBox = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.WallXScaleBox = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.WallXLocBox = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.WallYLocBox = new System.Windows.Forms.TextBox();
-            this.WallYScaleBox = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.PropListBox = new System.Windows.Forms.CheckedListBox();
+            this.PropRemoveButton = new System.Windows.Forms.Button();
+            this.PropAddButton = new System.Windows.Forms.Button();
             this.EditorTabControl.SuspendLayout();
             this.LevelTabPage.SuspendLayout();
-            this.WallsTab.SuspendLayout();
-            this.EnemyTab.SuspendLayout();
-            this.ItemsTab.SuspendLayout();
-            this.PropsTab.SuspendLayout();
             this.PlayerInfoBox.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.ItemDataBox.SuspendLayout();
-            this.PropDataBox.SuspendLayout();
+            this.WallsTab.SuspendLayout();
             this.WallDataBox.SuspendLayout();
+            this.EnemyTab.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.ItemsTab.SuspendLayout();
+            this.ItemDataBox.SuspendLayout();
+            this.PropsTab.SuspendLayout();
+            this.PropDataBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // cLevelView1
@@ -138,70 +138,14 @@
             this.LevelTabPage.Text = "Level";
             this.LevelTabPage.UseVisualStyleBackColor = true;
             // 
-            // WallsTab
+            // LevelInfoBox
             // 
-            this.WallsTab.Controls.Add(this.WallDataBox);
-            this.WallsTab.Controls.Add(this.WallRemoveButton);
-            this.WallsTab.Controls.Add(this.WallAddButton);
-            this.WallsTab.Controls.Add(this.WallListBox);
-            this.WallsTab.Location = new System.Drawing.Point(4, 22);
-            this.WallsTab.Name = "WallsTab";
-            this.WallsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.WallsTab.Size = new System.Drawing.Size(294, 621);
-            this.WallsTab.TabIndex = 2;
-            this.WallsTab.Text = "Walls";
-            this.WallsTab.UseVisualStyleBackColor = true;
-            // 
-            // WallListBox
-            // 
-            this.WallListBox.FormattingEnabled = true;
-            this.WallListBox.Location = new System.Drawing.Point(6, 6);
-            this.WallListBox.Name = "WallListBox";
-            this.WallListBox.Size = new System.Drawing.Size(282, 439);
-            this.WallListBox.TabIndex = 1;
-            // 
-            // EnemyTab
-            // 
-            this.EnemyTab.Controls.Add(this.EnemyRemoveButton);
-            this.EnemyTab.Controls.Add(this.groupBox1);
-            this.EnemyTab.Controls.Add(this.EnemyAddButton);
-            this.EnemyTab.Controls.Add(this.EnemyListBox);
-            this.EnemyTab.Location = new System.Drawing.Point(4, 22);
-            this.EnemyTab.Name = "EnemyTab";
-            this.EnemyTab.Padding = new System.Windows.Forms.Padding(3);
-            this.EnemyTab.Size = new System.Drawing.Size(294, 621);
-            this.EnemyTab.TabIndex = 3;
-            this.EnemyTab.Text = "Enemies";
-            this.EnemyTab.UseVisualStyleBackColor = true;
-            this.EnemyTab.Click += new System.EventHandler(this.EnemyTab_Click);
-            // 
-            // ItemsTab
-            // 
-            this.ItemsTab.Controls.Add(this.ItemDataBox);
-            this.ItemsTab.Controls.Add(this.ItemRemoveButton);
-            this.ItemsTab.Controls.Add(this.ItemListBox);
-            this.ItemsTab.Controls.Add(this.ItemAddButton);
-            this.ItemsTab.Location = new System.Drawing.Point(4, 22);
-            this.ItemsTab.Name = "ItemsTab";
-            this.ItemsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.ItemsTab.Size = new System.Drawing.Size(294, 621);
-            this.ItemsTab.TabIndex = 4;
-            this.ItemsTab.Text = "Items";
-            this.ItemsTab.UseVisualStyleBackColor = true;
-            // 
-            // PropsTab
-            // 
-            this.PropsTab.Controls.Add(this.PropDataBox);
-            this.PropsTab.Controls.Add(this.PropListBox);
-            this.PropsTab.Controls.Add(this.PropRemoveButton);
-            this.PropsTab.Controls.Add(this.PropAddButton);
-            this.PropsTab.Location = new System.Drawing.Point(4, 22);
-            this.PropsTab.Name = "PropsTab";
-            this.PropsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.PropsTab.Size = new System.Drawing.Size(294, 621);
-            this.PropsTab.TabIndex = 5;
-            this.PropsTab.Text = "Props";
-            this.PropsTab.UseVisualStyleBackColor = true;
+            this.LevelInfoBox.Location = new System.Drawing.Point(6, 6);
+            this.LevelInfoBox.Name = "LevelInfoBox";
+            this.LevelInfoBox.Size = new System.Drawing.Size(282, 499);
+            this.LevelInfoBox.TabIndex = 1;
+            this.LevelInfoBox.TabStop = false;
+            this.LevelInfoBox.Text = "Level Data";
             // 
             // PlayerInfoBox
             // 
@@ -227,14 +171,12 @@
             this.PXLocLabel.TabIndex = 0;
             this.PXLocLabel.Text = "X location";
             // 
-            // PYLocLabel
+            // PDirBox
             // 
-            this.PYLocLabel.AutoSize = true;
-            this.PYLocLabel.Location = new System.Drawing.Point(6, 48);
-            this.PYLocLabel.Name = "PYLocLabel";
-            this.PYLocLabel.Size = new System.Drawing.Size(54, 13);
-            this.PYLocLabel.TabIndex = 1;
-            this.PYLocLabel.Text = "Y location";
+            this.PDirBox.Location = new System.Drawing.Point(66, 71);
+            this.PDirBox.Name = "PDirBox";
+            this.PDirBox.Size = new System.Drawing.Size(209, 20);
+            this.PDirBox.TabIndex = 5;
             // 
             // PDirLabel
             // 
@@ -252,6 +194,15 @@
             this.PXLocBox.Size = new System.Drawing.Size(209, 20);
             this.PXLocBox.TabIndex = 3;
             // 
+            // PYLocLabel
+            // 
+            this.PYLocLabel.AutoSize = true;
+            this.PYLocLabel.Location = new System.Drawing.Point(6, 48);
+            this.PYLocLabel.Name = "PYLocLabel";
+            this.PYLocLabel.Size = new System.Drawing.Size(54, 13);
+            this.PYLocLabel.TabIndex = 1;
+            this.PYLocLabel.Text = "Y location";
+            // 
             // PYLocBox
             // 
             this.PYLocBox.Location = new System.Drawing.Point(66, 45);
@@ -259,29 +210,150 @@
             this.PYLocBox.Size = new System.Drawing.Size(209, 20);
             this.PYLocBox.TabIndex = 4;
             // 
-            // PDirBox
+            // WallsTab
             // 
-            this.PDirBox.Location = new System.Drawing.Point(66, 71);
-            this.PDirBox.Name = "PDirBox";
-            this.PDirBox.Size = new System.Drawing.Size(209, 20);
-            this.PDirBox.TabIndex = 5;
+            this.WallsTab.Controls.Add(this.WallDataBox);
+            this.WallsTab.Controls.Add(this.WallRemoveButton);
+            this.WallsTab.Controls.Add(this.WallAddButton);
+            this.WallsTab.Controls.Add(this.WallListBox);
+            this.WallsTab.Location = new System.Drawing.Point(4, 22);
+            this.WallsTab.Name = "WallsTab";
+            this.WallsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.WallsTab.Size = new System.Drawing.Size(294, 621);
+            this.WallsTab.TabIndex = 2;
+            this.WallsTab.Text = "Walls";
+            this.WallsTab.UseVisualStyleBackColor = true;
             // 
-            // LevelInfoBox
+            // WallDataBox
             // 
-            this.LevelInfoBox.Location = new System.Drawing.Point(6, 6);
-            this.LevelInfoBox.Name = "LevelInfoBox";
-            this.LevelInfoBox.Size = new System.Drawing.Size(282, 499);
-            this.LevelInfoBox.TabIndex = 1;
-            this.LevelInfoBox.TabStop = false;
-            this.LevelInfoBox.Text = "Level Data";
+            this.WallDataBox.Controls.Add(this.WallYScaleBox);
+            this.WallDataBox.Controls.Add(this.label5);
+            this.WallDataBox.Controls.Add(this.label6);
+            this.WallDataBox.Controls.Add(this.WallXScaleBox);
+            this.WallDataBox.Controls.Add(this.label7);
+            this.WallDataBox.Controls.Add(this.WallXLocBox);
+            this.WallDataBox.Controls.Add(this.label8);
+            this.WallDataBox.Controls.Add(this.WallYLocBox);
+            this.WallDataBox.Location = new System.Drawing.Point(6, 451);
+            this.WallDataBox.Name = "WallDataBox";
+            this.WallDataBox.Size = new System.Drawing.Size(282, 135);
+            this.WallDataBox.TabIndex = 4;
+            this.WallDataBox.TabStop = false;
+            this.WallDataBox.Text = "Wall Data";
             // 
-            // EnemyListBox
+            // WallYScaleBox
             // 
-            this.EnemyListBox.FormattingEnabled = true;
-            this.EnemyListBox.Location = new System.Drawing.Point(6, 6);
-            this.EnemyListBox.Name = "EnemyListBox";
-            this.EnemyListBox.Size = new System.Drawing.Size(282, 439);
-            this.EnemyListBox.TabIndex = 2;
+            this.WallYScaleBox.Location = new System.Drawing.Point(67, 102);
+            this.WallYScaleBox.Name = "WallYScaleBox";
+            this.WallYScaleBox.Size = new System.Drawing.Size(209, 20);
+            this.WallYScaleBox.TabIndex = 7;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 105);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(44, 13);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "Y Scale";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 27);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(54, 13);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "X location";
+            // 
+            // WallXScaleBox
+            // 
+            this.WallXScaleBox.Location = new System.Drawing.Point(67, 76);
+            this.WallXScaleBox.Name = "WallXScaleBox";
+            this.WallXScaleBox.Size = new System.Drawing.Size(209, 20);
+            this.WallXScaleBox.TabIndex = 5;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(7, 79);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(44, 13);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "X Scale";
+            // 
+            // WallXLocBox
+            // 
+            this.WallXLocBox.Location = new System.Drawing.Point(67, 24);
+            this.WallXLocBox.Name = "WallXLocBox";
+            this.WallXLocBox.Size = new System.Drawing.Size(209, 20);
+            this.WallXLocBox.TabIndex = 3;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(7, 53);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(54, 13);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "Y location";
+            // 
+            // WallYLocBox
+            // 
+            this.WallYLocBox.Location = new System.Drawing.Point(67, 50);
+            this.WallYLocBox.Name = "WallYLocBox";
+            this.WallYLocBox.Size = new System.Drawing.Size(209, 20);
+            this.WallYLocBox.TabIndex = 4;
+            // 
+            // WallRemoveButton
+            // 
+            this.WallRemoveButton.Location = new System.Drawing.Point(213, 592);
+            this.WallRemoveButton.Name = "WallRemoveButton";
+            this.WallRemoveButton.Size = new System.Drawing.Size(75, 23);
+            this.WallRemoveButton.TabIndex = 3;
+            this.WallRemoveButton.Text = "Remove";
+            this.WallRemoveButton.UseVisualStyleBackColor = true;
+            // 
+            // WallAddButton
+            // 
+            this.WallAddButton.Location = new System.Drawing.Point(6, 592);
+            this.WallAddButton.Name = "WallAddButton";
+            this.WallAddButton.Size = new System.Drawing.Size(75, 23);
+            this.WallAddButton.TabIndex = 2;
+            this.WallAddButton.Text = "Add";
+            this.WallAddButton.UseVisualStyleBackColor = true;
+            // 
+            // WallListBox
+            // 
+            this.WallListBox.FormattingEnabled = true;
+            this.WallListBox.Location = new System.Drawing.Point(6, 6);
+            this.WallListBox.Name = "WallListBox";
+            this.WallListBox.Size = new System.Drawing.Size(282, 439);
+            this.WallListBox.TabIndex = 1;
+            // 
+            // EnemyTab
+            // 
+            this.EnemyTab.Controls.Add(this.EnemyRemoveButton);
+            this.EnemyTab.Controls.Add(this.groupBox1);
+            this.EnemyTab.Controls.Add(this.EnemyAddButton);
+            this.EnemyTab.Controls.Add(this.EnemyListBox);
+            this.EnemyTab.Location = new System.Drawing.Point(4, 22);
+            this.EnemyTab.Name = "EnemyTab";
+            this.EnemyTab.Padding = new System.Windows.Forms.Padding(3);
+            this.EnemyTab.Size = new System.Drawing.Size(294, 621);
+            this.EnemyTab.TabIndex = 3;
+            this.EnemyTab.Text = "Enemies";
+            this.EnemyTab.UseVisualStyleBackColor = true;
+            this.EnemyTab.Click += new System.EventHandler(this.EnemyTab_Click);
+            // 
+            // EnemyRemoveButton
+            // 
+            this.EnemyRemoveButton.Location = new System.Drawing.Point(213, 592);
+            this.EnemyRemoveButton.Name = "EnemyRemoveButton";
+            this.EnemyRemoveButton.Size = new System.Drawing.Size(75, 23);
+            this.EnemyRemoveButton.TabIndex = 7;
+            this.EnemyRemoveButton.Text = "Remove";
+            this.EnemyRemoveButton.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -300,6 +372,23 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Enemy Data";
             this.groupBox1.Enter += new System.EventHandler(this.GroupBox1_Enter);
+            // 
+            // EnemyTypeComboBox
+            // 
+            this.EnemyTypeComboBox.FormattingEnabled = true;
+            this.EnemyTypeComboBox.Location = new System.Drawing.Point(67, 23);
+            this.EnemyTypeComboBox.Name = "EnemyTypeComboBox";
+            this.EnemyTypeComboBox.Size = new System.Drawing.Size(209, 21);
+            this.EnemyTypeComboBox.TabIndex = 8;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 26);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(31, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Type";
             // 
             // label1
             // 
@@ -355,66 +444,36 @@
             this.EYLocBox.TabIndex = 4;
             this.EYLocBox.TextChanged += new System.EventHandler(this.TextBox3_TextChanged);
             // 
-            // label4
+            // EnemyAddButton
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 26);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(31, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Type";
+            this.EnemyAddButton.Location = new System.Drawing.Point(6, 592);
+            this.EnemyAddButton.Name = "EnemyAddButton";
+            this.EnemyAddButton.Size = new System.Drawing.Size(75, 23);
+            this.EnemyAddButton.TabIndex = 6;
+            this.EnemyAddButton.Text = "Add";
+            this.EnemyAddButton.UseVisualStyleBackColor = true;
             // 
-            // EnemyTypeComboBox
+            // EnemyListBox
             // 
-            this.EnemyTypeComboBox.FormattingEnabled = true;
-            this.EnemyTypeComboBox.Location = new System.Drawing.Point(67, 23);
-            this.EnemyTypeComboBox.Name = "EnemyTypeComboBox";
-            this.EnemyTypeComboBox.Size = new System.Drawing.Size(209, 21);
-            this.EnemyTypeComboBox.TabIndex = 8;
+            this.EnemyListBox.FormattingEnabled = true;
+            this.EnemyListBox.Location = new System.Drawing.Point(6, 6);
+            this.EnemyListBox.Name = "EnemyListBox";
+            this.EnemyListBox.Size = new System.Drawing.Size(282, 439);
+            this.EnemyListBox.TabIndex = 2;
             // 
-            // WallAddButton
+            // ItemsTab
             // 
-            this.WallAddButton.Location = new System.Drawing.Point(6, 592);
-            this.WallAddButton.Name = "WallAddButton";
-            this.WallAddButton.Size = new System.Drawing.Size(75, 23);
-            this.WallAddButton.TabIndex = 2;
-            this.WallAddButton.Text = "Add";
-            this.WallAddButton.UseVisualStyleBackColor = true;
-            // 
-            // WallRemoveButton
-            // 
-            this.WallRemoveButton.Location = new System.Drawing.Point(213, 592);
-            this.WallRemoveButton.Name = "WallRemoveButton";
-            this.WallRemoveButton.Size = new System.Drawing.Size(75, 23);
-            this.WallRemoveButton.TabIndex = 3;
-            this.WallRemoveButton.Text = "Remove";
-            this.WallRemoveButton.UseVisualStyleBackColor = true;
-            // 
-            // ItemListBox
-            // 
-            this.ItemListBox.FormattingEnabled = true;
-            this.ItemListBox.Location = new System.Drawing.Point(6, 6);
-            this.ItemListBox.Name = "ItemListBox";
-            this.ItemListBox.Size = new System.Drawing.Size(282, 469);
-            this.ItemListBox.TabIndex = 2;
-            // 
-            // ItemRemoveButton
-            // 
-            this.ItemRemoveButton.Location = new System.Drawing.Point(213, 592);
-            this.ItemRemoveButton.Name = "ItemRemoveButton";
-            this.ItemRemoveButton.Size = new System.Drawing.Size(75, 23);
-            this.ItemRemoveButton.TabIndex = 5;
-            this.ItemRemoveButton.Text = "Remove";
-            this.ItemRemoveButton.UseVisualStyleBackColor = true;
-            // 
-            // ItemAddButton
-            // 
-            this.ItemAddButton.Location = new System.Drawing.Point(6, 592);
-            this.ItemAddButton.Name = "ItemAddButton";
-            this.ItemAddButton.Size = new System.Drawing.Size(75, 23);
-            this.ItemAddButton.TabIndex = 4;
-            this.ItemAddButton.Text = "Add";
-            this.ItemAddButton.UseVisualStyleBackColor = true;
+            this.ItemsTab.Controls.Add(this.ItemDataBox);
+            this.ItemsTab.Controls.Add(this.ItemRemoveButton);
+            this.ItemsTab.Controls.Add(this.ItemListBox);
+            this.ItemsTab.Controls.Add(this.ItemAddButton);
+            this.ItemsTab.Location = new System.Drawing.Point(4, 22);
+            this.ItemsTab.Name = "ItemsTab";
+            this.ItemsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.ItemsTab.Size = new System.Drawing.Size(294, 621);
+            this.ItemsTab.TabIndex = 4;
+            this.ItemsTab.Text = "Items";
+            this.ItemsTab.UseVisualStyleBackColor = true;
             // 
             // ItemDataBox
             // 
@@ -480,31 +539,45 @@
             this.ItemYLocBox.Size = new System.Drawing.Size(206, 20);
             this.ItemYLocBox.TabIndex = 4;
             // 
-            // PropRemoveButton
+            // ItemRemoveButton
             // 
-            this.PropRemoveButton.Location = new System.Drawing.Point(213, 592);
-            this.PropRemoveButton.Name = "PropRemoveButton";
-            this.PropRemoveButton.Size = new System.Drawing.Size(75, 23);
-            this.PropRemoveButton.TabIndex = 13;
-            this.PropRemoveButton.Text = "Remove";
-            this.PropRemoveButton.UseVisualStyleBackColor = true;
+            this.ItemRemoveButton.Location = new System.Drawing.Point(213, 592);
+            this.ItemRemoveButton.Name = "ItemRemoveButton";
+            this.ItemRemoveButton.Size = new System.Drawing.Size(75, 23);
+            this.ItemRemoveButton.TabIndex = 5;
+            this.ItemRemoveButton.Text = "Remove";
+            this.ItemRemoveButton.UseVisualStyleBackColor = true;
             // 
-            // PropListBox
+            // ItemListBox
             // 
-            this.PropListBox.FormattingEnabled = true;
-            this.PropListBox.Location = new System.Drawing.Point(6, 6);
-            this.PropListBox.Name = "PropListBox";
-            this.PropListBox.Size = new System.Drawing.Size(282, 439);
-            this.PropListBox.TabIndex = 10;
+            this.ItemListBox.FormattingEnabled = true;
+            this.ItemListBox.Location = new System.Drawing.Point(6, 6);
+            this.ItemListBox.Name = "ItemListBox";
+            this.ItemListBox.Size = new System.Drawing.Size(282, 469);
+            this.ItemListBox.TabIndex = 2;
             // 
-            // PropAddButton
+            // ItemAddButton
             // 
-            this.PropAddButton.Location = new System.Drawing.Point(6, 592);
-            this.PropAddButton.Name = "PropAddButton";
-            this.PropAddButton.Size = new System.Drawing.Size(75, 23);
-            this.PropAddButton.TabIndex = 12;
-            this.PropAddButton.Text = "Add";
-            this.PropAddButton.UseVisualStyleBackColor = true;
+            this.ItemAddButton.Location = new System.Drawing.Point(6, 592);
+            this.ItemAddButton.Name = "ItemAddButton";
+            this.ItemAddButton.Size = new System.Drawing.Size(75, 23);
+            this.ItemAddButton.TabIndex = 4;
+            this.ItemAddButton.Text = "Add";
+            this.ItemAddButton.UseVisualStyleBackColor = true;
+            // 
+            // PropsTab
+            // 
+            this.PropsTab.Controls.Add(this.PropDataBox);
+            this.PropsTab.Controls.Add(this.PropListBox);
+            this.PropsTab.Controls.Add(this.PropRemoveButton);
+            this.PropsTab.Controls.Add(this.PropAddButton);
+            this.PropsTab.Location = new System.Drawing.Point(4, 22);
+            this.PropsTab.Name = "PropsTab";
+            this.PropsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.PropsTab.Size = new System.Drawing.Size(294, 621);
+            this.PropsTab.TabIndex = 5;
+            this.PropsTab.Text = "Props";
+            this.PropsTab.UseVisualStyleBackColor = true;
             // 
             // PropDataBox
             // 
@@ -588,104 +661,31 @@
             this.PropYLocBox.Size = new System.Drawing.Size(209, 20);
             this.PropYLocBox.TabIndex = 4;
             // 
-            // EnemyRemoveButton
+            // PropListBox
             // 
-            this.EnemyRemoveButton.Location = new System.Drawing.Point(213, 592);
-            this.EnemyRemoveButton.Name = "EnemyRemoveButton";
-            this.EnemyRemoveButton.Size = new System.Drawing.Size(75, 23);
-            this.EnemyRemoveButton.TabIndex = 7;
-            this.EnemyRemoveButton.Text = "Remove";
-            this.EnemyRemoveButton.UseVisualStyleBackColor = true;
+            this.PropListBox.FormattingEnabled = true;
+            this.PropListBox.Location = new System.Drawing.Point(6, 6);
+            this.PropListBox.Name = "PropListBox";
+            this.PropListBox.Size = new System.Drawing.Size(282, 439);
+            this.PropListBox.TabIndex = 10;
             // 
-            // EnemyAddButton
+            // PropRemoveButton
             // 
-            this.EnemyAddButton.Location = new System.Drawing.Point(6, 592);
-            this.EnemyAddButton.Name = "EnemyAddButton";
-            this.EnemyAddButton.Size = new System.Drawing.Size(75, 23);
-            this.EnemyAddButton.TabIndex = 6;
-            this.EnemyAddButton.Text = "Add";
-            this.EnemyAddButton.UseVisualStyleBackColor = true;
+            this.PropRemoveButton.Location = new System.Drawing.Point(213, 592);
+            this.PropRemoveButton.Name = "PropRemoveButton";
+            this.PropRemoveButton.Size = new System.Drawing.Size(75, 23);
+            this.PropRemoveButton.TabIndex = 13;
+            this.PropRemoveButton.Text = "Remove";
+            this.PropRemoveButton.UseVisualStyleBackColor = true;
             // 
-            // WallDataBox
+            // PropAddButton
             // 
-            this.WallDataBox.Controls.Add(this.WallYScaleBox);
-            this.WallDataBox.Controls.Add(this.label5);
-            this.WallDataBox.Controls.Add(this.label6);
-            this.WallDataBox.Controls.Add(this.WallXScaleBox);
-            this.WallDataBox.Controls.Add(this.label7);
-            this.WallDataBox.Controls.Add(this.WallXLocBox);
-            this.WallDataBox.Controls.Add(this.label8);
-            this.WallDataBox.Controls.Add(this.WallYLocBox);
-            this.WallDataBox.Location = new System.Drawing.Point(6, 451);
-            this.WallDataBox.Name = "WallDataBox";
-            this.WallDataBox.Size = new System.Drawing.Size(282, 135);
-            this.WallDataBox.TabIndex = 4;
-            this.WallDataBox.TabStop = false;
-            this.WallDataBox.Text = "Wall Data";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 27);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(54, 13);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "X location";
-            // 
-            // WallXScaleBox
-            // 
-            this.WallXScaleBox.Location = new System.Drawing.Point(67, 76);
-            this.WallXScaleBox.Name = "WallXScaleBox";
-            this.WallXScaleBox.Size = new System.Drawing.Size(209, 20);
-            this.WallXScaleBox.TabIndex = 5;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 79);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(44, 13);
-            this.label7.TabIndex = 2;
-            this.label7.Text = "X Scale";
-            // 
-            // WallXLocBox
-            // 
-            this.WallXLocBox.Location = new System.Drawing.Point(67, 24);
-            this.WallXLocBox.Name = "WallXLocBox";
-            this.WallXLocBox.Size = new System.Drawing.Size(209, 20);
-            this.WallXLocBox.TabIndex = 3;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(7, 53);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(54, 13);
-            this.label8.TabIndex = 1;
-            this.label8.Text = "Y location";
-            // 
-            // WallYLocBox
-            // 
-            this.WallYLocBox.Location = new System.Drawing.Point(67, 50);
-            this.WallYLocBox.Name = "WallYLocBox";
-            this.WallYLocBox.Size = new System.Drawing.Size(209, 20);
-            this.WallYLocBox.TabIndex = 4;
-            // 
-            // WallYScaleBox
-            // 
-            this.WallYScaleBox.Location = new System.Drawing.Point(67, 102);
-            this.WallYScaleBox.Name = "WallYScaleBox";
-            this.WallYScaleBox.Size = new System.Drawing.Size(209, 20);
-            this.WallYScaleBox.TabIndex = 7;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 105);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(44, 13);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Y Scale";
+            this.PropAddButton.Location = new System.Drawing.Point(6, 592);
+            this.PropAddButton.Name = "PropAddButton";
+            this.PropAddButton.Size = new System.Drawing.Size(75, 23);
+            this.PropAddButton.TabIndex = 12;
+            this.PropAddButton.Text = "Add";
+            this.PropAddButton.UseVisualStyleBackColor = true;
             // 
             // CatEdMainForm
             // 
@@ -698,20 +698,20 @@
             this.Text = "CatEd";
             this.EditorTabControl.ResumeLayout(false);
             this.LevelTabPage.ResumeLayout(false);
-            this.WallsTab.ResumeLayout(false);
-            this.EnemyTab.ResumeLayout(false);
-            this.ItemsTab.ResumeLayout(false);
-            this.PropsTab.ResumeLayout(false);
             this.PlayerInfoBox.ResumeLayout(false);
             this.PlayerInfoBox.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.ItemDataBox.ResumeLayout(false);
-            this.ItemDataBox.PerformLayout();
-            this.PropDataBox.ResumeLayout(false);
-            this.PropDataBox.PerformLayout();
+            this.WallsTab.ResumeLayout(false);
             this.WallDataBox.ResumeLayout(false);
             this.WallDataBox.PerformLayout();
+            this.EnemyTab.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.ItemsTab.ResumeLayout(false);
+            this.ItemDataBox.ResumeLayout(false);
+            this.ItemDataBox.PerformLayout();
+            this.PropsTab.ResumeLayout(false);
+            this.PropDataBox.ResumeLayout(false);
+            this.PropDataBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
