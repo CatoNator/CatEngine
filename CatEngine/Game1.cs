@@ -51,11 +51,17 @@ namespace CatEngine
             CSettings.Instance.SetGameViewSize();
             CSettings.Instance.SetBackbufferSize(960);
 
+            graphics.PreparingDeviceSettings += GraphicsDeviceManager_PreparingDeviceSettings;
             graphics.PreferredBackBufferWidth = CSettings.Instance.iBackBufferWidth;
             graphics.PreferredBackBufferHeight = CSettings.Instance.iBackBufferHeight;
             graphics.ApplyChanges();
 
             Content.RootDirectory = "Content";
+        }
+
+        private void GraphicsDeviceManager_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            e.GraphicsDeviceInformation.GraphicsProfile = GraphicsProfile.HiDef;
         }
 
         /// <summary>
@@ -99,6 +105,7 @@ namespace CatEngine
             CRender.Instance.content = Content;
             CRender.Instance.graphics = graphics;
             CRender.Instance.graphicsDevice = GraphicsDevice;
+            CRender.Instance.Init();
             //debug: loading some essential models
             /*
             CRender.Instance.LoadModel("textured_cube");
@@ -193,6 +200,7 @@ namespace CatEngine
 
             CSprite.Instance.sbSpriteBatch = spriteBatch;
 
+            CRender.Instance.UpdateGameTime(gameTime);
             CRender.Instance.UpdateCamera();
 
             if (CurrentGameState == GameState.Menu)
@@ -212,7 +220,7 @@ namespace CatEngine
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 GraphicsDevice.BlendState = BlendState.Opaque;
-                //GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+                GraphicsDevice.RasterizerState = RasterizerState.CullNone;
                 CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
 

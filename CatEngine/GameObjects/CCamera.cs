@@ -13,6 +13,7 @@ namespace CatEngine
         private float fCameraRotation = 90.0f;
         private float fCameraVRotation = 20.0f;
         private float fCameraDistance = 30.0f;
+        private float fTargetHeight = 5.0f;
         private float fCameraBufferRange = 5.0f;
 
         private CGameObject oTarget;
@@ -109,7 +110,7 @@ namespace CatEngine
             Vector3 targetPos = new Vector3(0.0f, 0.0f, 0.0f);
 
             if (oTarget != null)
-                targetPos = new Vector3(oTarget.x, oTarget.z, oTarget.y);
+                targetPos = new Vector3(oTarget.x, oTarget.z + fTargetHeight, oTarget.y);
 
             Vector3 cameraPos = new Vector3(x, z, y);
 
@@ -127,7 +128,7 @@ namespace CatEngine
             Vector3 targetPos = new Vector3(0.0f, 0.0f, 0.0f);
 
             if (oTarget != null)
-                targetPos = new Vector3(oTarget.x, oTarget.z, oTarget.y);
+                targetPos = new Vector3(oTarget.x, oTarget.z + fTargetHeight, oTarget.y);
 
             Vector3 cameraPos = new Vector3(x, 10.0f, y);
 

@@ -36,7 +36,7 @@ namespace CatEngine
 
         private bool bLanded = false;
 
-        private float fPlayerHeight = 1.0f;
+        private float fPlayerHeight = 0.0f;
 
         private int iNextDir = 0;
 
@@ -76,7 +76,16 @@ namespace CatEngine
         public override void Render()
         {
             //CSprite.Instance.Render("sprPlayer", x+8, y+8, iAnimFrame % 4, false, -(float)(iDir*(Math.PI/2)), 1.0f, Color.White);
-            CRender.Instance.DrawModel("textured_cube", new Vector3(x, z, y), fDir);
+            //CRender.Instance.DrawModel("textured_cube", new Vector3(x, z, y), fDir);
+
+            String anime = "rifle_run";
+
+            if (fHorSpeed != 0 || fVerSpeed != 0)
+                anime = "rifle_run";
+            else
+                anime = "rifle_idle";
+
+            CRender.Instance.DrawSkinnedModel("soldier.fbx", anime+".dae", new Vector3(x, z, y), fDir+((float)Math.PI/2));
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)

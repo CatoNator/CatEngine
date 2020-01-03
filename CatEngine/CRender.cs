@@ -6,6 +6,8 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using CatEngine.SimpleMdl;
+using CatEngine.SkinnedMdl;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -23,6 +25,9 @@ namespace CatEngine
         private Dictionary<string, Model> dModelDict = new Dictionary<string, Model>();
         private Dictionary<string, Texture2D> dTextureDict = new Dictionary<string, Texture2D>();
 
+        private Dictionary<string, SkinnedModel> dSkinnedModelDict = new Dictionary<string, SkinnedModel>();
+        private Dictionary<string, SkinnedModelAnimation> dSkinnedAnimationDict = new Dictionary<string, SkinnedModelAnimation>();
+
         private Vector3 cameraPosition = new Vector3(30.0f, 30.0f, 30.0f);
         private Vector3 cameraTarget = new Vector3(0.0f, 0.0f, 0.0f); // Look back at the origin
 
@@ -30,17 +35,35 @@ namespace CatEngine
         private Matrix viewMatrix;
         private Matrix projectionMatrix;
 
+        private GameTime gameTime;
+
+        //effects
+        private BasicEffect basicEffect;
+
+        //we set this up for skinned models
+        public Effect SimpleModelEffect { get; set; }
+        public Effect SkinnedModelEffect { get; set; }
+
         //public Dictionary<string, Texture2D> dTextureDict = new Dictionary<string, Texture2D>();
         private CRender()
+        {
+        }
+
+        public void Init()
         {
             float fovAngle = MathHelper.ToRadians(CSettings.Instance.iFovAngle);  // convert 45 degrees to radians
             float aspectRatio = CSettings.Instance.GetAspectRatio();
             float near = 0.01f; // the near clipping plane distance
             float far = 600f; // the far clipping plane distance
 
+            basicEffect = new BasicEffect(graphicsDevice);
+
             worldMatrix = Matrix.CreateTranslation(0.0f, 0.0f, 0.0f);
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(fovAngle, aspectRatio, near, far);
+
+            SimpleModelEffect = content.Load<Effect>("SimpleModelEffect");
+            SkinnedModelEffect = content.Load<Effect>("SkinnedModelEffect");
         }
 
         //singletoning the singleton
@@ -65,6 +88,40 @@ namespace CatEngine
             {
                 CRender.Instance.dModelDict.Add(modelName, null);
                 CConsole.Instance.Print("Tried to load model " + modelName + " but failed, error " + e.ToString());
+            }
+        }
+
+        public void LoadSkinnedModel(String modelName)
+        {
+            try
+            {
+                SkinnedModel mdl = new SkinnedModel();
+                mdl.GraphicsDevice = graphicsDevice;
+                mdl.FilePath = "AssetData/Models/"+modelName;
+                mdl.Initialize();
+                CRender.Instance.dSkinnedModelDict.Add(modelName, mdl);
+            }
+            catch (ContentLoadException e)
+            {
+                CRender.Instance.dSkinnedModelDict.Add(modelName, null);
+                CConsole.Instance.Print("Tried to load skinned model " + modelName + " but failed, error " + e.ToString());
+            }
+        }
+
+        public void LoadSkinnedAnimation(String animationName)
+        {
+            try
+            {
+                SkinnedModelAnimation anim = new SkinnedModelAnimation();
+                anim.FilePath = "AssetData/Models/Animations/" + animationName;
+                anim.Load();
+
+                CRender.Instance.dSkinnedAnimationDict.Add(animationName, anim);
+            }
+            catch (ContentLoadException e)
+            {
+                CRender.Instance.dSkinnedAnimationDict.Add(animationName, null);
+                CConsole.Instance.Print("Tried to load skinned animation " + animationName + " but failed, error " + e.ToString());
             }
         }
 
@@ -125,6 +182,11 @@ namespace CatEngine
             cameraTarget = targetPosition;
         }
 
+        public void UpdateGameTime(GameTime time)
+        {
+            gameTime = time;
+        }
+
         public void DrawModel(string modelName, Vector3 position, float rotation)
         {
             Matrix positionMatrix = Matrix.CreateTranslation(position);
@@ -146,6 +208,45 @@ namespace CatEngine
                 }
                 mesh.Draw();
             }
+        }
+
+        public void DrawSkinnedModel(String modelName, String animName, Vector3 position, float rotation)
+        {
+            SkinnedModelInstance skinnedModelInstance = new SkinnedModelInstance();
+            dSkinnedModelDict[modelName].Meshes[0].Texture = dTextureDict["swat"];
+            skinnedModelInstance.Mesh = dSkinnedModelDict[modelName];
+            skinnedModelInstance.SpeedTransitionSecond = 0.4f;
+            skinnedModelInstance.Initialize();
+            skinnedModelInstance.SetAnimation(dSkinnedAnimationDict[animName]);
+
+            Matrix positionMatrix = Matrix.CreateTranslation(position);
+            Matrix rotationMatrix = Matrix.CreateRotationY(rotation);
+
+            skinnedModelInstance.Transformation = Matrix.CreateScale(0.025f)*rotationMatrix*positionMatrix;
+
+            skinnedModelInstance.Update(gameTime);
+
+            SkinnedModelEffect.Parameters["Texture1"].SetValue(dTextureDict["swat"]);
+            SkinnedModelEffect.Parameters["SunOrientation"].SetValue(Vector3.Normalize(new Vector3(3, 5, 2)));
+            SkinnedModelEffect.Parameters["World"].SetValue(skinnedModelInstance.Transformation);
+            SkinnedModelEffect.Parameters["WorldViewProjection"].SetValue(skinnedModelInstance.Transformation * viewMatrix * projectionMatrix);
+
+            foreach (var meshInstance in skinnedModelInstance.MeshInstances)
+            {
+                SkinnedModelEffect.Parameters["gBonesOffsets"].SetValue(meshInstance.BonesOffsets);
+                SkinnedModelEffect.Parameters["Texture1"].SetValue(meshInstance.Mesh.Texture);
+
+                graphicsDevice.SetVertexBuffer(meshInstance.Mesh.VertexBuffer);
+                graphicsDevice.Indices = meshInstance.Mesh.IndexBuffer;
+                graphicsDevice.DepthStencilState = DepthStencilState.Default;
+                foreach (EffectPass pass in SkinnedModelEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshInstance.Mesh.FaceCount);
+                }
+            }
+
+            //skinnedModelInstance.Dispose();
         }
 
         private VertexBuffer RectanglePrimitive(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, bool flipTexV)
@@ -183,7 +284,6 @@ namespace CatEngine
         {
             VertexBuffer vertexBuffer = RectanglePrimitive(C1, C2, C3, C4, flipTexV);
 
-            BasicEffect basicEffect = new BasicEffect(graphicsDevice);
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
             basicEffect.World = worldMatrix;
@@ -202,7 +302,6 @@ namespace CatEngine
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
             }
 
-            basicEffect.Dispose();
             vertexBuffer.Dispose();
         }
 

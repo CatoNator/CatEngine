@@ -54,6 +54,10 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "cube_tex" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
+            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "swat" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "soldier.fbx" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "rifle_idle.dae" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "rifle_run.dae" });
 
             PrepareLevelData("Test");
 

@@ -12,6 +12,10 @@ namespace CatEngine
     {
         private string[] sMessages = new string[10];
 
+        private int ConsoleTimerDef = 60;
+
+        private int ConsoleClearTimer = 120;
+
         private CConsole()
         {
             for (int i = 0; i < sMessages.Length; i++)
@@ -32,6 +36,16 @@ namespace CatEngine
             internal static readonly CConsole instance = new CConsole();
         }
 
+        private void Update()
+        {
+            if (ConsoleClearTimer <= 0)
+            {
+                Print("");
+            }
+            else
+                ConsoleClearTimer--;
+        }
+
         public void Print(String str)
         {
             for (int i = 0; i < sMessages.Length - 1; i++)
@@ -42,10 +56,14 @@ namespace CatEngine
             sMessages[sMessages.Length-1] = str;
 
             Debug.Print(str);
+
+            ConsoleClearTimer = ConsoleTimerDef;
         }
 
         public void Render()
         {
+            Update();
+
             for (int i = 0; i < sMessages.Length; i++)
             {
                 CSprite.Instance.DrawText(sMessages[i], new Vector2(5, 5 + 16 * i), Color.Black);
