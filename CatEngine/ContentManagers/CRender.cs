@@ -97,7 +97,7 @@ namespace CatEngine
             {
                 SkinnedModel mdl = new SkinnedModel();
                 mdl.GraphicsDevice = graphicsDevice;
-                mdl.FilePath = "AssetData/Models/"+modelName;
+                mdl.FilePath = "AssetData/Models/"+modelName+".dae";
                 mdl.Initialize();
                 CRender.Instance.dSkinnedModelDict.Add(modelName, mdl);
             }
@@ -113,7 +113,7 @@ namespace CatEngine
             try
             {
                 SkinnedModelAnimation anim = new SkinnedModelAnimation();
-                anim.FilePath = "AssetData/Models/Animations/" + animationName;
+                anim.FilePath = "AssetData/Models/Animations/" + animationName + ".dae";
                 anim.Load();
 
                 CRender.Instance.dSkinnedAnimationDict.Add(animationName, anim);
@@ -213,7 +213,7 @@ namespace CatEngine
         public void DrawSkinnedModel(String modelName, String animName, Vector3 position, float rotation)
         {
             SkinnedModelInstance skinnedModelInstance = new SkinnedModelInstance();
-            dSkinnedModelDict[modelName].Meshes[0].Texture = dTextureDict["swat"];
+            dSkinnedModelDict[modelName].Meshes[0].Texture = dTextureDict["cube_tex"];
             skinnedModelInstance.Mesh = dSkinnedModelDict[modelName];
             skinnedModelInstance.SpeedTransitionSecond = 0.4f;
             skinnedModelInstance.Initialize();
@@ -222,7 +222,7 @@ namespace CatEngine
             Matrix positionMatrix = Matrix.CreateTranslation(position);
             Matrix rotationMatrix = Matrix.CreateRotationY(rotation);
 
-            skinnedModelInstance.Transformation = Matrix.CreateScale(0.025f)*rotationMatrix*positionMatrix;
+            skinnedModelInstance.Transformation = Matrix.CreateScale(1.0f) * Matrix.CreateRotationX(-(float)Math.PI / 2) * rotationMatrix * positionMatrix;
 
             skinnedModelInstance.Update(gameTime);
 

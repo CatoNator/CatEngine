@@ -12,9 +12,12 @@ namespace CatEngine
     {
         private float fCameraRotation = 90.0f;
         private float fCameraVRotation = 20.0f;
-        private float fCameraDistance = 30.0f;
-        private float fTargetHeight = 5.0f;
+        private float fCameraDistance = 20.0f;
+        private float fTargetHeight = 10.0f;
         private float fCameraBufferRange = 5.0f;
+
+        private float fCameraRotationSpeed = 2.0f;
+        private float fCameraVRotationSpeed = 2.0f;
 
         private CGameObject oTarget;
 
@@ -70,9 +73,16 @@ namespace CatEngine
                     PlayerCamera(iCameraRot, iCameraVRot);
                 else
                     AutoCamera();
+
+                if (keyboardState.IsKeyDown(Keys.X))
+                {
+                    fCameraRotation = ((CPlayer)oTarget).fDir;
+                }
             }
 
-            Vector3 lerpVector = Lerp(new Vector3(x, z, y), CRender.Instance.GetCameraPosition(), 0.9f);
+            Vector3 lerpVector = Lerp(
+                new Vector3(x + distDirX(fCameraDistance, degToRad(fCameraRotation)), z + -distDirY(fCameraDistance, degToRad(fCameraVRotation)), y + distDirY(fCameraDistance, degToRad(fCameraRotation))),
+                CRender.Instance.GetCameraPosition(), 0.9f);
 
             CRender.Instance.SetCameraTarget(TargetVector);
             CRender.Instance.SetCameraPosition(lerpVector);
@@ -91,8 +101,6 @@ namespace CatEngine
 
         private void PlayerCamera(int rotDir, int rotDirV)
         {
-            float fCameraRotationSpeed = 4.0f;
-
             fCameraRotation += (float)rotDir * fCameraRotationSpeed;
 
             if (fCameraRotation > 180.0f)
@@ -100,7 +108,7 @@ namespace CatEngine
             else if (fCameraRotation < -180.0f)
                 fCameraRotation += 360.0f;
 
-            fCameraVRotation += (float)rotDirV * fCameraRotationSpeed;
+            fCameraVRotation += (float)rotDirV * fCameraVRotationSpeed;
 
             if (fCameraVRotation > 80.0f)
                 fCameraVRotation = 80.0f;

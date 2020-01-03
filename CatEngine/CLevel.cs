@@ -20,8 +20,8 @@ namespace CatEngine
         private List<int> sPropHealth = new List<int>();
 
         public const int MAX_LEVELSIZE = 256;
-        public int iLevelWidth = 4;
-        public int iLevelHeight = 4;
+        public int iLevelWidth = 10;
+        public int iLevelHeight = 10;
         public int iTileSize = 10;
 
         private FloorTile[,] oFloorTileArray = new FloorTile[MAX_LEVELSIZE, MAX_LEVELSIZE];
@@ -381,11 +381,11 @@ namespace CatEngine
                 {
                     CConsole.Instance.Print("reading level data from file " + levelName);
 
-                    using (BinaryReader reader= new BinaryReader(stream))
+                    using (BinaryReader reader = new BinaryReader(stream))
                     {
-                        iTileSize = reader.ReadByte();
-                        iLevelWidth = reader.ReadByte();
-                        iLevelWidth = reader.ReadByte();
+                        iTileSize = (int)reader.ReadByte();
+                        iLevelWidth = (int)reader.ReadByte();
+                        iLevelWidth = (int)reader.ReadByte();
 
                         //padding, "TILEDATABEGIN"
                         for (int i= 0; i < 13; i++)

@@ -66,7 +66,7 @@ namespace CatEngine
 
             for (int i = 0; i < sMessages.Length; i++)
             {
-                CSprite.Instance.DrawText(sMessages[i], new Vector2(5, 5 + 16 * i), Color.Black);
+                //CSprite.Instance.DrawText(sMessages[i], new Vector2(5, 5 + 16 * i), Color.White);
             }
         }
     }

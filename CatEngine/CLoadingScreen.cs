@@ -55,9 +55,9 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "swat" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "soldier.fbx" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "rifle_idle.dae" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "rifle_run.dae" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "roblox_anim_nod" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "roblox_anim_nod" });
+            //QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "run" });
 
             PrepareLevelData("Test");
 
@@ -121,8 +121,8 @@ namespace CatEngine
             dir %= 2*Math.PI;
 
             float maxLength = 160.0f;
-            int xpos = 10;
-            int ypos = 10;
+            int xpos = CSettings.GAME_VIEW_HEIGHT-100;
+            int ypos = CSettings.Instance.GAME_VIEW_WIDTH/2;
 
             float length = maxLength * ((float)iExecutedFunctions / (float)sCommands.Count());
 
@@ -155,7 +155,15 @@ namespace CatEngine
                 method.Invoke(i.Instance, i.Params.ToArray());
 
                 Interlocked.Increment(ref iExecutedFunctions);
-                CConsole.Instance.Print(i.MethodName+"("+i.Params.ToString()+")");
+
+                String debug = "";
+
+                foreach (String s in i.Params)
+                {
+                    debug += s + ", ";
+                }
+
+                CConsole.Instance.Print(i.MethodName+"("+debug+")");
 
                 //Thread.Sleep(1000);
             }

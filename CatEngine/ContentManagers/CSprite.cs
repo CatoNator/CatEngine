@@ -140,7 +140,22 @@ namespace CatEngine
 
         public void DrawText(String text, Vector2 location, Color color)
         {
-            sbSpriteBatch.DrawString(testFont, text, location, color);
+            byte[] byteString = Encoding.Default.GetBytes(text);
+
+            int w = 25;
+            int h = 25;
+
+            for (int i = 0; i < byteString.Length; i++)
+            {
+                int hCell = byteString[i] % 10;
+                int vCell = byteString[i] / 10;
+
+                Rectangle sourceRectangle = new Rectangle(0 + (w * hCell), 0 + (h * vCell), w, h);
+                Rectangle destRectangle = new Rectangle((int)location.X+i*w, (int)location.Y, w, h);
+                sbSpriteBatch.Draw(dTextureDict["test_font"], destRectangle, sourceRectangle, color, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
+            }
+
+            //sbSpriteBatch.DrawString(testFont, text, location, color);
         }
         
         public void Render(string spriteName, float x, float y, int imageIndex, bool flip, float rotation, float layerDepth, Color color)
@@ -198,7 +213,7 @@ namespace CatEngine
                 spriteEffect = SpriteEffects.None;
 
             //drawing the sprite
-            //sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, color, rotation, Origin, spriteEffect, layerDepth);
+            sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, color, rotation, Origin, spriteEffect, layerDepth);
         }
 
         public void RenderTile(int x, int y, int left, int top)

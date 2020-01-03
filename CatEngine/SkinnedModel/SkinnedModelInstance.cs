@@ -141,6 +141,7 @@ namespace CatEngine.SkinnedMdl
                 foreach (var boneInstances in meshInstance.BoneInstances)
                 {
                     Matrix transform = boneInstances.BoneAnimationInstance.Transform;
+
                     if (boneInstances.BoneAnimationInstance.PreviousBoneAnimationInstance != null)
                     {
                         float transition = (float)(gameTime.TotalGameTime.TotalSeconds - TimeAnimationChanged.TotalSeconds);
