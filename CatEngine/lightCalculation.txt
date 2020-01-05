@@ -1,0 +1,12 @@
+///scrCalculateNormalShading(light rotation, polygon normal rotation);
+//we 2d for now
+lRot = abs(argument[0])%360;
+pRot = abs(argument[1])%360;
+
+a = abs((cos(degtorad(pRot - lRot))-1)/2);
+
+return a;
+
+lightValue = (scrCalculateNormalShading(sunRotation.X, polygonRotation.X)+scrCalculateNormalShading(sunRotation.Y, polygonRotation.Y))/2
+
+colour = Color.White*(0.5*lightValue);
