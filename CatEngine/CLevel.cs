@@ -230,13 +230,22 @@ namespace CatEngine
         //testing
         public void GenerateLevel()
         {
+            Random random = new Random();
+            
             //creating tiles
             for (int i = 0; i < iLevelWidth; i++)
             {
                 for (int a = 0; a < iLevelHeight; a++)
                 {
+                    float[] arr = new float[4];
+
+                    for (int e = 0; e < 4; e++)
+                    {
+                        arr[e] = 5.0f+(float)random.NextDouble()*2.5f;
+                    }
+
                     oFloorTileArray[i, a] = new FloorTile();
-                    oFloorTileArray[i, a].SetProperties(i, a, iTileSize, new float[] { 5.0f, 5.0f, 5.0f, 5.0f});
+                    oFloorTileArray[i, a].SetProperties(i, a, iTileSize, arr);
                 }
             }
         }

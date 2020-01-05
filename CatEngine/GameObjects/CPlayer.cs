@@ -34,7 +34,7 @@ namespace CatEngine
 
         private bool bLanded = false;
 
-        private float fPlayerHeight = 3.0f;
+        private float fPlayerHeight = 0.0f;
         
         public override void InstanceSpawn()
         {

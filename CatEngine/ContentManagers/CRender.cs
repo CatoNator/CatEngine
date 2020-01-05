@@ -35,6 +35,8 @@ namespace CatEngine
         private Matrix viewMatrix;
         private Matrix projectionMatrix;
 
+        private Vector3 SunOrientation = new Vector3(0, 0, 3);
+
         private GameTime gameTime;
 
         //effects
@@ -187,6 +189,38 @@ namespace CatEngine
             gameTime = time;
         }
 
+        private float CalculateAngleDifference(float A1, float A2)
+        {
+            float diff = 0.0f;
+
+            A1 = Math.Abs(A1) % 360;
+            A2 = Math.Abs(A2) % 360;
+
+            diff = (float)Math.Abs((Math.Cos((A2 - A1)) - 1) / 2);
+
+            return diff;
+        }
+
+        private Vector3 GetNormal(Vector3 C1, Vector3 C2, Vector3 C3)
+        {
+            //subtract the vectors
+            Vector3 ab = C1 - C3;
+            Vector3 cb = C2 - C3;
+
+            ab.Normalize();
+            cb.Normalize();
+            //get a vector perpendicular to those two edges
+            return Vector3.Cross(ab, cb);
+        }
+
+        private Color ColorBlend(Color C1, Color C2, float amount)
+        {
+            return new Color(
+                    (C1.R * (1 - amount) + C2.R * amount) / 2.0f,
+                    (C1.G * (1 - amount) + C2.G * amount) / 2.0f,
+                    (C1.B * (1 - amount) + C2.B * amount) / 2.0f);
+        }
+
         public void DrawModel(string modelName, Vector3 position, float rotation)
         {
             Matrix positionMatrix = Matrix.CreateTranslation(position);
@@ -261,21 +295,27 @@ namespace CatEngine
             int flipTexVInt = flipTexV ? 1 : 0;
             int notFlipTexVInt = !flipTexV ? 1 : 0;
 
-            VertexPositionTexture[] vertices = new VertexPositionTexture[6]
+            Vector3 Normal = GetNormal(C2, C3, C4);
+
+            float lightValue = (CalculateAngleDifference(SunOrientation.X, Normal.X) + CalculateAngleDifference(SunOrientation.Y, Normal.Y) + CalculateAngleDifference(SunOrientation.Z, Normal.Z)) / 3.0f;
+
+            Color color = Color.White * (0.3f + (0.7f * lightValue));
+
+            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6]
             {
                 //polygon 1
-                new VertexPositionTexture(new Vector3(C1.X, C1.Y, C1.Z), new Vector2(0, 1*(flipTexVInt))),
-                new VertexPositionTexture(new Vector3(C3.X, C3.Y, C3.Z), new Vector2(0, 1*(notFlipTexVInt))),
-                new VertexPositionTexture(new Vector3(C2.X, C2.Y, C2.Z), new Vector2(1, 1*(flipTexVInt))),
+                new VertexPositionColorTexture(new Vector3(C1.X, C1.Y, C1.Z), color, new Vector2(0, 1*(flipTexVInt))),
+                new VertexPositionColorTexture(new Vector3(C3.X, C3.Y, C3.Z), color, new Vector2(0, 1*(notFlipTexVInt))),
+                new VertexPositionColorTexture(new Vector3(C2.X, C2.Y, C2.Z), color, new Vector2(1, 1*(flipTexVInt))),
 
                 //polygon 2
-                new VertexPositionTexture(new Vector3(C2.X, C2.Y, C2.Z), new Vector2(1, 1*(flipTexVInt))),
-                new VertexPositionTexture(new Vector3(C3.X, C3.Y, C3.Z), new Vector2(0, 1*(notFlipTexVInt))),
-                new VertexPositionTexture(new Vector3(C4.X, C4.Y, C4.Z), new Vector2(1, 1*(notFlipTexVInt)))
+                new VertexPositionColorTexture(new Vector3(C2.X, C2.Y, C2.Z), color, new Vector2(1, 1*(flipTexVInt))),
+                new VertexPositionColorTexture(new Vector3(C3.X, C3.Y, C3.Z), color, new Vector2(0, 1*(notFlipTexVInt))),
+                new VertexPositionColorTexture(new Vector3(C4.X, C4.Y, C4.Z), color, new Vector2(1, 1*(notFlipTexVInt)))
             };
 
-            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
-            vertexBuffer.SetData<VertexPositionTexture>(vertices);
+            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+            vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
 
             return vertexBuffer;
         }
@@ -287,7 +327,7 @@ namespace CatEngine
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
             basicEffect.World = worldMatrix;
-            basicEffect.VertexColorEnabled = false;
+            basicEffect.VertexColorEnabled = true;
             basicEffect.LightingEnabled = false;
             basicEffect.TextureEnabled = true;
             basicEffect.Texture = dTextureDict[textureName];
@@ -342,6 +382,7 @@ namespace CatEngine
         public void UpdateCamera()
         {
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
+            //SunOrientation = new Vector3(SunOrientation.X, SunOrientation.Y, SunOrientation.Z + 0.01f);
         }
     }
 }
