@@ -98,7 +98,9 @@ namespace CatEngine
             CSprite.Instance.graphics = graphics;
             //loading the debug texture...
             CSprite.Instance.LoadTextureSheet("empty");
+            //loading the loading screen so we don't crash while loading assets
             CSprite.Instance.LoadTextureSheet("LoadingScreen");
+            //loading a font for testing
             CSprite.Instance.LoadTextureSheet("spriteFont");
             //loading screen stuff NEEDS to be loaded here! it can't be loaded in during runtime, it'll just crash.
 
@@ -108,13 +110,6 @@ namespace CatEngine
             CRender.Instance.graphicsDevice = GraphicsDevice;
             CRender.Instance.Init();
             //debug: loading some essential models
-            /*
-            CRender.Instance.LoadModel("textured_cube");
-            CRender.Instance.LoadModel("board");
-            CRender.Instance.LoadTexture("cube_tex");
-            CRender.Instance.LoadTexture("grassside");
-            CRender.Instance.LoadTexture("grasstop");
-            */
 
             //DEBUG: creating objects that aren't configured to be loaded in CLevel yet
             CObjectManager.Instance.CreateInstance(typeof(CCamera), 0, 10, -30);

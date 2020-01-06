@@ -7,6 +7,7 @@ using MonoGame.Forms;
 using System.IO;
 using CatEngine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CatEd
@@ -24,6 +25,9 @@ namespace CatEd
             base.Initialize();
 
             CRender.Instance.graphicsDevice = GraphicsDevice;
+            CRender.Instance.content = Editor.Content;
+            //CRender.Instance.graphics = Editor.graphics;
+            CRender.Instance.Init();
 
             if (!contentLoaded)
             {
@@ -116,6 +120,7 @@ namespace CatEd
 
             //Editor.spriteBatch.Begin();
 
+            //this creates a memory leak for whatever reason
             CLevel.Instance.Render();
 
             //Editor.spriteBatch.End();

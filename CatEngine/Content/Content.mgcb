@@ -233,18 +233,6 @@
 /processorParam:TextureFormat=Color
 /build:hk_mp5n.jpg
 
-#begin SimpleModelEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:SimpleModelEffect.fx
-
-#begin SkinnedModelEffect.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:SkinnedModelEffect.fx
-
 #begin swat.jpg
 /importer:TextureImporter
 /processor:TextureProcessor

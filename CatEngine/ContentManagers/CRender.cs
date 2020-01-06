@@ -64,8 +64,8 @@ namespace CatEngine
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(fovAngle, aspectRatio, near, far);
 
-            SimpleModelEffect = content.Load<Effect>("SimpleModelEffect");
-            SkinnedModelEffect = content.Load<Effect>("SkinnedModelEffect");
+            //SimpleModelEffect = content.Load<Effect>("SimpleModelEffect");
+            //SkinnedModelEffect = content.Load<Effect>("SkinnedModelEffect");
         }
 
         //singletoning the singleton
@@ -341,6 +341,8 @@ namespace CatEngine
                 pass.Apply();
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
             }
+
+            graphicsDevice.SetVertexBuffer(null);
 
             vertexBuffer.Dispose();
         }
