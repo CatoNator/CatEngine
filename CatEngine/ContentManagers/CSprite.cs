@@ -25,8 +25,6 @@ namespace CatEngine
 
         public Dictionary<string, Texture2D> dTextureDict = new Dictionary<string, Texture2D>();
 
-        private SpriteFont testFont;
-
         private class Sprite
         {
             public String Name;
@@ -102,8 +100,6 @@ namespace CatEngine
 
                 dSpriteNameDict.Add(name, new Sprite(name, tex, l, t, w, h, img, xo, yo));
             }
-
-            testFont = content.Load<SpriteFont>("testfont");
         }
 
         public void LoadTextureSheet(String sheetName)
@@ -122,7 +118,7 @@ namespace CatEngine
         //mem leak, texture2ds won't get deleted once they fall out of scope
         public void DrawRect(Rectangle rectangle, Color color)
         {
-            /*Texture2D rect = new Texture2D(graphics.GraphicsDevice, rectangle.Width, rectangle.Height);
+            Texture2D rect = new Texture2D(graphics.GraphicsDevice, rectangle.Width, rectangle.Height);
 
             Color[] data = new Color[rectangle.Width*rectangle.Height];
             for (int i = 0; i < data.Length; ++i) data[i] = color;
@@ -135,24 +131,24 @@ namespace CatEngine
 
             rect.Dispose();
 
-            sbSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);*/
+            sbSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
         }
 
         public void DrawText(String text, Vector2 location, Color color)
         {
             byte[] byteString = Encoding.Default.GetBytes(text);
 
-            int w = 25;
-            int h = 25;
+            int w = 8;
+            int h = 8;
 
             for (int i = 0; i < byteString.Length; i++)
             {
-                int hCell = byteString[i] % 10;
-                int vCell = byteString[i] / 10;
+                int hCell = byteString[i];
+                int vCell = 0;//byteString[i] / 10;
 
                 Rectangle sourceRectangle = new Rectangle(0 + (w * hCell), 0 + (h * vCell), w, h);
                 Rectangle destRectangle = new Rectangle((int)location.X+i*w, (int)location.Y, w, h);
-                sbSpriteBatch.Draw(dTextureDict["test_font"], destRectangle, sourceRectangle, color, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
+                sbSpriteBatch.Draw(dTextureDict["spriteFont"], destRectangle, sourceRectangle, color, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
             }
 
             //sbSpriteBatch.DrawString(testFont, text, location, color);
@@ -170,7 +166,7 @@ namespace CatEngine
             catch(Exception e)
             {
                 spr = dSpriteNameDict["error"];
-                CConsole.Instance.Print("tried to get data for sprite " + spriteName + ", but it does not exist");
+                //CConsole.Instance.Print("tried to get data for sprite " + spriteName + ", but it does not exist");
             }
 
             Texture2D texture;
@@ -183,7 +179,7 @@ namespace CatEngine
             catch (Exception e)
             {
                 texture = dTextureDict["empty"];
-                CConsole.Instance.Print("tried to render texturesheet " + spr.TextureSheet + ", but it does not exist");
+                //CConsole.Instance.Print("tried to render texturesheet " + spr.TextureSheet + ", but it does not exist");
             }
 
             int imgIndex;

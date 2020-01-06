@@ -35,7 +35,7 @@ namespace CatEngine
         private Matrix viewMatrix;
         private Matrix projectionMatrix;
 
-        private Vector3 SunOrientation = new Vector3(0, 0, 3);
+        private Vector3 SunOrientation = new Vector3(4.5f, 4.5f, 2.0f);
 
         private GameTime gameTime;
 
@@ -299,7 +299,7 @@ namespace CatEngine
 
             float lightValue = (CalculateAngleDifference(SunOrientation.X, Normal.X) + CalculateAngleDifference(SunOrientation.Y, Normal.Y) + CalculateAngleDifference(SunOrientation.Z, Normal.Z)) / 3.0f;
 
-            Color color = Color.White * (0.3f + (0.7f * lightValue));
+            Color color = Color.White * (0.1f + (0.9f * lightValue));
 
             VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6]
             {
@@ -382,7 +382,13 @@ namespace CatEngine
         public void UpdateCamera()
         {
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
-            //SunOrientation = new Vector3(SunOrientation.X, SunOrientation.Y, SunOrientation.Z + 0.01f);
+        }
+
+        public Vector3 SunDebug()
+        {
+            //SunOrientation = new Vector3(SunOrientation.X + 0.01f, SunOrientation.Y + 0.01f, SunOrientation.Z + 0.01f);
+            SunOrientation = new Vector3(SunOrientation.X%(float)(Math.PI*2), SunOrientation.Y % (float)(Math.PI * 2), SunOrientation.Z % (float)(Math.PI * 2));
+            return SunOrientation;
         }
     }
 }

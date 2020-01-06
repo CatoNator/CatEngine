@@ -11,13 +11,12 @@ Bullsheet/Content/obj
 CatEd/bin
 CatEd/obj
 CatEd/Content/obj
-.vs
+.vs/
 
 # files
 *.suo
 *.mgcontent
 *.cache
-CatEd/obj/Debug/CatEd.csproj.CoreCompileInputs.cache
 *.ide-shm
 *.cache
 *.ide-wal

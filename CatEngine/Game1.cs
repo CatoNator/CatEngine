@@ -99,7 +99,7 @@ namespace CatEngine
             //loading the debug texture...
             CSprite.Instance.LoadTextureSheet("empty");
             CSprite.Instance.LoadTextureSheet("LoadingScreen");
-            CSprite.Instance.LoadTextureSheet("test_font");
+            CSprite.Instance.LoadTextureSheet("spriteFont");
             //loading screen stuff NEEDS to be loaded here! it can't be loaded in during runtime, it'll just crash.
 
             //setting up 3D and loading debug cube

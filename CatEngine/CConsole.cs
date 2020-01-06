@@ -12,9 +12,13 @@ namespace CatEngine
     {
         private string[] sMessages = new string[10];
 
-        private int ConsoleTimerDef = 60;
+        private int ConsoleTimerDef = 240;
 
-        private int ConsoleClearTimer = 120;
+        private int ConsoleClearTimer = 240;
+
+        private bool showConsole = true;
+
+        private bool showDebug = false;
 
         private CConsole()
         {
@@ -40,7 +44,7 @@ namespace CatEngine
         {
             if (ConsoleClearTimer <= 0)
             {
-                Print("");
+                showConsole = false;
             }
             else
                 ConsoleClearTimer--;
@@ -55,8 +59,9 @@ namespace CatEngine
 
             sMessages[sMessages.Length-1] = str;
 
-            Debug.Print(str);
+            //Debug.Print(str);
 
+            showConsole = true;
             ConsoleClearTimer = ConsoleTimerDef;
         }
 
@@ -64,10 +69,26 @@ namespace CatEngine
         {
             Update();
 
-            for (int i = 0; i < sMessages.Length; i++)
+            if (showConsole)
             {
-                //CSprite.Instance.DrawText(sMessages[i], new Vector2(5, 5 + 16 * i), Color.White);
+                CSprite.Instance.DrawRect(new Rectangle(0, 0, CSettings.Instance.GAME_VIEW_WIDTH, 5 + 16 * (sMessages.Length)), Color.Black * 0.75f);
+
+                for (int i = 0; i < sMessages.Length; i++)
+                {
+                    CSprite.Instance.DrawText(sMessages[i], new Vector2(5, 5 + 16 * i), Color.White);
+                }
             }
+
+            if (showDebug)
+            {
+                DrawDebugInfo();
+            }
+        }
+
+        private void DrawDebugInfo()
+        {
+            Vector3 test = CRender.Instance.SunDebug();
+            CSprite.Instance.DrawText("sun orientation " + test.X + " " + test.Y + " " + test.Z, new Vector2(20, 20), Color.White);
         }
     }
 }

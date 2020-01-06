@@ -126,9 +126,6 @@ namespace CatEngine
 
             float length = maxLength * ((float)iExecutedFunctions / (float)sCommands.Count());
 
-            /*CSprite.Instance.DrawRect(new Rectangle(xpos, ypos, (int)maxLength+69, 12), Color.Gray);
-            CSprite.Instance.DrawRect(new Rectangle(xpos, ypos, (int)length+69, 12), Color.White);*/
-
             CSprite.Instance.Render("sprLoadBar", xpos, ypos, 0, false, 0.0f, 1.0f, Color.White);
             CSprite.Instance.Render("sprLoadBar", xpos+maxLength, ypos, 2, false, 0.0f, 1.0f, Color.White);
 
@@ -141,8 +138,6 @@ namespace CatEngine
 
                 CSprite.Instance.Render("sprLoadBar", xpos+i*2, ypos, img, false, 0.0f, 1.0f, Color.White); // + (int)(Math.Sin(dir+(i/5)) * 3)
             }
-
-            //CSprite.Instance.Render("sprTest", 160+64, 30, 0, false, (float)dir, 1.0f, Color.White);
         }
 
         private void LoadData()
