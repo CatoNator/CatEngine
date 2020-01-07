@@ -25,6 +25,7 @@ namespace CatEngine
         private Dictionary<string, Model> dModelDict = new Dictionary<string, Model>();
         private Dictionary<string, Texture2D> dTextureDict = new Dictionary<string, Texture2D>();
 
+        private Dictionary<string, SimpleModel> dSimpleModelDict = new Dictionary<string, SimpleModel>();
         private Dictionary<string, SkinnedModel> dSkinnedModelDict = new Dictionary<string, SkinnedModel>();
         private Dictionary<string, SkinnedModelAnimation> dSkinnedAnimationDict = new Dictionary<string, SkinnedModelAnimation>();
 
@@ -64,8 +65,8 @@ namespace CatEngine
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(fovAngle, aspectRatio, near, far);
 
-            //SimpleModelEffect = content.Load<Effect>("SimpleModelEffect");
-            //SkinnedModelEffect = content.Load<Effect>("SkinnedModelEffect");
+            SimpleModelEffect = content.Load<Effect>("SimpleModelEffect");
+            SkinnedModelEffect = content.Load<Effect>("SkinnedModelEffect");
         }
 
         //singletoning the singleton
@@ -90,6 +91,23 @@ namespace CatEngine
             {
                 CRender.Instance.dModelDict.Add(modelName, null);
                 CConsole.Instance.Print("Tried to load model " + modelName + " but failed, error " + e.ToString());
+            }
+        }
+
+        public void LoadSimpleModel(String modelName)
+        {
+            try
+            {
+                SimpleModel mdl = new SimpleModel();
+                mdl.GraphicsDevice = graphicsDevice;
+                mdl.FilePath = "AssetData/Models/" + modelName + ".dae";
+                mdl.Initialize();
+                CRender.Instance.dSimpleModelDict.Add(modelName, mdl);
+            }
+            catch (ContentLoadException e)
+            {
+                CRender.Instance.dSimpleModelDict.Add(modelName, null);
+                CConsole.Instance.Print("Tried to load skinned model " + modelName + " but failed, error " + e.ToString());
             }
         }
 
@@ -247,7 +265,7 @@ namespace CatEngine
         public void DrawSkinnedModel(String modelName, String animName, Vector3 position, float rotation)
         {
             SkinnedModelInstance skinnedModelInstance = new SkinnedModelInstance();
-            dSkinnedModelDict[modelName].Meshes[0].Texture = dTextureDict["cube_tex"];
+            dSkinnedModelDict[modelName].Meshes[0].Texture = dTextureDict["swat"];
             skinnedModelInstance.Mesh = dSkinnedModelDict[modelName];
             skinnedModelInstance.SpeedTransitionSecond = 0.4f;
             skinnedModelInstance.Initialize();
@@ -256,12 +274,13 @@ namespace CatEngine
             Matrix positionMatrix = Matrix.CreateTranslation(position);
             Matrix rotationMatrix = Matrix.CreateRotationY(rotation);
 
-            skinnedModelInstance.Transformation = Matrix.CreateScale(1.0f) * Matrix.CreateRotationX(-(float)Math.PI / 2) * rotationMatrix * positionMatrix;
+            float scale = 1.0f;
+
+            skinnedModelInstance.Transformation = Matrix.CreateScale(scale) * Matrix.CreateRotationX(-(float)Math.PI / 2) * rotationMatrix * positionMatrix;
 
             skinnedModelInstance.Update(gameTime);
 
-            SkinnedModelEffect.Parameters["Texture1"].SetValue(dTextureDict["swat"]);
-            SkinnedModelEffect.Parameters["SunOrientation"].SetValue(Vector3.Normalize(new Vector3(3, 5, 2)));
+            SkinnedModelEffect.Parameters["SunOrientation"].SetValue(Vector3.Normalize(SunOrientation));
             SkinnedModelEffect.Parameters["World"].SetValue(skinnedModelInstance.Transformation);
             SkinnedModelEffect.Parameters["WorldViewProjection"].SetValue(skinnedModelInstance.Transformation * viewMatrix * projectionMatrix);
 
@@ -334,8 +353,6 @@ namespace CatEngine
 
             graphicsDevice.SetVertexBuffer(vertexBuffer);
 
-            basicEffect.Texture = dTextureDict[textureName];
-
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
@@ -347,28 +364,28 @@ namespace CatEngine
             vertexBuffer.Dispose();
         }
 
-        public void DrawBillBoard(Vector3 position, Vector2 size, Vector2 origin, String textureName)
+        public void DrawBillBoard(Vector3 position, Vector2 scale, Vector2 origin, String textureName)
         {
-            /*
-            C1 =
-            C2 =
-            C3 =
-            C4 =
-            
-            VertexBuffer vertexBuffer = RectanglePrimitive(graphicsDevice, C1, C2, C3, C4, false);
+            float cameraDirection = (float)(Math.PI/2)-(float)Math.Atan2((double)(cameraPosition.Z - cameraTarget.Z), (double)(cameraPosition.X - cameraTarget.X));
+            float cameraVDirection = (float)Math.Atan2((double)(cameraPosition.Y - cameraTarget.Y), (double)(cameraPosition.X - cameraTarget.X));
 
-            BasicEffect basicEffect = new BasicEffect(graphicsDevice);
+            Vector3 C1 = new Vector3(- origin.X, 0, - origin.Y);
+            Vector3 C2 = new Vector3(- origin.X, 0, scale.Y - origin.Y);
+            Vector3 C3 = new Vector3(scale.X - origin.X, 0, - origin.Y);
+            Vector3 C4 = new Vector3(scale.X - origin.X, 0, scale.Y - origin.Y);
+
+            VertexBuffer vertexBuffer = RectanglePrimitive(C1, C2, C3, C4, false);
+
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
-            basicEffect.World = worldMatrix;
+            basicEffect.World = Matrix.CreateRotationX(-(float)Math.PI / 2) * Matrix.CreateRotationY(cameraDirection) * Matrix.CreateTranslation(position) * worldMatrix;
             basicEffect.VertexColorEnabled = false;
             basicEffect.LightingEnabled = false;
             basicEffect.TextureEnabled = true;
-            basicEffect.Texture = dTextureDict["grasstop"];
-
-            graphicsDevice.SetVertexBuffer(vertexBuffer);
 
             basicEffect.Texture = dTextureDict[textureName];
+
+            graphicsDevice.SetVertexBuffer(vertexBuffer);
 
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
@@ -376,9 +393,7 @@ namespace CatEngine
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
             }
 
-            basicEffect.Dispose();
             vertexBuffer.Dispose();
-            */
         }
 
         public void UpdateCamera()

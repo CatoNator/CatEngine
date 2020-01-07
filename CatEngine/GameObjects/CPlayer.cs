@@ -53,8 +53,10 @@ namespace CatEngine
             KeyboardState keyboardState = Keyboard.GetState();
             GamePadState gamepadState = GamePad.GetState(PlayerIndex.One);
 
-            MovementKeyboard(keyboardState);
-            //MovementGamepad(gamepadState);
+            if(!CSettings.Instance.bGamepadEnabled)
+                MovementKeyboard(keyboardState);
+            else
+                MovementGamepad(gamepadState);
 
             PlayerPhysics();
             //PlayerCollision(fHeightBufferZone);
@@ -65,14 +67,15 @@ namespace CatEngine
             //CSprite.Instance.Render("sprPlayer", x+8, y+8, iAnimFrame % 4, false, -(float)(iDir*(Math.PI/2)), 1.0f, Color.White);
             //CRender.Instance.DrawModel("textured_cube", new Vector3(x, z, y), fDir);
 
-            String anime = "run";
+            String anime = "roblox_anim";
 
             if (fHorSpeed != 0 || fVerSpeed != 0)
-                anime = "run";
+                anime = "roblox_anim";
             else
-                anime = "idle";
+                anime = "roblox_anim_nod";
 
-            CRender.Instance.DrawSkinnedModel("roblox_anim_nod", "roblox_anim_nod", new Vector3(x, z, y), fDir+((float)Math.PI/2));
+            CRender.Instance.DrawSkinnedModel("roblox_anim_nod", anime, new Vector3(x, z, y), fDir+((float)Math.PI/2));
+            //CRender.Instance.DrawBillBoard(new Vector3(10.0f, 10.0f, 10.0f), new Vector2(5, 5), new Vector2(2.5f, 2.5f), "grasstop");
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)
@@ -118,6 +121,18 @@ namespace CatEngine
             //CGameObject col = CollisionRectangle(new Rectangle((int)x + (int)distDirX(16, degToRad(iNextDir * 90)), (int)y + (int)distDirY(16, degToRad(iNextDir * 90)), 16, 16), typeof(CWall), true);
 
             //if (col == null)
+        }
+
+        private void MovementGamepad(GamePadState gamepadState)
+        {
+            fHInput = gamepadState.ThumbSticks.Left.X;
+            fVInput = gamepadState.ThumbSticks.Left.Y;
+
+            if (gamepadState.IsButtonDown(Buttons.A) && bLanded)
+            {
+                fZSpeed = 0.6f;
+                //bLanded = false;
+            }
         }
 
         private void PlayerPhysics()
@@ -215,6 +230,8 @@ namespace CatEngine
                 {
                     bLanded = true;
                     fZSpeed = 0f;
+
+                    CParticleManager.Instance.CreateParticle(new Vector3(x, z, y), new Vector3(0, 0, 0));
                 }
 
                 z = (float)Math.Floor(z);
@@ -225,12 +242,6 @@ namespace CatEngine
             }
 
             z += fZSpeed;
-        }
-
-        private void MovementGamepad(GamePadState gamepadState)
-        {
-            fHInput = gamepadState.ThumbSticks.Left.X;
-            fVInput = gamepadState.ThumbSticks.Left.Y;
         }
 
         private void PlayerCollision(float bufferZone)

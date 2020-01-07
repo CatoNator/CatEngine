@@ -219,6 +219,7 @@ namespace CatEngine
                 GraphicsDevice.RasterizerState = RasterizerState.CullNone;
                 CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
+                CParticleManager.Instance.Render();
 
                 //rendering 2D objects
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
