@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using CatEngine.Content;
 
 namespace CatEngine
 {
@@ -56,11 +57,11 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "swat" });
             //QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "soldier" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "idle" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "run" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "roblox_anim_nod" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "roblox_anim" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "roblox_anim_nod" });
+            //QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "idle" });
+            //QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "run" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "Monni" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "Monni" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "Monni_standby" });
 
             PrepareLevelData("Test");
 

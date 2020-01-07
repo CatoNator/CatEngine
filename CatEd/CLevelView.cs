@@ -9,6 +9,7 @@ using CatEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using CatEngine.Content;
 
 namespace CatEd
 {
@@ -27,7 +28,7 @@ namespace CatEd
             CRender.Instance.graphicsDevice = GraphicsDevice;
             CRender.Instance.content = Editor.Content;
             //CRender.Instance.graphics = Editor.graphics;
-            CRender.Instance.Init();
+            CRender.Instance.InitEditor();
 
             if (!contentLoaded)
             {
@@ -105,8 +106,9 @@ namespace CatEd
 
         protected override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            CRender.Instance.UpdateGameTime(gameTime);
             CameraBehaviour(1, 0);
+            base.Update(gameTime);
         }
 
         protected override void Draw()
@@ -118,12 +120,11 @@ namespace CatEd
 
             CRender.Instance.UpdateCamera();
 
-            //Editor.spriteBatch.Begin();
-
             //this creates a memory leak for whatever reason
             CLevel.Instance.Render();
 
-            //Editor.spriteBatch.End();
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.SetVertexBuffer(null);
         }
     }
 }

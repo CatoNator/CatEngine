@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using CatEngine.Content;
 
 namespace CatEngine
 {
@@ -67,14 +68,14 @@ namespace CatEngine
             //CSprite.Instance.Render("sprPlayer", x+8, y+8, iAnimFrame % 4, false, -(float)(iDir*(Math.PI/2)), 1.0f, Color.White);
             //CRender.Instance.DrawModel("textured_cube", new Vector3(x, z, y), fDir);
 
-            String anime = "roblox_anim";
+            String anime = "Monni";
 
             if (fHorSpeed != 0 || fVerSpeed != 0)
-                anime = "roblox_anim";
+                anime = "Monni";
             else
-                anime = "roblox_anim_nod";
+                anime = "Monni_standby";
 
-            CRender.Instance.DrawSkinnedModel("roblox_anim_nod", anime, new Vector3(x, z, y), fDir+((float)Math.PI/2));
+            CRender.Instance.DrawSkinnedModel("Monni", anime, new Vector3(x, z, y), fDir+((float)Math.PI/2));
             //CRender.Instance.DrawBillBoard(new Vector3(10.0f, 10.0f, 10.0f), new Vector2(5, 5), new Vector2(2.5f, 2.5f), "grasstop");
         }
 

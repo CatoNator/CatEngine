@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
-namespace CatEngine
+namespace CatEngine.Content
 {
     public class CRender : CContentManager
     {
@@ -69,6 +69,20 @@ namespace CatEngine
             SkinnedModelEffect = content.Load<Effect>("SkinnedModelEffect");
         }
 
+        public void InitEditor()
+        {
+            float fovAngle = MathHelper.ToRadians(CSettings.Instance.iFovAngle);  // convert 45 degrees to radians
+            float aspectRatio = CSettings.Instance.GetAspectRatio();
+            float near = 0.01f; // the near clipping plane distance
+            float far = 600f; // the far clipping plane distance
+
+            basicEffect = new BasicEffect(graphicsDevice);
+
+            worldMatrix = Matrix.CreateTranslation(0.0f, 0.0f, 0.0f);
+            viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
+            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(fovAngle, aspectRatio, near, far);
+        }
+
         //singletoning the singleton
         public static CRender Instance { get { return Nested.instance; } }
 
@@ -117,7 +131,7 @@ namespace CatEngine
             {
                 SkinnedModel mdl = new SkinnedModel();
                 mdl.GraphicsDevice = graphicsDevice;
-                mdl.FilePath = "AssetData/Models/"+modelName+".dae";
+                mdl.FilePath = "AssetData/Models/"+modelName+".fbx";
                 mdl.Initialize();
                 CRender.Instance.dSkinnedModelDict.Add(modelName, mdl);
             }
@@ -133,7 +147,7 @@ namespace CatEngine
             try
             {
                 SkinnedModelAnimation anim = new SkinnedModelAnimation();
-                anim.FilePath = "AssetData/Models/Animations/" + animationName + ".dae";
+                anim.FilePath = "AssetData/Models/Animations/" + animationName + ".fbx";
                 anim.Load();
 
                 CRender.Instance.dSkinnedAnimationDict.Add(animationName, anim);
@@ -266,6 +280,7 @@ namespace CatEngine
         {
             SkinnedModelInstance skinnedModelInstance = new SkinnedModelInstance();
             dSkinnedModelDict[modelName].Meshes[0].Texture = dTextureDict["swat"];
+            dSkinnedModelDict[modelName].Meshes[1].Texture = dTextureDict["grassside"];
             skinnedModelInstance.Mesh = dSkinnedModelDict[modelName];
             skinnedModelInstance.SpeedTransitionSecond = 0.4f;
             skinnedModelInstance.Initialize();
@@ -274,9 +289,9 @@ namespace CatEngine
             Matrix positionMatrix = Matrix.CreateTranslation(position);
             Matrix rotationMatrix = Matrix.CreateRotationY(rotation);
 
-            float scale = 1.0f;
+            float scale = 0.025f;
 
-            skinnedModelInstance.Transformation = Matrix.CreateScale(scale) * Matrix.CreateRotationX(-(float)Math.PI / 2) * rotationMatrix * positionMatrix;
+            skinnedModelInstance.Transformation = Matrix.CreateScale(scale) * rotationMatrix * positionMatrix;
 
             skinnedModelInstance.Update(gameTime);
 

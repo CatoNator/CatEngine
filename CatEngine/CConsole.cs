@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using CatEngine.Content;
 
 namespace CatEngine
 {

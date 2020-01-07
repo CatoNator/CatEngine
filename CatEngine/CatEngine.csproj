@@ -67,7 +67,6 @@
     <Compile Include="ContentManagers\CRender.cs" />
     <Compile Include="CSettings.cs" />
     <Compile Include="ContentManagers\CContentManager.cs" />
-    <Compile Include="CTile.cs" />
     <Compile Include="CParticleManager.cs" />
     <Compile Include="fmod.cs" />
     <Compile Include="fmod_dsp.cs" />

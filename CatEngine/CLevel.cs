@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CatEngine
+namespace CatEngine.Content
 {
     public class CLevel : CContentManager
     {
