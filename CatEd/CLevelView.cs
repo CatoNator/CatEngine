@@ -17,7 +17,7 @@ namespace CatEd
     public class CLevelView : MonoGame.Forms.Controls.MonoGameControl
     {
         private float fCameraRotation = 0.0f;
-        private float fCameraVRotation = 5.0f;
+        private float fCameraVRotation = 15.0f;
         private float fCameraDistance = 30.0f;
 
         private bool contentLoaded = false;
@@ -65,29 +65,10 @@ namespace CatEd
 
         private void CameraBehaviour()
         {
-            int iCameraRot = 0;
-
-            KeyboardState keyboardState = Keyboard.GetState();
-
-            if (keyboardState.IsKeyDown(Keys.Right))
-            {
-                iCameraRot = -1;
-            }
-            else if (keyboardState.IsKeyDown(Keys.Left))
-            {
-                iCameraRot = 1;
-            }
+            int iCameraRot = 1;
 
             int iCameraVRot = 0;
 
-            if (keyboardState.IsKeyDown(Keys.Up))
-            {
-                iCameraVRot = 1;
-            }
-            else if (keyboardState.IsKeyDown(Keys.Down))
-            {
-                iCameraVRot = -1;
-            }
 
             int LevelW = CLevel.Instance.iLevelWidth;
             int LevelH = CLevel.Instance.iLevelHeight;
@@ -133,7 +114,7 @@ namespace CatEd
         protected override void Update(GameTime gameTime)
         {
             CRender.Instance.UpdateGameTime(gameTime);
-            CameraBehaviour();
+            //CameraBehaviour();
             base.Update(gameTime);
         }
 
@@ -144,7 +125,7 @@ namespace CatEd
             GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
             GraphicsDevice.Clear(Color.Black);
 
-            //CameraBehaviour();
+            CameraBehaviour();
             CRender.Instance.UpdateCamera();
 
             //this creates a memory leak for whatever reason

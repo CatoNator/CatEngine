@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Diagnostics;
 using System.IO;
+using CatEngine.Content;
 
 namespace CatEd
 {

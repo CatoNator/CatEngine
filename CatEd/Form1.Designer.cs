@@ -91,8 +91,17 @@
             this.PropListBox = new System.Windows.Forms.CheckedListBox();
             this.PropRemoveButton = new System.Windows.Forms.Button();
             this.PropAddButton = new System.Windows.Forms.Button();
+            this.SelectionXLabel = new System.Windows.Forms.Label();
+            this.SelectionYLabel = new System.Windows.Forms.Label();
+            this.SelectionWLabel = new System.Windows.Forms.Label();
+            this.SelectionHLabel = new System.Windows.Forms.Label();
+            this.TileSelXBox = new System.Windows.Forms.TextBox();
+            this.TileSelYBox = new System.Windows.Forms.TextBox();
+            this.TileSelWBox = new System.Windows.Forms.TextBox();
+            this.TileSelHBox = new System.Windows.Forms.TextBox();
             this.EditorTabControl.SuspendLayout();
             this.LevelTabPage.SuspendLayout();
+            this.LevelInfoBox.SuspendLayout();
             this.PlayerInfoBox.SuspendLayout();
             this.WallsTab.SuspendLayout();
             this.WallDataBox.SuspendLayout();
@@ -140,12 +149,20 @@
             // 
             // LevelInfoBox
             // 
+            this.LevelInfoBox.Controls.Add(this.TileSelHBox);
+            this.LevelInfoBox.Controls.Add(this.TileSelWBox);
+            this.LevelInfoBox.Controls.Add(this.TileSelYBox);
+            this.LevelInfoBox.Controls.Add(this.TileSelXBox);
+            this.LevelInfoBox.Controls.Add(this.SelectionHLabel);
+            this.LevelInfoBox.Controls.Add(this.SelectionWLabel);
+            this.LevelInfoBox.Controls.Add(this.SelectionYLabel);
+            this.LevelInfoBox.Controls.Add(this.SelectionXLabel);
             this.LevelInfoBox.Location = new System.Drawing.Point(6, 6);
             this.LevelInfoBox.Name = "LevelInfoBox";
             this.LevelInfoBox.Size = new System.Drawing.Size(282, 499);
             this.LevelInfoBox.TabIndex = 1;
             this.LevelInfoBox.TabStop = false;
-            this.LevelInfoBox.Text = "Level Data";
+            this.LevelInfoBox.Text = "Tile Data";
             // 
             // PlayerInfoBox
             // 
@@ -687,6 +704,70 @@
             this.PropAddButton.Text = "Add";
             this.PropAddButton.UseVisualStyleBackColor = true;
             // 
+            // SelectionXLabel
+            // 
+            this.SelectionXLabel.AutoSize = true;
+            this.SelectionXLabel.Location = new System.Drawing.Point(6, 25);
+            this.SelectionXLabel.Name = "SelectionXLabel";
+            this.SelectionXLabel.Size = new System.Drawing.Size(61, 13);
+            this.SelectionXLabel.TabIndex = 0;
+            this.SelectionXLabel.Text = "Selection X";
+            // 
+            // SelectionYLabel
+            // 
+            this.SelectionYLabel.AutoSize = true;
+            this.SelectionYLabel.Location = new System.Drawing.Point(6, 50);
+            this.SelectionYLabel.Name = "SelectionYLabel";
+            this.SelectionYLabel.Size = new System.Drawing.Size(61, 13);
+            this.SelectionYLabel.TabIndex = 1;
+            this.SelectionYLabel.Text = "Selection Y";
+            // 
+            // SelectionWLabel
+            // 
+            this.SelectionWLabel.AutoSize = true;
+            this.SelectionWLabel.Location = new System.Drawing.Point(6, 77);
+            this.SelectionWLabel.Name = "SelectionWLabel";
+            this.SelectionWLabel.Size = new System.Drawing.Size(65, 13);
+            this.SelectionWLabel.TabIndex = 2;
+            this.SelectionWLabel.Text = "Selection W";
+            // 
+            // SelectionHLabel
+            // 
+            this.SelectionHLabel.AutoSize = true;
+            this.SelectionHLabel.Location = new System.Drawing.Point(6, 105);
+            this.SelectionHLabel.Name = "SelectionHLabel";
+            this.SelectionHLabel.Size = new System.Drawing.Size(62, 13);
+            this.SelectionHLabel.TabIndex = 3;
+            this.SelectionHLabel.Text = "Selection H";
+            // 
+            // TileSelXBox
+            // 
+            this.TileSelXBox.Location = new System.Drawing.Point(73, 22);
+            this.TileSelXBox.Name = "TileSelXBox";
+            this.TileSelXBox.Size = new System.Drawing.Size(202, 20);
+            this.TileSelXBox.TabIndex = 4;
+            // 
+            // TileSelYBox
+            // 
+            this.TileSelYBox.Location = new System.Drawing.Point(73, 50);
+            this.TileSelYBox.Name = "TileSelYBox";
+            this.TileSelYBox.Size = new System.Drawing.Size(202, 20);
+            this.TileSelYBox.TabIndex = 5;
+            // 
+            // TileSelWBox
+            // 
+            this.TileSelWBox.Location = new System.Drawing.Point(73, 74);
+            this.TileSelWBox.Name = "TileSelWBox";
+            this.TileSelWBox.Size = new System.Drawing.Size(202, 20);
+            this.TileSelWBox.TabIndex = 6;
+            // 
+            // TileSelHBox
+            // 
+            this.TileSelHBox.Location = new System.Drawing.Point(73, 102);
+            this.TileSelHBox.Name = "TileSelHBox";
+            this.TileSelHBox.Size = new System.Drawing.Size(202, 20);
+            this.TileSelHBox.TabIndex = 7;
+            // 
             // CatEdMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -698,6 +779,8 @@
             this.Text = "CatEd";
             this.EditorTabControl.ResumeLayout(false);
             this.LevelTabPage.ResumeLayout(false);
+            this.LevelInfoBox.ResumeLayout(false);
+            this.LevelInfoBox.PerformLayout();
             this.PlayerInfoBox.ResumeLayout(false);
             this.PlayerInfoBox.PerformLayout();
             this.WallsTab.ResumeLayout(false);
@@ -779,6 +862,14 @@
         private System.Windows.Forms.CheckedListBox PropListBox;
         private System.Windows.Forms.Button PropRemoveButton;
         private System.Windows.Forms.Button PropAddButton;
+        private System.Windows.Forms.TextBox TileSelHBox;
+        private System.Windows.Forms.TextBox TileSelWBox;
+        private System.Windows.Forms.TextBox TileSelYBox;
+        private System.Windows.Forms.TextBox TileSelXBox;
+        private System.Windows.Forms.Label SelectionHLabel;
+        private System.Windows.Forms.Label SelectionWLabel;
+        private System.Windows.Forms.Label SelectionYLabel;
+        private System.Windows.Forms.Label SelectionXLabel;
     }
 }
 
