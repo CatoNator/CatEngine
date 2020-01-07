@@ -117,8 +117,6 @@ namespace CatEngine.Content
 
             public void RenderTile(String[] textureArray)
             {
-                //CRender.Instance.DrawTile(graphicsDevice, iPosition, fCornerHeights, iTileSize);
-
                 CRender.Instance.DrawRectangle(new Vector3(iPosition[0] * iTileSize, fCornerHeights[2], iPosition[1] * iTileSize + iTileSize),
                     new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[3], iPosition[1] * iTileSize + iTileSize),
                     new Vector3(iPosition[0] * iTileSize, fCornerHeights[0], iPosition[1] * iTileSize),

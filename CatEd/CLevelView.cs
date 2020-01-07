@@ -7,6 +7,7 @@ using MonoGame.Forms;
 using System.IO;
 using CatEngine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using CatEngine.Content;
@@ -33,6 +34,7 @@ namespace CatEd
             if (!contentLoaded)
             {
                 //CLevel.Instance.GenerateLevel();
+                CRender.Instance.LoadTexture("grasstop");
                 PrepareLevelData("Test");
                 contentLoaded = true;
             }
@@ -61,8 +63,32 @@ namespace CatEd
             CLevel.Instance.SetTextureArray(textureList.ToArray());
         }
 
-        private void CameraBehaviour(int rotDir, int rotDirV)
+        private void CameraBehaviour()
         {
+            int iCameraRot = 0;
+
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            if (keyboardState.IsKeyDown(Keys.Right))
+            {
+                iCameraRot = -1;
+            }
+            else if (keyboardState.IsKeyDown(Keys.Left))
+            {
+                iCameraRot = 1;
+            }
+
+            int iCameraVRot = 0;
+
+            if (keyboardState.IsKeyDown(Keys.Up))
+            {
+                iCameraVRot = 1;
+            }
+            else if (keyboardState.IsKeyDown(Keys.Down))
+            {
+                iCameraVRot = -1;
+            }
+
             int LevelW = CLevel.Instance.iLevelWidth;
             int LevelH = CLevel.Instance.iLevelHeight;
             int TileS = CLevel.Instance.iTileSize;
@@ -75,9 +101,9 @@ namespace CatEd
 
             CRender.Instance.SetCameraTarget(targetPos);
 
-            float fCameraRotationSpeed = 4.0f;
+            float fCameraRotationSpeed = 1.0f;
 
-            fCameraRotation += (float)rotDir * fCameraRotationSpeed;
+            fCameraRotation += (float)iCameraRot * fCameraRotationSpeed;
 
             fCameraDistance = LevelW * TileS + 30.0f;
 
@@ -86,7 +112,7 @@ namespace CatEd
             else if (fCameraRotation < -180.0f)
                 fCameraRotation += 360.0f;
 
-            fCameraVRotation += (float)rotDirV * fCameraRotationSpeed;
+            fCameraVRotation += (float)iCameraVRot * fCameraRotationSpeed;
 
             if (fCameraVRotation > 80.0f)
                 fCameraVRotation = 80.0f;
@@ -107,7 +133,7 @@ namespace CatEd
         protected override void Update(GameTime gameTime)
         {
             CRender.Instance.UpdateGameTime(gameTime);
-            CameraBehaviour(1, 0);
+            CameraBehaviour();
             base.Update(gameTime);
         }
 
@@ -115,13 +141,19 @@ namespace CatEd
         {
             base.Draw();
 
-            this.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
-            this.GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+            GraphicsDevice.Clear(Color.Black);
 
+            //CameraBehaviour();
             CRender.Instance.UpdateCamera();
 
             //this creates a memory leak for whatever reason
             CLevel.Instance.Render();
+
+            /*CRender.Instance.DrawRectangle(new Vector3(-10, 0, -10),
+                new Vector3(10, 0, -10),
+                new Vector3(-10, 0, 10),
+                new Vector3(10, 0, 10), "grasstop", false);*/
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.SetVertexBuffer(null);
