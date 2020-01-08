@@ -30,30 +30,48 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cLevelView1 = new CatEd.CLevelView();
             this.EditorTabControl = new System.Windows.Forms.TabControl();
             this.LevelTabPage = new System.Windows.Forms.TabPage();
-            this.LevelInfoBox = new System.Windows.Forms.GroupBox();
-            this.PlayerInfoBox = new System.Windows.Forms.GroupBox();
-            this.PXLocLabel = new System.Windows.Forms.Label();
-            this.PDirBox = new System.Windows.Forms.TextBox();
-            this.PDirLabel = new System.Windows.Forms.Label();
-            this.PXLocBox = new System.Windows.Forms.TextBox();
-            this.PYLocLabel = new System.Windows.Forms.Label();
-            this.PYLocBox = new System.Windows.Forms.TextBox();
+            this.TileSetButton = new System.Windows.Forms.Button();
+            this.TileTexGroupBox = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.TileBTexLabel = new System.Windows.Forms.Label();
+            this.TileLTexLabel = new System.Windows.Forms.Label();
+            this.TileLTexBox = new System.Windows.Forms.ComboBox();
+            this.TileBTexBox = new System.Windows.Forms.ComboBox();
+            this.TileTTexBox = new System.Windows.Forms.ComboBox();
+            this.TileTTexLabel = new System.Windows.Forms.Label();
+            this.TileDataGroupBox = new System.Windows.Forms.GroupBox();
+            this.TileTLTextBox = new System.Windows.Forms.TextBox();
+            this.TileTRTextBox = new System.Windows.Forms.TextBox();
+            this.TileBLTextBox = new System.Windows.Forms.TextBox();
+            this.TileBRTextBox = new System.Windows.Forms.TextBox();
+            this.TileBRLabel = new System.Windows.Forms.Label();
+            this.TileBLLabel = new System.Windows.Forms.Label();
+            this.TileTRLabel = new System.Windows.Forms.Label();
+            this.TileTLLabel = new System.Windows.Forms.Label();
+            this.TileSelectionGroupBox = new System.Windows.Forms.GroupBox();
+            this.TileSelHBox = new System.Windows.Forms.TextBox();
+            this.TileSelWBox = new System.Windows.Forms.TextBox();
+            this.TileSelYBox = new System.Windows.Forms.TextBox();
+            this.TileSelXBox = new System.Windows.Forms.TextBox();
+            this.SelectionHLabel = new System.Windows.Forms.Label();
+            this.SelectionWLabel = new System.Windows.Forms.Label();
+            this.SelectionYLabel = new System.Windows.Forms.Label();
+            this.SelectionXLabel = new System.Windows.Forms.Label();
             this.WallsTab = new System.Windows.Forms.TabPage();
             this.WallDataBox = new System.Windows.Forms.GroupBox();
-            this.WallYScaleBox = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.WallXScaleBox = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.WallXLocBox = new System.Windows.Forms.TextBox();
+            this.PlayerZBox = new System.Windows.Forms.TextBox();
+            this.PlayerZLabel = new System.Windows.Forms.Label();
+            this.PlayerXBox = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.WallYLocBox = new System.Windows.Forms.TextBox();
+            this.PlayerYBox = new System.Windows.Forms.TextBox();
             this.WallRemoveButton = new System.Windows.Forms.Button();
             this.WallAddButton = new System.Windows.Forms.Button();
-            this.WallListBox = new System.Windows.Forms.CheckedListBox();
             this.EnemyTab = new System.Windows.Forms.TabPage();
             this.EnemyRemoveButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -91,18 +109,20 @@
             this.PropListBox = new System.Windows.Forms.CheckedListBox();
             this.PropRemoveButton = new System.Windows.Forms.Button();
             this.PropAddButton = new System.Windows.Forms.Button();
-            this.SelectionXLabel = new System.Windows.Forms.Label();
-            this.SelectionYLabel = new System.Windows.Forms.Label();
-            this.SelectionWLabel = new System.Windows.Forms.Label();
-            this.SelectionHLabel = new System.Windows.Forms.Label();
-            this.TileSelXBox = new System.Windows.Forms.TextBox();
-            this.TileSelYBox = new System.Windows.Forms.TextBox();
-            this.TileSelWBox = new System.Windows.Forms.TextBox();
-            this.TileSelHBox = new System.Windows.Forms.TextBox();
+            this.PlayerDirBox = new System.Windows.Forms.TextBox();
+            this.PlayerDirLabel = new System.Windows.Forms.Label();
+            this.LevelDataBox = new System.Windows.Forms.GroupBox();
+            this.LevelWLabel = new System.Windows.Forms.Label();
+            this.LevelWBox = new System.Windows.Forms.TextBox();
+            this.LevelHLabel = new System.Windows.Forms.Label();
+            this.LevelHBox = new System.Windows.Forms.TextBox();
+            this.cLevelView1 = new CatEd.CLevelView();
+            this.SaveButton = new System.Windows.Forms.Button();
             this.EditorTabControl.SuspendLayout();
             this.LevelTabPage.SuspendLayout();
-            this.LevelInfoBox.SuspendLayout();
-            this.PlayerInfoBox.SuspendLayout();
+            this.TileTexGroupBox.SuspendLayout();
+            this.TileDataGroupBox.SuspendLayout();
+            this.TileSelectionGroupBox.SuspendLayout();
             this.WallsTab.SuspendLayout();
             this.WallDataBox.SuspendLayout();
             this.EnemyTab.SuspendLayout();
@@ -111,16 +131,8 @@
             this.ItemDataBox.SuspendLayout();
             this.PropsTab.SuspendLayout();
             this.PropDataBox.SuspendLayout();
+            this.LevelDataBox.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // cLevelView1
-            // 
-            this.cLevelView1.Location = new System.Drawing.Point(12, 12);
-            this.cLevelView1.MouseHoverUpdatesOnly = false;
-            this.cLevelView1.Name = "cLevelView1";
-            this.cLevelView1.Size = new System.Drawing.Size(854, 643);
-            this.cLevelView1.TabIndex = 0;
-            this.cLevelView1.Text = "cLevelView1";
             // 
             // EditorTabControl
             // 
@@ -137,8 +149,12 @@
             // 
             // LevelTabPage
             // 
-            this.LevelTabPage.Controls.Add(this.LevelInfoBox);
-            this.LevelTabPage.Controls.Add(this.PlayerInfoBox);
+            this.LevelTabPage.Controls.Add(this.SaveButton);
+            this.LevelTabPage.Controls.Add(this.LevelDataBox);
+            this.LevelTabPage.Controls.Add(this.TileSetButton);
+            this.LevelTabPage.Controls.Add(this.TileTexGroupBox);
+            this.LevelTabPage.Controls.Add(this.TileDataGroupBox);
+            this.LevelTabPage.Controls.Add(this.TileSelectionGroupBox);
             this.LevelTabPage.Location = new System.Drawing.Point(4, 22);
             this.LevelTabPage.Name = "LevelTabPage";
             this.LevelTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -147,92 +163,295 @@
             this.LevelTabPage.Text = "Level";
             this.LevelTabPage.UseVisualStyleBackColor = true;
             // 
-            // LevelInfoBox
+            // TileSetButton
             // 
-            this.LevelInfoBox.Controls.Add(this.TileSelHBox);
-            this.LevelInfoBox.Controls.Add(this.TileSelWBox);
-            this.LevelInfoBox.Controls.Add(this.TileSelYBox);
-            this.LevelInfoBox.Controls.Add(this.TileSelXBox);
-            this.LevelInfoBox.Controls.Add(this.SelectionHLabel);
-            this.LevelInfoBox.Controls.Add(this.SelectionWLabel);
-            this.LevelInfoBox.Controls.Add(this.SelectionYLabel);
-            this.LevelInfoBox.Controls.Add(this.SelectionXLabel);
-            this.LevelInfoBox.Location = new System.Drawing.Point(6, 6);
-            this.LevelInfoBox.Name = "LevelInfoBox";
-            this.LevelInfoBox.Size = new System.Drawing.Size(282, 499);
-            this.LevelInfoBox.TabIndex = 1;
-            this.LevelInfoBox.TabStop = false;
-            this.LevelInfoBox.Text = "Tile Data";
+            this.TileSetButton.Location = new System.Drawing.Point(17, 592);
+            this.TileSetButton.Name = "TileSetButton";
+            this.TileSetButton.Size = new System.Drawing.Size(101, 23);
+            this.TileSetButton.TabIndex = 16;
+            this.TileSetButton.Text = "Apply Changes";
+            this.TileSetButton.UseVisualStyleBackColor = true;
+            this.TileSetButton.Click += new System.EventHandler(this.TileSetButton_Click);
             // 
-            // PlayerInfoBox
+            // TileTexGroupBox
             // 
-            this.PlayerInfoBox.Controls.Add(this.PXLocLabel);
-            this.PlayerInfoBox.Controls.Add(this.PDirBox);
-            this.PlayerInfoBox.Controls.Add(this.PDirLabel);
-            this.PlayerInfoBox.Controls.Add(this.PXLocBox);
-            this.PlayerInfoBox.Controls.Add(this.PYLocLabel);
-            this.PlayerInfoBox.Controls.Add(this.PYLocBox);
-            this.PlayerInfoBox.Location = new System.Drawing.Point(6, 511);
-            this.PlayerInfoBox.Name = "PlayerInfoBox";
-            this.PlayerInfoBox.Size = new System.Drawing.Size(282, 104);
-            this.PlayerInfoBox.TabIndex = 0;
-            this.PlayerInfoBox.TabStop = false;
-            this.PlayerInfoBox.Text = "Player Spawn";
+            this.TileTexGroupBox.Controls.Add(this.label10);
+            this.TileTexGroupBox.Controls.Add(this.comboBox2);
+            this.TileTexGroupBox.Controls.Add(this.comboBox1);
+            this.TileTexGroupBox.Controls.Add(this.label9);
+            this.TileTexGroupBox.Controls.Add(this.TileBTexLabel);
+            this.TileTexGroupBox.Controls.Add(this.TileLTexLabel);
+            this.TileTexGroupBox.Controls.Add(this.TileLTexBox);
+            this.TileTexGroupBox.Controls.Add(this.TileBTexBox);
+            this.TileTexGroupBox.Controls.Add(this.TileTTexBox);
+            this.TileTexGroupBox.Controls.Add(this.TileTTexLabel);
+            this.TileTexGroupBox.Location = new System.Drawing.Point(6, 293);
+            this.TileTexGroupBox.Name = "TileTexGroupBox";
+            this.TileTexGroupBox.Size = new System.Drawing.Size(282, 162);
+            this.TileTexGroupBox.TabIndex = 16;
+            this.TileTexGroupBox.TabStop = false;
+            this.TileTexGroupBox.Text = "Texture Data";
             // 
-            // PXLocLabel
+            // label10
             // 
-            this.PXLocLabel.AutoSize = true;
-            this.PXLocLabel.Location = new System.Drawing.Point(6, 22);
-            this.PXLocLabel.Name = "PXLocLabel";
-            this.PXLocLabel.Size = new System.Drawing.Size(54, 13);
-            this.PXLocLabel.TabIndex = 0;
-            this.PXLocLabel.Text = "X location";
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(7, 130);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(37, 13);
+            this.label10.TabIndex = 26;
+            this.label10.Text = "WTop";
             // 
-            // PDirBox
+            // comboBox2
             // 
-            this.PDirBox.Location = new System.Drawing.Point(66, 71);
-            this.PDirBox.Name = "PDirBox";
-            this.PDirBox.Size = new System.Drawing.Size(209, 20);
-            this.PDirBox.TabIndex = 5;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(64, 127);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(212, 21);
+            this.comboBox2.TabIndex = 25;
             // 
-            // PDirLabel
+            // comboBox1
             // 
-            this.PDirLabel.AutoSize = true;
-            this.PDirLabel.Location = new System.Drawing.Point(3, 74);
-            this.PDirLabel.Name = "PDirLabel";
-            this.PDirLabel.Size = new System.Drawing.Size(49, 13);
-            this.PDirLabel.TabIndex = 2;
-            this.PDirLabel.Text = "Direction";
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(64, 100);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(212, 21);
+            this.comboBox1.TabIndex = 24;
             // 
-            // PXLocBox
+            // label9
             // 
-            this.PXLocBox.Location = new System.Drawing.Point(66, 19);
-            this.PXLocBox.Name = "PXLocBox";
-            this.PXLocBox.Size = new System.Drawing.Size(209, 20);
-            this.PXLocBox.TabIndex = 3;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(7, 103);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(43, 13);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "WRight";
             // 
-            // PYLocLabel
+            // TileBTexLabel
             // 
-            this.PYLocLabel.AutoSize = true;
-            this.PYLocLabel.Location = new System.Drawing.Point(6, 48);
-            this.PYLocLabel.Name = "PYLocLabel";
-            this.PYLocLabel.Size = new System.Drawing.Size(54, 13);
-            this.PYLocLabel.TabIndex = 1;
-            this.PYLocLabel.Text = "Y location";
+            this.TileBTexLabel.AutoSize = true;
+            this.TileBTexLabel.Location = new System.Drawing.Point(7, 76);
+            this.TileBTexLabel.Name = "TileBTexLabel";
+            this.TileBTexLabel.Size = new System.Drawing.Size(51, 13);
+            this.TileBTexLabel.TabIndex = 22;
+            this.TileBTexLabel.Text = "WBottom";
             // 
-            // PYLocBox
+            // TileLTexLabel
             // 
-            this.PYLocBox.Location = new System.Drawing.Point(66, 45);
-            this.PYLocBox.Name = "PYLocBox";
-            this.PYLocBox.Size = new System.Drawing.Size(209, 20);
-            this.PYLocBox.TabIndex = 4;
+            this.TileLTexLabel.AutoSize = true;
+            this.TileLTexLabel.Location = new System.Drawing.Point(6, 49);
+            this.TileLTexLabel.Name = "TileLTexLabel";
+            this.TileLTexLabel.Size = new System.Drawing.Size(36, 13);
+            this.TileLTexLabel.TabIndex = 21;
+            this.TileLTexLabel.Text = "WLeft";
+            // 
+            // TileLTexBox
+            // 
+            this.TileLTexBox.FormattingEnabled = true;
+            this.TileLTexBox.Location = new System.Drawing.Point(64, 46);
+            this.TileLTexBox.Name = "TileLTexBox";
+            this.TileLTexBox.Size = new System.Drawing.Size(212, 21);
+            this.TileLTexBox.TabIndex = 18;
+            // 
+            // TileBTexBox
+            // 
+            this.TileBTexBox.FormattingEnabled = true;
+            this.TileBTexBox.Location = new System.Drawing.Point(64, 73);
+            this.TileBTexBox.Name = "TileBTexBox";
+            this.TileBTexBox.Size = new System.Drawing.Size(212, 21);
+            this.TileBTexBox.TabIndex = 17;
+            // 
+            // TileTTexBox
+            // 
+            this.TileTTexBox.FormattingEnabled = true;
+            this.TileTTexBox.Location = new System.Drawing.Point(64, 19);
+            this.TileTTexBox.Name = "TileTTexBox";
+            this.TileTTexBox.Size = new System.Drawing.Size(211, 21);
+            this.TileTTexBox.TabIndex = 19;
+            // 
+            // TileTTexLabel
+            // 
+            this.TileTTexLabel.AutoSize = true;
+            this.TileTTexLabel.Location = new System.Drawing.Point(6, 22);
+            this.TileTTexLabel.Name = "TileTTexLabel";
+            this.TileTTexLabel.Size = new System.Drawing.Size(26, 13);
+            this.TileTTexLabel.TabIndex = 20;
+            this.TileTTexLabel.Text = "Top";
+            // 
+            // TileDataGroupBox
+            // 
+            this.TileDataGroupBox.Controls.Add(this.TileTLTextBox);
+            this.TileDataGroupBox.Controls.Add(this.TileTRTextBox);
+            this.TileDataGroupBox.Controls.Add(this.TileBLTextBox);
+            this.TileDataGroupBox.Controls.Add(this.TileBRTextBox);
+            this.TileDataGroupBox.Controls.Add(this.TileBRLabel);
+            this.TileDataGroupBox.Controls.Add(this.TileBLLabel);
+            this.TileDataGroupBox.Controls.Add(this.TileTRLabel);
+            this.TileDataGroupBox.Controls.Add(this.TileTLLabel);
+            this.TileDataGroupBox.Location = new System.Drawing.Point(6, 149);
+            this.TileDataGroupBox.Name = "TileDataGroupBox";
+            this.TileDataGroupBox.Size = new System.Drawing.Size(282, 138);
+            this.TileDataGroupBox.TabIndex = 2;
+            this.TileDataGroupBox.TabStop = false;
+            this.TileDataGroupBox.Text = "Corner Data";
+            // 
+            // TileTLTextBox
+            // 
+            this.TileTLTextBox.Location = new System.Drawing.Point(77, 25);
+            this.TileTLTextBox.Name = "TileTLTextBox";
+            this.TileTLTextBox.Size = new System.Drawing.Size(198, 20);
+            this.TileTLTextBox.TabIndex = 15;
+            this.TileTLTextBox.TextChanged += new System.EventHandler(this.TileTLTextBox_TextChanged);
+            // 
+            // TileTRTextBox
+            // 
+            this.TileTRTextBox.Location = new System.Drawing.Point(77, 50);
+            this.TileTRTextBox.Name = "TileTRTextBox";
+            this.TileTRTextBox.Size = new System.Drawing.Size(198, 20);
+            this.TileTRTextBox.TabIndex = 14;
+            this.TileTRTextBox.TextChanged += new System.EventHandler(this.TileTRTextBox_TextChanged);
+            // 
+            // TileBLTextBox
+            // 
+            this.TileBLTextBox.Location = new System.Drawing.Point(77, 75);
+            this.TileBLTextBox.Name = "TileBLTextBox";
+            this.TileBLTextBox.Size = new System.Drawing.Size(198, 20);
+            this.TileBLTextBox.TabIndex = 13;
+            this.TileBLTextBox.TextChanged += new System.EventHandler(this.TileBLTextBox_TextChanged);
+            // 
+            // TileBRTextBox
+            // 
+            this.TileBRTextBox.Location = new System.Drawing.Point(77, 103);
+            this.TileBRTextBox.Name = "TileBRTextBox";
+            this.TileBRTextBox.Size = new System.Drawing.Size(198, 20);
+            this.TileBRTextBox.TabIndex = 12;
+            this.TileBRTextBox.TextChanged += new System.EventHandler(this.TileBRTextBox_TextChanged);
+            // 
+            // TileBRLabel
+            // 
+            this.TileBRLabel.AutoSize = true;
+            this.TileBRLabel.Location = new System.Drawing.Point(6, 106);
+            this.TileBRLabel.Name = "TileBRLabel";
+            this.TileBRLabel.Size = new System.Drawing.Size(65, 13);
+            this.TileBRLabel.TabIndex = 11;
+            this.TileBRLabel.Text = "BottomRight";
+            // 
+            // TileBLLabel
+            // 
+            this.TileBLLabel.AutoSize = true;
+            this.TileBLLabel.Location = new System.Drawing.Point(6, 78);
+            this.TileBLLabel.Name = "TileBLLabel";
+            this.TileBLLabel.Size = new System.Drawing.Size(58, 13);
+            this.TileBLLabel.TabIndex = 10;
+            this.TileBLLabel.Text = "BottomLeft";
+            // 
+            // TileTRLabel
+            // 
+            this.TileTRLabel.AutoSize = true;
+            this.TileTRLabel.Location = new System.Drawing.Point(6, 53);
+            this.TileTRLabel.Name = "TileTRLabel";
+            this.TileTRLabel.Size = new System.Drawing.Size(51, 13);
+            this.TileTRLabel.TabIndex = 9;
+            this.TileTRLabel.Text = "TopRight";
+            // 
+            // TileTLLabel
+            // 
+            this.TileTLLabel.AutoSize = true;
+            this.TileTLLabel.Location = new System.Drawing.Point(6, 28);
+            this.TileTLLabel.Name = "TileTLLabel";
+            this.TileTLLabel.Size = new System.Drawing.Size(44, 13);
+            this.TileTLLabel.TabIndex = 8;
+            this.TileTLLabel.Text = "TopLeft";
+            // 
+            // TileSelectionGroupBox
+            // 
+            this.TileSelectionGroupBox.Controls.Add(this.TileSelHBox);
+            this.TileSelectionGroupBox.Controls.Add(this.TileSelWBox);
+            this.TileSelectionGroupBox.Controls.Add(this.TileSelYBox);
+            this.TileSelectionGroupBox.Controls.Add(this.TileSelXBox);
+            this.TileSelectionGroupBox.Controls.Add(this.SelectionHLabel);
+            this.TileSelectionGroupBox.Controls.Add(this.SelectionWLabel);
+            this.TileSelectionGroupBox.Controls.Add(this.SelectionYLabel);
+            this.TileSelectionGroupBox.Controls.Add(this.SelectionXLabel);
+            this.TileSelectionGroupBox.Location = new System.Drawing.Point(6, 6);
+            this.TileSelectionGroupBox.Name = "TileSelectionGroupBox";
+            this.TileSelectionGroupBox.Size = new System.Drawing.Size(282, 137);
+            this.TileSelectionGroupBox.TabIndex = 1;
+            this.TileSelectionGroupBox.TabStop = false;
+            this.TileSelectionGroupBox.Text = "Tile Selection";
+            // 
+            // TileSelHBox
+            // 
+            this.TileSelHBox.Location = new System.Drawing.Point(73, 102);
+            this.TileSelHBox.Name = "TileSelHBox";
+            this.TileSelHBox.Size = new System.Drawing.Size(202, 20);
+            this.TileSelHBox.TabIndex = 7;
+            this.TileSelHBox.TextChanged += new System.EventHandler(this.TileSelHBox_TextChanged);
+            // 
+            // TileSelWBox
+            // 
+            this.TileSelWBox.Location = new System.Drawing.Point(73, 74);
+            this.TileSelWBox.Name = "TileSelWBox";
+            this.TileSelWBox.Size = new System.Drawing.Size(202, 20);
+            this.TileSelWBox.TabIndex = 6;
+            this.TileSelWBox.TextChanged += new System.EventHandler(this.TileSelWBox_TextChanged);
+            // 
+            // TileSelYBox
+            // 
+            this.TileSelYBox.Location = new System.Drawing.Point(73, 50);
+            this.TileSelYBox.Name = "TileSelYBox";
+            this.TileSelYBox.Size = new System.Drawing.Size(202, 20);
+            this.TileSelYBox.TabIndex = 5;
+            this.TileSelYBox.TextChanged += new System.EventHandler(this.TileSelYBox_TextChanged);
+            // 
+            // TileSelXBox
+            // 
+            this.TileSelXBox.Location = new System.Drawing.Point(73, 22);
+            this.TileSelXBox.Name = "TileSelXBox";
+            this.TileSelXBox.Size = new System.Drawing.Size(202, 20);
+            this.TileSelXBox.TabIndex = 4;
+            this.TileSelXBox.TextChanged += new System.EventHandler(this.TileSelXBox_TextChanged);
+            // 
+            // SelectionHLabel
+            // 
+            this.SelectionHLabel.AutoSize = true;
+            this.SelectionHLabel.Location = new System.Drawing.Point(6, 105);
+            this.SelectionHLabel.Name = "SelectionHLabel";
+            this.SelectionHLabel.Size = new System.Drawing.Size(62, 13);
+            this.SelectionHLabel.TabIndex = 3;
+            this.SelectionHLabel.Text = "Selection H";
+            // 
+            // SelectionWLabel
+            // 
+            this.SelectionWLabel.AutoSize = true;
+            this.SelectionWLabel.Location = new System.Drawing.Point(6, 77);
+            this.SelectionWLabel.Name = "SelectionWLabel";
+            this.SelectionWLabel.Size = new System.Drawing.Size(65, 13);
+            this.SelectionWLabel.TabIndex = 2;
+            this.SelectionWLabel.Text = "Selection W";
+            // 
+            // SelectionYLabel
+            // 
+            this.SelectionYLabel.AutoSize = true;
+            this.SelectionYLabel.Location = new System.Drawing.Point(6, 50);
+            this.SelectionYLabel.Name = "SelectionYLabel";
+            this.SelectionYLabel.Size = new System.Drawing.Size(61, 13);
+            this.SelectionYLabel.TabIndex = 1;
+            this.SelectionYLabel.Text = "Selection Y";
+            // 
+            // SelectionXLabel
+            // 
+            this.SelectionXLabel.AutoSize = true;
+            this.SelectionXLabel.Location = new System.Drawing.Point(6, 25);
+            this.SelectionXLabel.Name = "SelectionXLabel";
+            this.SelectionXLabel.Size = new System.Drawing.Size(61, 13);
+            this.SelectionXLabel.TabIndex = 0;
+            this.SelectionXLabel.Text = "Selection X";
             // 
             // WallsTab
             // 
             this.WallsTab.Controls.Add(this.WallDataBox);
             this.WallsTab.Controls.Add(this.WallRemoveButton);
             this.WallsTab.Controls.Add(this.WallAddButton);
-            this.WallsTab.Controls.Add(this.WallListBox);
             this.WallsTab.Location = new System.Drawing.Point(4, 22);
             this.WallsTab.Name = "WallsTab";
             this.WallsTab.Padding = new System.Windows.Forms.Padding(3);
@@ -243,36 +462,20 @@
             // 
             // WallDataBox
             // 
-            this.WallDataBox.Controls.Add(this.WallYScaleBox);
-            this.WallDataBox.Controls.Add(this.label5);
+            this.WallDataBox.Controls.Add(this.PlayerDirBox);
+            this.WallDataBox.Controls.Add(this.PlayerDirLabel);
             this.WallDataBox.Controls.Add(this.label6);
-            this.WallDataBox.Controls.Add(this.WallXScaleBox);
-            this.WallDataBox.Controls.Add(this.label7);
-            this.WallDataBox.Controls.Add(this.WallXLocBox);
+            this.WallDataBox.Controls.Add(this.PlayerZBox);
+            this.WallDataBox.Controls.Add(this.PlayerZLabel);
+            this.WallDataBox.Controls.Add(this.PlayerXBox);
             this.WallDataBox.Controls.Add(this.label8);
-            this.WallDataBox.Controls.Add(this.WallYLocBox);
-            this.WallDataBox.Location = new System.Drawing.Point(6, 451);
+            this.WallDataBox.Controls.Add(this.PlayerYBox);
+            this.WallDataBox.Location = new System.Drawing.Point(6, 6);
             this.WallDataBox.Name = "WallDataBox";
             this.WallDataBox.Size = new System.Drawing.Size(282, 135);
             this.WallDataBox.TabIndex = 4;
             this.WallDataBox.TabStop = false;
-            this.WallDataBox.Text = "Wall Data";
-            // 
-            // WallYScaleBox
-            // 
-            this.WallYScaleBox.Location = new System.Drawing.Point(67, 102);
-            this.WallYScaleBox.Name = "WallYScaleBox";
-            this.WallYScaleBox.Size = new System.Drawing.Size(209, 20);
-            this.WallYScaleBox.TabIndex = 7;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 105);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(44, 13);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "Y Scale";
+            this.WallDataBox.Text = "Player Spawn";
             // 
             // label6
             // 
@@ -283,28 +486,28 @@
             this.label6.TabIndex = 0;
             this.label6.Text = "X location";
             // 
-            // WallXScaleBox
+            // PlayerZBox
             // 
-            this.WallXScaleBox.Location = new System.Drawing.Point(67, 76);
-            this.WallXScaleBox.Name = "WallXScaleBox";
-            this.WallXScaleBox.Size = new System.Drawing.Size(209, 20);
-            this.WallXScaleBox.TabIndex = 5;
+            this.PlayerZBox.Location = new System.Drawing.Point(67, 76);
+            this.PlayerZBox.Name = "PlayerZBox";
+            this.PlayerZBox.Size = new System.Drawing.Size(209, 20);
+            this.PlayerZBox.TabIndex = 5;
             // 
-            // label7
+            // PlayerZLabel
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 79);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(44, 13);
-            this.label7.TabIndex = 2;
-            this.label7.Text = "X Scale";
+            this.PlayerZLabel.AutoSize = true;
+            this.PlayerZLabel.Location = new System.Drawing.Point(7, 79);
+            this.PlayerZLabel.Name = "PlayerZLabel";
+            this.PlayerZLabel.Size = new System.Drawing.Size(58, 13);
+            this.PlayerZLabel.TabIndex = 2;
+            this.PlayerZLabel.Text = "Z Location";
             // 
-            // WallXLocBox
+            // PlayerXBox
             // 
-            this.WallXLocBox.Location = new System.Drawing.Point(67, 24);
-            this.WallXLocBox.Name = "WallXLocBox";
-            this.WallXLocBox.Size = new System.Drawing.Size(209, 20);
-            this.WallXLocBox.TabIndex = 3;
+            this.PlayerXBox.Location = new System.Drawing.Point(67, 24);
+            this.PlayerXBox.Name = "PlayerXBox";
+            this.PlayerXBox.Size = new System.Drawing.Size(209, 20);
+            this.PlayerXBox.TabIndex = 3;
             // 
             // label8
             // 
@@ -315,12 +518,12 @@
             this.label8.TabIndex = 1;
             this.label8.Text = "Y location";
             // 
-            // WallYLocBox
+            // PlayerYBox
             // 
-            this.WallYLocBox.Location = new System.Drawing.Point(67, 50);
-            this.WallYLocBox.Name = "WallYLocBox";
-            this.WallYLocBox.Size = new System.Drawing.Size(209, 20);
-            this.WallYLocBox.TabIndex = 4;
+            this.PlayerYBox.Location = new System.Drawing.Point(67, 50);
+            this.PlayerYBox.Name = "PlayerYBox";
+            this.PlayerYBox.Size = new System.Drawing.Size(209, 20);
+            this.PlayerYBox.TabIndex = 4;
             // 
             // WallRemoveButton
             // 
@@ -340,14 +543,6 @@
             this.WallAddButton.Text = "Add";
             this.WallAddButton.UseVisualStyleBackColor = true;
             // 
-            // WallListBox
-            // 
-            this.WallListBox.FormattingEnabled = true;
-            this.WallListBox.Location = new System.Drawing.Point(6, 6);
-            this.WallListBox.Name = "WallListBox";
-            this.WallListBox.Size = new System.Drawing.Size(282, 439);
-            this.WallListBox.TabIndex = 1;
-            // 
             // EnemyTab
             // 
             this.EnemyTab.Controls.Add(this.EnemyRemoveButton);
@@ -361,7 +556,6 @@
             this.EnemyTab.TabIndex = 3;
             this.EnemyTab.Text = "Enemies";
             this.EnemyTab.UseVisualStyleBackColor = true;
-            this.EnemyTab.Click += new System.EventHandler(this.EnemyTab_Click);
             // 
             // EnemyRemoveButton
             // 
@@ -388,7 +582,6 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Enemy Data";
-            this.groupBox1.Enter += new System.EventHandler(this.GroupBox1_Enter);
             // 
             // EnemyTypeComboBox
             // 
@@ -415,7 +608,6 @@
             this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "X location";
-            this.label1.Click += new System.EventHandler(this.Label1_Click);
             // 
             // EDirBox
             // 
@@ -423,7 +615,6 @@
             this.EDirBox.Name = "EDirBox";
             this.EDirBox.Size = new System.Drawing.Size(209, 20);
             this.EDirBox.TabIndex = 5;
-            this.EDirBox.TextChanged += new System.EventHandler(this.TextBox1_TextChanged);
             // 
             // label2
             // 
@@ -433,7 +624,6 @@
             this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Direction";
-            this.label2.Click += new System.EventHandler(this.Label2_Click);
             // 
             // EXLocbox
             // 
@@ -441,7 +631,6 @@
             this.EXLocbox.Name = "EXLocbox";
             this.EXLocbox.Size = new System.Drawing.Size(209, 20);
             this.EXLocbox.TabIndex = 3;
-            this.EXLocbox.TextChanged += new System.EventHandler(this.TextBox2_TextChanged);
             // 
             // label3
             // 
@@ -451,7 +640,6 @@
             this.label3.Size = new System.Drawing.Size(54, 13);
             this.label3.TabIndex = 1;
             this.label3.Text = "Y location";
-            this.label3.Click += new System.EventHandler(this.Label3_Click);
             // 
             // EYLocBox
             // 
@@ -459,7 +647,6 @@
             this.EYLocBox.Name = "EYLocBox";
             this.EYLocBox.Size = new System.Drawing.Size(209, 20);
             this.EYLocBox.TabIndex = 4;
-            this.EYLocBox.TextChanged += new System.EventHandler(this.TextBox3_TextChanged);
             // 
             // EnemyAddButton
             // 
@@ -704,69 +891,85 @@
             this.PropAddButton.Text = "Add";
             this.PropAddButton.UseVisualStyleBackColor = true;
             // 
-            // SelectionXLabel
+            // PlayerDirBox
             // 
-            this.SelectionXLabel.AutoSize = true;
-            this.SelectionXLabel.Location = new System.Drawing.Point(6, 25);
-            this.SelectionXLabel.Name = "SelectionXLabel";
-            this.SelectionXLabel.Size = new System.Drawing.Size(61, 13);
-            this.SelectionXLabel.TabIndex = 0;
-            this.SelectionXLabel.Text = "Selection X";
+            this.PlayerDirBox.Location = new System.Drawing.Point(67, 102);
+            this.PlayerDirBox.Name = "PlayerDirBox";
+            this.PlayerDirBox.Size = new System.Drawing.Size(209, 20);
+            this.PlayerDirBox.TabIndex = 7;
             // 
-            // SelectionYLabel
+            // PlayerDirLabel
             // 
-            this.SelectionYLabel.AutoSize = true;
-            this.SelectionYLabel.Location = new System.Drawing.Point(6, 50);
-            this.SelectionYLabel.Name = "SelectionYLabel";
-            this.SelectionYLabel.Size = new System.Drawing.Size(61, 13);
-            this.SelectionYLabel.TabIndex = 1;
-            this.SelectionYLabel.Text = "Selection Y";
+            this.PlayerDirLabel.AutoSize = true;
+            this.PlayerDirLabel.Location = new System.Drawing.Point(7, 105);
+            this.PlayerDirLabel.Name = "PlayerDirLabel";
+            this.PlayerDirLabel.Size = new System.Drawing.Size(49, 13);
+            this.PlayerDirLabel.TabIndex = 6;
+            this.PlayerDirLabel.Text = "Direction";
             // 
-            // SelectionWLabel
+            // LevelDataBox
             // 
-            this.SelectionWLabel.AutoSize = true;
-            this.SelectionWLabel.Location = new System.Drawing.Point(6, 77);
-            this.SelectionWLabel.Name = "SelectionWLabel";
-            this.SelectionWLabel.Size = new System.Drawing.Size(65, 13);
-            this.SelectionWLabel.TabIndex = 2;
-            this.SelectionWLabel.Text = "Selection W";
+            this.LevelDataBox.Controls.Add(this.LevelHBox);
+            this.LevelDataBox.Controls.Add(this.LevelHLabel);
+            this.LevelDataBox.Controls.Add(this.LevelWBox);
+            this.LevelDataBox.Controls.Add(this.LevelWLabel);
+            this.LevelDataBox.Location = new System.Drawing.Point(7, 462);
+            this.LevelDataBox.Name = "LevelDataBox";
+            this.LevelDataBox.Size = new System.Drawing.Size(281, 124);
+            this.LevelDataBox.TabIndex = 17;
+            this.LevelDataBox.TabStop = false;
+            this.LevelDataBox.Text = "Level Data";
             // 
-            // SelectionHLabel
+            // LevelWLabel
             // 
-            this.SelectionHLabel.AutoSize = true;
-            this.SelectionHLabel.Location = new System.Drawing.Point(6, 105);
-            this.SelectionHLabel.Name = "SelectionHLabel";
-            this.SelectionHLabel.Size = new System.Drawing.Size(62, 13);
-            this.SelectionHLabel.TabIndex = 3;
-            this.SelectionHLabel.Text = "Selection H";
+            this.LevelWLabel.AutoSize = true;
+            this.LevelWLabel.Location = new System.Drawing.Point(7, 20);
+            this.LevelWLabel.Name = "LevelWLabel";
+            this.LevelWLabel.Size = new System.Drawing.Size(64, 13);
+            this.LevelWLabel.TabIndex = 0;
+            this.LevelWLabel.Text = "Level Width";
             // 
-            // TileSelXBox
+            // LevelWBox
             // 
-            this.TileSelXBox.Location = new System.Drawing.Point(73, 22);
-            this.TileSelXBox.Name = "TileSelXBox";
-            this.TileSelXBox.Size = new System.Drawing.Size(202, 20);
-            this.TileSelXBox.TabIndex = 4;
+            this.LevelWBox.Location = new System.Drawing.Point(72, 17);
+            this.LevelWBox.Name = "LevelWBox";
+            this.LevelWBox.Size = new System.Drawing.Size(202, 20);
+            this.LevelWBox.TabIndex = 1;
             // 
-            // TileSelYBox
+            // LevelHLabel
             // 
-            this.TileSelYBox.Location = new System.Drawing.Point(73, 50);
-            this.TileSelYBox.Name = "TileSelYBox";
-            this.TileSelYBox.Size = new System.Drawing.Size(202, 20);
-            this.TileSelYBox.TabIndex = 5;
+            this.LevelHLabel.AutoSize = true;
+            this.LevelHLabel.Location = new System.Drawing.Point(7, 46);
+            this.LevelHLabel.Name = "LevelHLabel";
+            this.LevelHLabel.Size = new System.Drawing.Size(67, 13);
+            this.LevelHLabel.TabIndex = 2;
+            this.LevelHLabel.Text = "Level Height";
             // 
-            // TileSelWBox
+            // LevelHBox
             // 
-            this.TileSelWBox.Location = new System.Drawing.Point(73, 74);
-            this.TileSelWBox.Name = "TileSelWBox";
-            this.TileSelWBox.Size = new System.Drawing.Size(202, 20);
-            this.TileSelWBox.TabIndex = 6;
+            this.LevelHBox.Location = new System.Drawing.Point(72, 43);
+            this.LevelHBox.Name = "LevelHBox";
+            this.LevelHBox.Size = new System.Drawing.Size(202, 20);
+            this.LevelHBox.TabIndex = 3;
             // 
-            // TileSelHBox
+            // cLevelView1
             // 
-            this.TileSelHBox.Location = new System.Drawing.Point(73, 102);
-            this.TileSelHBox.Name = "TileSelHBox";
-            this.TileSelHBox.Size = new System.Drawing.Size(202, 20);
-            this.TileSelHBox.TabIndex = 7;
+            this.cLevelView1.Location = new System.Drawing.Point(12, 12);
+            this.cLevelView1.MouseHoverUpdatesOnly = false;
+            this.cLevelView1.Name = "cLevelView1";
+            this.cLevelView1.Size = new System.Drawing.Size(854, 643);
+            this.cLevelView1.TabIndex = 0;
+            this.cLevelView1.Text = "cLevelView1";
+            // 
+            // SaveButton
+            // 
+            this.SaveButton.Location = new System.Drawing.Point(208, 591);
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(75, 23);
+            this.SaveButton.TabIndex = 18;
+            this.SaveButton.Text = "Save";
+            this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // CatEdMainForm
             // 
@@ -779,10 +982,12 @@
             this.Text = "CatEd";
             this.EditorTabControl.ResumeLayout(false);
             this.LevelTabPage.ResumeLayout(false);
-            this.LevelInfoBox.ResumeLayout(false);
-            this.LevelInfoBox.PerformLayout();
-            this.PlayerInfoBox.ResumeLayout(false);
-            this.PlayerInfoBox.PerformLayout();
+            this.TileTexGroupBox.ResumeLayout(false);
+            this.TileTexGroupBox.PerformLayout();
+            this.TileDataGroupBox.ResumeLayout(false);
+            this.TileDataGroupBox.PerformLayout();
+            this.TileSelectionGroupBox.ResumeLayout(false);
+            this.TileSelectionGroupBox.PerformLayout();
             this.WallsTab.ResumeLayout(false);
             this.WallDataBox.ResumeLayout(false);
             this.WallDataBox.PerformLayout();
@@ -795,6 +1000,8 @@
             this.PropsTab.ResumeLayout(false);
             this.PropDataBox.ResumeLayout(false);
             this.PropDataBox.PerformLayout();
+            this.LevelDataBox.ResumeLayout(false);
+            this.LevelDataBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -805,18 +1012,10 @@
         private System.Windows.Forms.TabControl EditorTabControl;
         private System.Windows.Forms.TabPage LevelTabPage;
         private System.Windows.Forms.TabPage WallsTab;
-        private System.Windows.Forms.CheckedListBox WallListBox;
         private System.Windows.Forms.TabPage EnemyTab;
         private System.Windows.Forms.TabPage ItemsTab;
         private System.Windows.Forms.TabPage PropsTab;
-        private System.Windows.Forms.GroupBox PlayerInfoBox;
-        private System.Windows.Forms.Label PDirLabel;
-        private System.Windows.Forms.Label PYLocLabel;
-        private System.Windows.Forms.Label PXLocLabel;
-        private System.Windows.Forms.GroupBox LevelInfoBox;
-        private System.Windows.Forms.TextBox PDirBox;
-        private System.Windows.Forms.TextBox PXLocBox;
-        private System.Windows.Forms.TextBox PYLocBox;
+        private System.Windows.Forms.GroupBox TileSelectionGroupBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label1;
@@ -828,14 +1027,12 @@
         private System.Windows.Forms.CheckedListBox EnemyListBox;
         private System.Windows.Forms.ComboBox EnemyTypeComboBox;
         private System.Windows.Forms.GroupBox WallDataBox;
-        private System.Windows.Forms.TextBox WallYScaleBox;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox WallXScaleBox;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox WallXLocBox;
+        private System.Windows.Forms.TextBox PlayerZBox;
+        private System.Windows.Forms.Label PlayerZLabel;
+        private System.Windows.Forms.TextBox PlayerXBox;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox WallYLocBox;
+        private System.Windows.Forms.TextBox PlayerYBox;
         private System.Windows.Forms.Button WallRemoveButton;
         private System.Windows.Forms.Button WallAddButton;
         private System.Windows.Forms.Button EnemyRemoveButton;
@@ -870,6 +1067,35 @@
         private System.Windows.Forms.Label SelectionWLabel;
         private System.Windows.Forms.Label SelectionYLabel;
         private System.Windows.Forms.Label SelectionXLabel;
+        private System.Windows.Forms.Label TileTLLabel;
+        private System.Windows.Forms.GroupBox TileDataGroupBox;
+        private System.Windows.Forms.Label TileTRLabel;
+        private System.Windows.Forms.Button TileSetButton;
+        private System.Windows.Forms.GroupBox TileTexGroupBox;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label TileBTexLabel;
+        private System.Windows.Forms.Label TileLTexLabel;
+        private System.Windows.Forms.ComboBox TileLTexBox;
+        private System.Windows.Forms.ComboBox TileBTexBox;
+        private System.Windows.Forms.ComboBox TileTTexBox;
+        private System.Windows.Forms.Label TileTTexLabel;
+        private System.Windows.Forms.TextBox TileTLTextBox;
+        private System.Windows.Forms.TextBox TileTRTextBox;
+        private System.Windows.Forms.TextBox TileBLTextBox;
+        private System.Windows.Forms.TextBox TileBRTextBox;
+        private System.Windows.Forms.Label TileBRLabel;
+        private System.Windows.Forms.Label TileBLLabel;
+        private System.Windows.Forms.TextBox PlayerDirBox;
+        private System.Windows.Forms.Label PlayerDirLabel;
+        private System.Windows.Forms.GroupBox LevelDataBox;
+        private System.Windows.Forms.TextBox LevelHBox;
+        private System.Windows.Forms.Label LevelHLabel;
+        private System.Windows.Forms.TextBox LevelWBox;
+        private System.Windows.Forms.Label LevelWLabel;
+        private System.Windows.Forms.Button SaveButton;
     }
 }
 

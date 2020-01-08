@@ -22,6 +22,8 @@ namespace CatEd
 
         private bool contentLoaded = false;
 
+        public string sLevelName = "Test";
+
         protected override void Initialize()
         {
             base.Initialize();
@@ -35,7 +37,7 @@ namespace CatEd
             {
                 //CLevel.Instance.GenerateLevel();
                 CRender.Instance.LoadTexture("grasstop");
-                PrepareLevelData("Test");
+                PrepareLevelData(sLevelName);
                 contentLoaded = true;
             }
 

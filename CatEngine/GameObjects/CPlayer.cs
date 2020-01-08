@@ -26,6 +26,8 @@ namespace CatEngine
         private float fAcceleration = 0.05f;
         private float fFriction = 0.075f;
 
+        float fJumpSpeed = 1.0f;
+
         private float fMinHeight = 0.0f;
         private float fHeightBufferZone = 0.6f;
 
@@ -60,7 +62,7 @@ namespace CatEngine
                 MovementGamepad(gamepadState);
 
             PlayerPhysics();
-            //PlayerCollision(fHeightBufferZone);
+            PlayerCollision(fHeightBufferZone, 4.0f);
         }
 
         public override void Render()
@@ -115,7 +117,7 @@ namespace CatEngine
             //yump
             if (keyboardState.IsKeyDown(CSettings.Instance.kPJump) && bLanded)
             {
-                fZSpeed = 0.6f;
+                fZSpeed = fJumpSpeed;
                 //bLanded = false;
             }
 
@@ -131,7 +133,7 @@ namespace CatEngine
 
             if (gamepadState.IsButtonDown(Buttons.A) && bLanded)
             {
-                fZSpeed = 0.6f;
+                fZSpeed = fJumpSpeed;
                 //bLanded = false;
             }
         }
@@ -212,11 +214,6 @@ namespace CatEngine
 
             //CConsole.Instance.Print("player hsp " + fHorSpeed + " vsp " + fVerSpeed + " dir " + radToDeg(fDir) % 360.0f + " inputdir " + fInputDir);
 
-            //if (x >= 0 && x <= CLevel.Instance.iLevelWidth * CLevel.Instance.iTileSize)
-            x += distDirX(fHorSpeed, fMoveDir) + distDirX(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
-            //if (y >= 0 && y <= CLevel.Instance.iLevelHeight * CLevel.Instance.iTileSize)
-            y += distDirY(fHorSpeed, fMoveDir) +distDirY(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
-
             //handling gravity
             fMinHeight = CLevel.Instance.GetMapHeightAt(x, y) + fPlayerHeight;
 
@@ -245,32 +242,27 @@ namespace CatEngine
             z += fZSpeed;
         }
 
-        private void PlayerCollision(float bufferZone)
+        private void PlayerCollision(float bufferZone, float colBoxSize)
         {
-            //set up like 4 to 8 points around the player checking for the heightmap height
-            //if the heightmap is higher than player's height +- buffer zone, push the player towards his own center axis until this is no longer the case
+            float hsp = distDirX(fHorSpeed, fMoveDir) + distDirX(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
+            float vsp = distDirY(fHorSpeed, fMoveDir) + distDirY(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
 
-            //this is kind of fucked. I should do collision detection on tile edge
-
-            int playerCollisionPoints = 4; //square
-            float collisionSize = 1.0f;
-
-            for (int i = 0; i < playerCollisionPoints; i++)
+            float heightPoint = CLevel.Instance.GetMapHeightAt(x + colBoxSize*Math.Sign(hsp), y);
+            if (heightPoint > z + bufferZone)
             {
-                float collisionX = x + distDirX(collisionSize, 45 + (90 * i));
-                float collisionY = y + distDirY(collisionSize, 45 + (90 * i));
-
-                float heightPoint = CLevel.Instance.GetMapHeightAt(collisionX, collisionY) + fPlayerHeight;
-
-
-                if (heightPoint > fMinHeight+bufferZone)
-                {
-                    x += distDirX(0.1f, PointDirection(collisionX, collisionY, x, y));
-                    y += distDirY(0.1f, PointDirection(collisionX, collisionY, x, y));
-                }
-
-                //CConsole.Instance.Print("player x y " + x + " " + y + " col x y "+collisionX + " " + collisionY + " height " +heightPoint);
+                hsp = 0;
+                //CConsole.Instance.Print("player x y " + x + " " + y + " col x y " + x+hsp*2 + " " + y + " height " + heightPoint);
             }
+
+            heightPoint = CLevel.Instance.GetMapHeightAt(x, y + colBoxSize * Math.Sign(vsp));
+            if (heightPoint > z + bufferZone)
+            {
+                vsp = 0;
+                //CConsole.Instance.Print("player x y " + x + " " + y + " col x y " + x + " " + y+vsp*2 + " height " + heightPoint);
+            }
+
+            x += hsp;
+            y += vsp;
         }
     }
 }

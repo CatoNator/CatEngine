@@ -33,7 +33,13 @@ namespace CatEngine
         {
             private int ID = 0;
             private Vector3 Position;
+            private float Angle = 0.0f;
+            private float Size = 5.0f;
+            private float Alpha = 1.0f;
+
             private Vector3 Speed;
+            private float RotationSpeed = 0.3f;
+            private float SizeChangeSpeed = -0.05f;
 
             private int Life = 60;
 
@@ -53,15 +59,19 @@ namespace CatEngine
             {
                 Position += Speed;
 
-                if (Life > 0)
-                    Life--;
-                else
+                Angle += RotationSpeed;
+
+                Size += SizeChangeSpeed;
+
+                Life--;
+                
+                if (Life <= 0 || Size <= 0 || Alpha <= 0)
                     CParticleManager.Instance.DestroyParticle(ID);
             }
 
             public void Render()
             {
-                CRender.Instance.DrawBillBoard(Position, new Vector2(5, 5), new Vector2(2.5f, 2.5f), "grasstop");
+                CRender.Instance.DrawBillBoard(Position, new Vector2(Size, Size), new Vector2(Size / 2.0f, Size / 2.0f), Angle, Alpha, "dustCloud");
             }
         }
 

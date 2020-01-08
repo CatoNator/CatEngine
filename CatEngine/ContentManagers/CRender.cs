@@ -42,6 +42,7 @@ namespace CatEngine.Content
 
         //effects
         private BasicEffect basicEffect;
+        private VertexBuffer rectangleBuffer;
 
         //we set this up for skinned models
         public Effect SimpleModelEffect { get; set; }
@@ -60,6 +61,7 @@ namespace CatEngine.Content
             float far = 600f; // the far clipping plane distance
 
             basicEffect = new BasicEffect(graphicsDevice);
+            rectangleBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
 
             worldMatrix = Matrix.CreateTranslation(0.0f, 0.0f, 0.0f);
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
@@ -77,6 +79,7 @@ namespace CatEngine.Content
             float far = 600f; // the far clipping plane distance
 
             basicEffect = new BasicEffect(graphicsDevice);
+            rectangleBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
 
             worldMatrix = Matrix.CreateTranslation(0.0f, 0.0f, 0.0f);
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
@@ -279,8 +282,8 @@ namespace CatEngine.Content
         public void DrawSkinnedModel(String modelName, String animName, Vector3 position, float rotation)
         {
             SkinnedModelInstance skinnedModelInstance = new SkinnedModelInstance();
-            dSkinnedModelDict[modelName].Meshes[0].Texture = dTextureDict["swat"];
-            dSkinnedModelDict[modelName].Meshes[1].Texture = dTextureDict["grassside"];
+            dSkinnedModelDict[modelName].Meshes[0].Texture = dTextureDict["pankka_body"];
+            dSkinnedModelDict[modelName].Meshes[1].Texture = dTextureDict["pankka_head"];
             skinnedModelInstance.Mesh = dSkinnedModelDict[modelName];
             skinnedModelInstance.SpeedTransitionSecond = 0.4f;
             skinnedModelInstance.Initialize();
@@ -317,7 +320,7 @@ namespace CatEngine.Content
             //skinnedModelInstance.Dispose();
         }
 
-        private VertexBuffer RectanglePrimitive(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, bool flipTexV)
+        private VertexPositionColorTexture[] RectanglePrimitive(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, bool flipTexV)
         {
             /*
             1-----2
@@ -348,15 +351,14 @@ namespace CatEngine.Content
                 new VertexPositionColorTexture(new Vector3(C4.X, C4.Y, C4.Z), color, new Vector2(1, 1*(notFlipTexVInt)))
             };
 
-            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
-            vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
-
-            return vertexBuffer;
+            return vertices;
         }
 
         public void DrawRectangle(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, String textureName, bool flipTexV)
         {
-            VertexBuffer vertexBuffer = RectanglePrimitive(C1, C2, C3, C4, flipTexV);
+            VertexPositionColorTexture[] vertices = RectanglePrimitive(C1, C2, C3, C4, flipTexV);
+            //rectangleBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+            rectangleBuffer.SetData<VertexPositionColorTexture>(vertices);
 
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
@@ -366,7 +368,7 @@ namespace CatEngine.Content
             basicEffect.TextureEnabled = true;
             basicEffect.Texture = dTextureDict[textureName];
 
-            graphicsDevice.SetVertexBuffer(vertexBuffer);
+            graphicsDevice.SetVertexBuffer(rectangleBuffer);
 
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
@@ -376,10 +378,11 @@ namespace CatEngine.Content
 
             graphicsDevice.SetVertexBuffer(null);
 
-            vertexBuffer.Dispose();
+            //rectangleBuffer.Dispose();
+            //rectangleBuffer = null;
         }
 
-        public void DrawBillBoard(Vector3 position, Vector2 scale, Vector2 origin, String textureName)
+        public void DrawBillBoard(Vector3 position, Vector2 scale, Vector2 origin, float angle, float alpha, String textureName)
         {
             float cameraDirection = (float)(Math.PI/2)-(float)Math.Atan2((double)(cameraPosition.Z - cameraTarget.Z), (double)(cameraPosition.X - cameraTarget.X));
             float cameraVDirection = (float)Math.Atan2((double)(cameraPosition.Y - cameraTarget.Y), (double)(cameraPosition.X - cameraTarget.X));
@@ -389,7 +392,9 @@ namespace CatEngine.Content
             Vector3 C3 = new Vector3(scale.X - origin.X, 0, - origin.Y);
             Vector3 C4 = new Vector3(scale.X - origin.X, 0, scale.Y - origin.Y);
 
-            VertexBuffer vertexBuffer = RectanglePrimitive(C1, C2, C3, C4, false);
+            VertexPositionColorTexture[] vertices = RectanglePrimitive(C1, C2, C3, C4, false);
+            //rectangleBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+            rectangleBuffer.SetData<VertexPositionColorTexture>(vertices);
 
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
@@ -400,7 +405,7 @@ namespace CatEngine.Content
 
             basicEffect.Texture = dTextureDict[textureName];
 
-            graphicsDevice.SetVertexBuffer(vertexBuffer);
+            graphicsDevice.SetVertexBuffer(rectangleBuffer);
 
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
@@ -408,7 +413,7 @@ namespace CatEngine.Content
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
             }
 
-            vertexBuffer.Dispose();
+            //rectangleBuffer.Dispose();
         }
 
         public void UpdateCamera()

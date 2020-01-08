@@ -267,10 +267,10 @@ namespace CatEngine.Content
         }
 
         //also testing
-        private void SaveTerrain()
+        public void SaveTerrain(string levelName)
         {
             //this is where we save the level to a binary file as debug
-            using (FileStream stream = new FileStream("terrain.bin", FileMode.Create))
+            using (FileStream stream = new FileStream("AssetData/Levels/" + levelName + "/terrain2.bin", FileMode.Create))
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
@@ -341,6 +341,12 @@ namespace CatEngine.Content
             }
         }
 
+        public void SetCornerHeigth(int tileX, int tileY, float[] corners)
+        {
+            if ((tileX >= 0 && tileX < iLevelWidth) && (tileY >= 0 && tileY < iLevelHeight) && oFloorTileArray[tileX, tileY] != null)
+                oFloorTileArray[tileX, tileY].SetProperties(tileX, tileY, iTileSize, corners);
+        }
+
         //rendering loop
         public void Render()
         {
@@ -364,8 +370,8 @@ namespace CatEngine.Content
             int tileX = (int)x / iTileSize;
             int tileY = (int)y / iTileSize;
 
-            if ((tileX >= 0 && tileX < oFloorTileArray.GetLength(0))
-               && (tileY >= 0 && tileY < oFloorTileArray.GetLength(1))
+            if ((tileX >= 0 && tileX < iLevelWidth)
+               && (tileY >= 0 && tileY < iLevelHeight)
                && oFloorTileArray[tileX, tileY] != null)
             {
                 float xInTile = x % iTileSize;
