@@ -48,14 +48,18 @@ namespace CatEd
             String path = "AssetData/Levels/" + levelName;
 
             //pack textures
-            string[] textureFiles = Directory.GetFiles(path, "*.png", SearchOption.AllDirectories);
 
             List<string> textureList = new List<string>();
 
-            //load textures into memory
-            foreach (String texture in textureFiles)
+            DirectoryInfo D = new DirectoryInfo(path);
+
+            //pack textures
+            FileInfo[] textureFiles = D.GetFiles("*.png");
+
+            //load ground textures into memory
+            foreach (FileInfo texture in textureFiles)
             {
-                String texNameShort = texture.Substring(0, texture.Length - 4);
+                String texNameShort = texture.Name.Substring(0, texture.Name.Length - 4);
                 CRender.Instance.LoadTextureRaw(path, texNameShort);
                 textureList.Add(texNameShort);
             }
