@@ -35,10 +35,11 @@ namespace CatEngine
 
         public bool hasFinishedLoading = false;
 
-        double dir = 0.0;
+        public Game1 game;
 
         private CLoadingScreen()
         {
+            //DEBUG: preparing level data for first load
             QueueLoadCommand(CSprite.Instance, "AllocateSprites", new List<string>());
             QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Player" });
             QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
@@ -56,8 +57,8 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "dustCloud" });
-            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "pankka_body" });
-            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "pankka_head" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "pankka_body" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "pankka_head" });
             //QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "soldier" });
             //QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "idle" });
             //QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "run" });
@@ -66,8 +67,6 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "Monni_standby" });
 
             PrepareLevelData("Test");
-
-            Load();
         }
 
         //singletoning the singleton
@@ -92,15 +91,18 @@ namespace CatEngine
 
             CConsole.Instance.Print("preparing to load level " + path);
 
+            DirectoryInfo D = new DirectoryInfo(path);
+
             //pack textures
-            string[] textureFiles = Directory.GetFiles(path, "*.png", SearchOption.AllDirectories);
+            FileInfo[] textureFiles = D.GetFiles("*.png");
 
             List<string> textureList = new List<string>();
             
-            //load textures into memory
-            foreach (String texture in textureFiles)
+            //load ground textures into memory
+            foreach (FileInfo texture in textureFiles)
             {
-                String texNameShort = texture.Substring(0, texture.Length - 4);
+                String texNameShort = texture.Name.Substring(0, texture.Name.Length - 4);
+                Debug.Print(path+texNameShort);
                 QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { path, texNameShort });
                 textureList.Add(texNameShort);
             }
@@ -108,10 +110,31 @@ namespace CatEngine
             //load terrain data
             QueueLoadCommand(CLevel.Instance, "LoadTerrainData", new List<string>() { path+"/terrain.bin" });
             CLevel.Instance.SetTextureArray(textureList.ToArray());
+
+            //load prop models into memory
+
+            //load prop textures into memory
+
+            //load music into memory
+            //QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
         }
 
-        private void Load()
+        public void UnloadLevelData()
         {
+            //unload textures
+
+            //unload prop models
+
+            //unload prop textures
+
+            //unload music
+        }
+
+        public void Load()
+        {
+            hasFinishedLoading = false;
+            iExecutedFunctions = 0;
+            game.CurrentGameState = Game1.GameState.Loading;
             Thread loaderThread = new Thread(new ThreadStart(LoadData));
             loaderThread.Start();
         }
@@ -123,9 +146,6 @@ namespace CatEngine
 
         public void Render()
         {
-            dir += Math.PI/60;
-            dir %= 2*Math.PI;
-
             float maxLength = 160.0f;
             int xpos = CSettings.GAME_VIEW_HEIGHT-100;
             int ypos = CSettings.Instance.GAME_VIEW_WIDTH/2;

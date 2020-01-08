@@ -16,7 +16,7 @@ namespace CatEngine
     /// </summary>
     public class Game1 : Game
     {
-        enum GameState
+        public enum GameState
         {
             Menu,
             Loading,
@@ -24,7 +24,7 @@ namespace CatEngine
             Paused
         };
 
-        GameState CurrentGameState = GameState.Loading;
+        public GameState CurrentGameState = GameState.Loading;
 
         GraphicsDeviceManager graphics;
         DepthStencilState depthBuffer = new DepthStencilState() { DepthBufferEnable = true, DepthBufferFunction = CompareFunction.Less };
@@ -93,6 +93,8 @@ namespace CatEngine
             screenBatch = new SpriteBatch(GraphicsDevice);
             renderTarget = new RenderTarget2D(GraphicsDevice, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT, false, SurfaceFormat.Color, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
 
+            CLoadingScreen.Instance.game = this;
+
             //setting up CSpritebasics...
             CSprite.Instance.content = Content;
             CSprite.Instance.sbSpriteBatch = spriteBatch;
@@ -117,8 +119,7 @@ namespace CatEngine
             CObjectManager.Instance.CreateInstance(typeof(CPlayer), 5, 20, 5);
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
-            //lights don't work lol
-            //CObjectManager.Instance.CreateLight(78, 78);
+            CLoadingScreen.Instance.Load();
         }
 
         /// <summary>
@@ -169,9 +170,15 @@ namespace CatEngine
             }
             else if (CurrentGameState == GameState.Paused)
             {
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.P))
+                /*if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.P))
                 {
                     CurrentGameState = GameState.Game;
+                }*/
+
+                if (Keyboard.GetState().IsKeyDown(Keys.L))
+                {
+                    CLoadingScreen.Instance.PrepareLevelData("Test2");
+                    CLoadingScreen.Instance.Load();
                 }
             }
             //updating the object list

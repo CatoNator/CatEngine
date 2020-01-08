@@ -186,7 +186,7 @@ namespace CatEngine.Content
         {
             try
             {
-                FileStream fileStream = new FileStream(textureName+".png", FileMode.Open);
+                FileStream fileStream = new FileStream(path+"/"+textureName+".png", FileMode.Open);
                 CRender.Instance.dTextureDict.Add(textureName, Texture2D.FromStream(graphicsDevice, fileStream));
                 fileStream.Dispose();
             }
