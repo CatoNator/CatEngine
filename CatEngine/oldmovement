@@ -1,0 +1,69 @@
+//temp I guess
+CCamera camera = (CCamera)FindInstance(typeof(CCamera));
+camera.SetTarget(this);
+float fCamDir = degToRad(camera.GetCameraDirection() + 90.0f);
+
+float fInputDir = PointDirection(0, 0, fHInput, fVInput);
+float fInputDist = PointDistance(0, 0, fHInput, fVInput);
+float fSpeed = 0.5f;
+
+if (fHInput != 0 || fVInput != 0)
+{
+	fDir = fCamDir + fInputDir;
+	fMoveDir = fCamDir;
+
+	fHorSpeed += distDirX(fAcceleration * 2, fInputDir);
+	fVerSpeed += distDirY(fAcceleration * 2, fInputDir);
+}
+
+//friction is only applied when inputs are not detected to avoid slowing the player down too much
+if (fHInput == 0)
+{
+	if (fHorSpeed > fFriction)
+	{
+		fHorSpeed -= fFriction;
+	}
+	else if (fHorSpeed < -fFriction)
+	{
+		fHorSpeed += fFriction;
+	}
+	else
+	{
+		fHorSpeed = 0;
+	}
+}
+
+if (fVInput == 0)
+{
+	if (fVerSpeed > (fFriction))
+	{
+		fVerSpeed -= fFriction;
+	}
+	else if (fVerSpeed < -(fFriction))
+	{
+		fVerSpeed += fFriction;
+	}
+	else
+	{
+		fVerSpeed = 0;
+	}
+}
+
+//capping the speed
+if (fHorSpeed > fMaxSpeed)
+{
+	fHorSpeed = fMaxSpeed;
+}
+else if (fHorSpeed < -fMaxSpeed)
+{
+	fHorSpeed = -fMaxSpeed;
+}
+
+if (fVerSpeed > fMaxSpeed)
+{
+	fVerSpeed = fMaxSpeed;
+}
+else if (fVerSpeed < -fMaxSpeed)
+{
+	fVerSpeed = -fMaxSpeed;
+}

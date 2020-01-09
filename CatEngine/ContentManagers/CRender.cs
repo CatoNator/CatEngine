@@ -44,6 +44,8 @@ namespace CatEngine.Content
         private BasicEffect basicEffect;
         private VertexBuffer rectangleBuffer;
 
+        private SkinnedModelInstance playerInstance = new SkinnedModelInstance();
+
         //we set this up for skinned models
         public Effect SimpleModelEffect { get; set; }
         public Effect SkinnedModelEffect { get; set; }
@@ -69,6 +71,16 @@ namespace CatEngine.Content
 
             SimpleModelEffect = content.Load<Effect>("SimpleModelEffect");
             SkinnedModelEffect = content.Load<Effect>("SkinnedModelEffect");
+        }
+
+        public void InitPlayer()
+        {
+            playerInstance.Mesh = dSkinnedModelDict["player"];
+            playerInstance.Mesh.Meshes[0].Texture = dTextureDict["pankka_body"];
+            playerInstance.Mesh.Meshes[1].Texture = dTextureDict["pankka_head"];
+            playerInstance.SpeedTransitionSecond = 0.05f;
+            playerInstance.Initialize();
+            playerInstance.SetAnimation(dSkinnedAnimationDict["player_tpose"], gameTime);
         }
 
         public void InitEditor()
@@ -282,12 +294,11 @@ namespace CatEngine.Content
         public void DrawSkinnedModel(String modelName, String animName, Vector3 position, float rotation)
         {
             SkinnedModelInstance skinnedModelInstance = new SkinnedModelInstance();
-            dSkinnedModelDict[modelName].Meshes[0].Texture = dTextureDict["pankka_body"];
-            dSkinnedModelDict[modelName].Meshes[1].Texture = dTextureDict["pankka_head"];
             skinnedModelInstance.Mesh = dSkinnedModelDict[modelName];
+            skinnedModelInstance.Mesh.Meshes[0].Texture = dTextureDict["pankka_body"];
             skinnedModelInstance.SpeedTransitionSecond = 0.4f;
             skinnedModelInstance.Initialize();
-            skinnedModelInstance.SetAnimation(dSkinnedAnimationDict[animName]);
+            skinnedModelInstance.SetAnimation(dSkinnedAnimationDict[animName], gameTime);
 
             Matrix positionMatrix = Matrix.CreateTranslation(position);
             Matrix rotationMatrix = Matrix.CreateRotationY(rotation);
@@ -310,6 +321,45 @@ namespace CatEngine.Content
                 graphicsDevice.SetVertexBuffer(meshInstance.Mesh.VertexBuffer);
                 graphicsDevice.Indices = meshInstance.Mesh.IndexBuffer;
                 graphicsDevice.DepthStencilState = DepthStencilState.Default;
+                foreach (EffectPass pass in SkinnedModelEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshInstance.Mesh.FaceCount);
+                }
+            }
+
+            //skinnedModelInstance.Dispose();
+        }
+
+        public void DrawPlayer(String animName, Vector3 position, float rotation, double animSpeed)
+        {
+            if (playerInstance.Animation != dSkinnedAnimationDict[animName])
+            {
+                playerInstance.SetAnimation(dSkinnedAnimationDict[animName], gameTime);
+            }
+
+            playerInstance.AnimationSpeedScale = animSpeed;
+
+            Matrix positionMatrix = Matrix.CreateTranslation(position);
+            Matrix rotationMatrix = Matrix.CreateRotationY(rotation);
+
+            float scale = 0.025f;
+
+            playerInstance.Transformation = Matrix.CreateScale(scale) * rotationMatrix * positionMatrix;
+
+            playerInstance.Update(gameTime);
+
+            SkinnedModelEffect.Parameters["SunOrientation"].SetValue(Vector3.Normalize(SunOrientation));
+            SkinnedModelEffect.Parameters["World"].SetValue(playerInstance.Transformation);
+            SkinnedModelEffect.Parameters["WorldViewProjection"].SetValue(playerInstance.Transformation * viewMatrix * projectionMatrix);
+
+            foreach (var meshInstance in playerInstance.MeshInstances)
+            {
+                SkinnedModelEffect.Parameters["gBonesOffsets"].SetValue(meshInstance.BonesOffsets);
+                SkinnedModelEffect.Parameters["Texture1"].SetValue(meshInstance.Mesh.Texture);
+
+                graphicsDevice.SetVertexBuffer(meshInstance.Mesh.VertexBuffer);
+                graphicsDevice.Indices = meshInstance.Mesh.IndexBuffer;
                 foreach (EffectPass pass in SkinnedModelEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
@@ -387,10 +437,10 @@ namespace CatEngine.Content
             float cameraDirection = (float)(Math.PI/2)-(float)Math.Atan2((double)(cameraPosition.Z - cameraTarget.Z), (double)(cameraPosition.X - cameraTarget.X));
             float cameraVDirection = (float)Math.Atan2((double)(cameraPosition.Y - cameraTarget.Y), (double)(cameraPosition.X - cameraTarget.X));
 
-            Vector3 C1 = new Vector3(- origin.X, 0, - origin.Y);
-            Vector3 C2 = new Vector3(- origin.X, 0, scale.Y - origin.Y);
-            Vector3 C3 = new Vector3(scale.X - origin.X, 0, - origin.Y);
-            Vector3 C4 = new Vector3(scale.X - origin.X, 0, scale.Y - origin.Y);
+            Vector3 C1 = new Vector3(scale.X - origin.X, 0, -origin.Y);
+            Vector3 C2 = new Vector3(scale.X - origin.X, 0, scale.Y - origin.Y);
+            Vector3 C3 = new Vector3(-origin.X, 0, -origin.Y);
+            Vector3 C4 = new Vector3(-origin.X, 0, scale.Y - origin.Y);
 
             VertexPositionColorTexture[] vertices = RectanglePrimitive(C1, C2, C3, C4, false);
             //rectangleBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);

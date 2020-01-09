@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace CatEngine.SkinnedMdl
 {
     public class SkinnedModelInstance
     {
         public const uint MaxBones = 50;
-        public const uint FramePerSecond = 30;
+        public const uint FramePerSecond = 60;
 
         public SkinnedModel Mesh { get; set; }
         public Matrix Transformation { get; set; }
@@ -22,6 +23,8 @@ namespace CatEngine.SkinnedMdl
 
         public TimeSpan TimeAnimationChanged;
         public float SpeedTransitionSecond { get; set; } = 1.0f;
+
+        public double AnimationSpeedScale = 1.0;
 
         public struct BoneInstance
         {
@@ -79,20 +82,22 @@ namespace CatEngine.SkinnedMdl
                 return boneAnimation.Transformation;
             }
 
+            int FrameIndex = (int)(((gt.TotalGameTime.TotalSeconds-TimeAnimationChanged.TotalSeconds) * FramePerSecond)*AnimationSpeedScale);
+
             Matrix transform = Matrix.Identity;
             if (boneAnimation.Scales.Any())
             {
-                int frameIndex = (int)(gt.TotalGameTime.TotalSeconds * FramePerSecond) % boneAnimation.Scales.Count;
+                int frameIndex = FrameIndex % boneAnimation.Scales.Count;
                 transform *= Matrix.CreateScale(boneAnimation.Scales[frameIndex]);
             }
             if (boneAnimation.Scales.Any())
             {
-                int frameIndex = (int)(gt.TotalGameTime.TotalSeconds * FramePerSecond) % boneAnimation.Rotations.Count;
+                int frameIndex = FrameIndex % boneAnimation.Rotations.Count;
                 transform *= Matrix.CreateFromQuaternion(boneAnimation.Rotations[frameIndex]);
             }
             if (boneAnimation.Scales.Any())
             {
-                int frameIndex = (int)(gt.TotalGameTime.TotalSeconds * FramePerSecond) % boneAnimation.Positions.Count;
+                int frameIndex = FrameIndex % boneAnimation.Positions.Count;
                 transform *= Matrix.CreateTranslation(boneAnimation.Positions[frameIndex]);
             }
 
@@ -180,11 +185,12 @@ namespace CatEngine.SkinnedMdl
             return transform;
         }
 
-        public void SetAnimation(SkinnedModelAnimation animation, GameTime gameTime = null)
+        public void SetAnimation(SkinnedModelAnimation animation, GameTime gameTime) // = null
         {
             if(gameTime != null)
             {
                 TimeAnimationChanged = gameTime.TotalGameTime;
+                //Debug.Print(TimeAnimationChanged.ToString());
             }
 
             PreviousAnimation = animation;

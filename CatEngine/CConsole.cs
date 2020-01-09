@@ -19,7 +19,13 @@ namespace CatEngine
 
         private bool showConsole = true;
 
-        private bool showDebug = false;
+        private bool showDebug = true;
+
+        public string debugString = "";
+        public float debugValue = 0.0f;
+
+        public string debugString2 = "";
+        public float debugValue2 = 0.0f;
 
         private CConsole()
         {
@@ -88,8 +94,7 @@ namespace CatEngine
 
         private void DrawDebugInfo()
         {
-            Vector3 test = CRender.Instance.SunDebug();
-            CSprite.Instance.DrawText("sun orientation " + test.X + " " + test.Y + " " + test.Z, new Vector2(20, 20), Color.White);
+            CSprite.Instance.DrawText(debugString + " " + debugValue + " " + debugString2 + " " + debugValue2, new Vector2(20, 20), Color.White);
         }
     }
 }

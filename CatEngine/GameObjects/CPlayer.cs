@@ -22,22 +22,22 @@ namespace CatEngine
 
         private float fMoveDir = 0.0f;
 
-        float fMaxSpeed = 0.35f;
-        private float fAcceleration = 0.05f;
-        private float fFriction = 0.075f;
+        private const float fMaxSpeed = 0.6f;
+        private const float fAcceleration = 0.1f;
+        private const float fFriction = 0.075f;
 
-        float fJumpSpeed = 1.0f;
+        private const float fJumpSpeed = 1.0f;
 
         private float fMinHeight = 0.0f;
-        private float fHeightBufferZone = 0.6f;
+        private const float fHeightBufferZone = 3.0f;
 
         private float fZSpeed = 0.0f;
 
-        private float fGravity = 0.05f;
+        private const float fGravity = 0.05f;
 
         private bool bLanded = false;
 
-        private float fPlayerHeight = 0.0f;
+        private const float fPlayerHeight = 0.0f;
         
         public override void InstanceSpawn()
         {
@@ -70,14 +70,18 @@ namespace CatEngine
             //CSprite.Instance.Render("sprPlayer", x+8, y+8, iAnimFrame % 4, false, -(float)(iDir*(Math.PI/2)), 1.0f, Color.White);
             //CRender.Instance.DrawModel("textured_cube", new Vector3(x, z, y), fDir);
 
-            String anime = "Monni";
+            String anime = "player_tpose";
 
             if (fHorSpeed != 0 || fVerSpeed != 0)
-                anime = "Monni";
+                anime = "player_walkcyclebones";
             else
-                anime = "Monni_standby";
+                anime = "player_tpose";
 
-            CRender.Instance.DrawSkinnedModel("Monni", anime, new Vector3(x, z, y), fDir+((float)Math.PI/2));
+            double spSp = (double)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed);
+            CConsole.Instance.debugString2 = "animSp";
+            CConsole.Instance.debugValue2 = (float)spSp;
+
+            CRender.Instance.DrawPlayer(anime, new Vector3(x, z, y), fDir+((float)Math.PI/2), spSp);
             //CRender.Instance.DrawBillBoard(new Vector3(10.0f, 10.0f, 10.0f), new Vector2(5, 5), new Vector2(2.5f, 2.5f), "grasstop");
         }
 
@@ -138,81 +142,76 @@ namespace CatEngine
             }
         }
 
+        private float PDPositive(float x1, float y1, float x2, float y2)
+        {
+
+            float val = (float)Math.Atan2((double)(y1 - y2), (double)(x2 - x1));
+
+            if (val < 0)
+                val += (float)Math.PI*2;
+
+            return val;
+        }
+
         private void PlayerPhysics()
         {
-            //handling movement
-
-            //temp I guess
             CCamera camera = (CCamera)FindInstance(typeof(CCamera));
             camera.SetTarget(this);
             float fCamDir = degToRad(camera.GetCameraDirection() + 90.0f);
 
-            float fInputDir = PointDirection(0, 0, fHInput, fVInput);
-            float fInputDist = PointDistance(0, 0, fHInput, fVInput);
-            float fSpeed = 0.5f;
+            //handling movement
+            float inputDir = PointDirection(0, 0, fHInput, fVInput);
+            float inputSp = PointDistance(0, 0, fHInput, fVInput);
 
             if (fHInput != 0 || fVInput != 0)
             {
-                fDir = fCamDir + fInputDir;
-                fMoveDir = fCamDir;
-
-                fHorSpeed += distDirX(fAcceleration * 2, fInputDir);
-                fVerSpeed += distDirY(fAcceleration * 2, fInputDir);
+                fDir = inputDir+fCamDir;
+                //fMoveDir = fCamDir;
             }
 
-            //friction is only applied when inputs are not detected to avoid slowing the player down too much
-            if (fHInput == 0)
+            fHorSpeed += distDirX(inputSp * fAcceleration, fDir);
+            fVerSpeed += distDirY(inputSp * fAcceleration, fDir);
+
+            float spDir = PDPositive(0, 0, fHorSpeed, fVerSpeed);
+            float spSp = PointDistance(0, 0, fHorSpeed, fVerSpeed);
+
+            if (spSp > fFriction)
             {
-                if (fHorSpeed > fFriction)
-                {
-                    fHorSpeed -= fFriction;
-                }
-                else if (fHorSpeed < -fFriction)
-                {
-                    fHorSpeed += fFriction;
-                }
-                else
-                {
-                    fHorSpeed = 0;
-                }
+                fHorSpeed += distDirX(-fFriction, spDir);
+                fVerSpeed += distDirY(-fFriction, spDir);
             }
 
-            if (fVInput == 0)
+            if (spSp <= fFriction)
             {
-                if (fVerSpeed > (fFriction))
-                {
-                    fVerSpeed -= fFriction;
-                }
-                else if (fVerSpeed < -(fFriction))
-                {
-                    fVerSpeed += fFriction;
-                }
-                else
-                {
-                    fVerSpeed = 0;
-                }
+                fHorSpeed = 0;
+                fVerSpeed = 0;
             }
 
-            //capping the speed
-            if (fHorSpeed > fMaxSpeed)
+            if (spSp > fMaxSpeed)
             {
-                fHorSpeed = fMaxSpeed;
-            }
-            else if (fHorSpeed < -fMaxSpeed)
-            {
-                fHorSpeed = -fMaxSpeed;
+                fHorSpeed = distDirX(fMaxSpeed, spDir);
+                fVerSpeed = distDirY(fMaxSpeed, spDir);
             }
 
-            if (fVerSpeed > fMaxSpeed)
-            {
-                fVerSpeed = fMaxSpeed;
-            }
-            else if (fVerSpeed < -fMaxSpeed)
-            {
-                fVerSpeed = -fMaxSpeed;
-            }
+            float angleMeasureDist = spSp;
+            float heightPFront = CLevel.Instance.GetMapHeightAt(x + distDirX(angleMeasureDist, fDir), y + distDirY(angleMeasureDist, fDir));
+            float heightPBack = CLevel.Instance.GetMapHeightAt(x + distDirX(-angleMeasureDist, fDir), y + distDirY(-angleMeasureDist, fDir));
 
-            //CConsole.Instance.Print("player hsp " + fHorSpeed + " vsp " + fVerSpeed + " dir " + radToDeg(fDir) % 360.0f + " inputdir " + fInputDir);
+            float angle = radToDeg(PointDirection(0, heightPBack, spSp, heightPFront));
+            float angleSpeed = (angle / 90.0f) * 4.0f;
+
+            CConsole.Instance.debugString = "angle";
+            CConsole.Instance.debugValue = angle;
+
+            if (angle < 0 && bLanded && angle > -72.0f)
+            {
+                z -= heightPBack - heightPFront;
+                //CConsole.Instance.Print("angle " + angle + " zdiff " + (heightPBack - heightPFront));
+            }
+                
+
+            //CConsole.Instance.debugString = "floor angle";
+            //CConsole.Instance.debugValue = angle;
 
             //handling gravity
             fMinHeight = CLevel.Instance.GetMapHeightAt(x, y) + fPlayerHeight;
@@ -221,6 +220,14 @@ namespace CatEngine
             {
                 bLanded = false;
                 fZSpeed -= fGravity;
+
+                /*if (z < fMinHeight+fHeightBufferZone*2)
+                {
+                    while (z > fMinHeight )
+                    {
+                        z += fGravity;
+                    }
+                }*/
             }
             else
             {

@@ -59,12 +59,10 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "dustCloud" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "pankka_body" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "pankka_head" });
-            //QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "soldier" });
-            //QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "idle" });
-            //QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "run" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "Monni" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "Monni" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "Monni_standby" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "player" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "player_tpose" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "player_walkcyclebones" });
+            QueueLoadCommand(CRender.Instance, "InitPlayer", new List<string>());
 
             PrepareLevelData("Test");
         }
