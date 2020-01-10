@@ -75,6 +75,7 @@
     <Compile Include="GameObjects\CDoor.cs" />
     <Compile Include="GameObjects\CEnemy.cs" />
     <Compile Include="GameObjects\CEnemyBullet.cs" />
+    <Compile Include="GameObjects\CNatsa.cs" />
     <Compile Include="GameObjects\CPlayer.cs" />
     <Compile Include="ContentManagers\CSprite.cs" />
     <Compile Include="GameObjects\CPlayerBullet.cs" />

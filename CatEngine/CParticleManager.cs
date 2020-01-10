@@ -31,6 +31,8 @@ namespace CatEngine
 
         private class Particle
         {
+            private string TextureName = "dustcloud";
+
             private int ID = 0;
             private Vector3 Position;
             private float Angle = 0.0f;
@@ -40,6 +42,10 @@ namespace CatEngine
             private Vector3 Speed;
             private float RotationSpeed = 0.3f;
             private float SizeChangeSpeed = -0.05f;
+            private float AlphaChangeSpeed = 0.0f;
+            private const float Gravity = 0.07f;
+
+            private bool bHasGravity = false;
 
             private int Life = 60;
 
@@ -57,6 +63,9 @@ namespace CatEngine
 
             public void Update()
             {
+                if (bHasGravity)
+                    Speed.Y += Gravity;
+
                 Position += Speed;
 
                 Angle += RotationSpeed;
@@ -71,7 +80,7 @@ namespace CatEngine
 
             public void Render()
             {
-                CRender.Instance.DrawBillBoard(Position, new Vector2(Size, Size), new Vector2(Size / 2.0f, Size / 2.0f), Angle, Alpha, "dustCloud");
+                CRender.Instance.DrawBillBoard(Position, new Vector2(Size, Size), new Vector2(Size / 2.0f, Size / 2.0f), Angle, Alpha, TextureName);
             }
         }
 

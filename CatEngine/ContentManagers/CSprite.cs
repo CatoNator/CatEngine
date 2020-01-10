@@ -212,6 +212,33 @@ namespace CatEngine.Content
             sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, color, rotation, Origin, spriteEffect, layerDepth);
         }
 
+        public void DrawSkyBox()
+        {
+            Texture2D texture = dTextureDict["background"];
+
+            Vector3 cameraPosition = CRender.Instance.GetCameraPosition();
+            Vector3 cameraTarget = CRender.Instance.GetCameraTarget();
+
+            float cameraDirection = (float)(Math.Atan2((double)(cameraPosition.Z - cameraTarget.Z), (double)(cameraPosition.X - cameraTarget.X)));
+
+            if (cameraDirection < 0)
+                cameraDirection += (float)(Math.PI * 2);
+
+            float offset = (cameraDirection/(float)(Math.PI * 2)) * texture.Width;
+
+            CConsole.Instance.debugString = "camdir";
+            CConsole.Instance.debugValue = cameraDirection;
+
+            for (int i = 0; i < (CSettings.Instance.iBackBufferWidth/(texture.Width-offset)); i++)
+            {
+                Rectangle sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+                Rectangle destRectangle = new Rectangle(texture.Width*i - (int)offset, 0, texture.Width, texture.Height);
+
+                sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
+            }
+            
+        }
+
         public void RenderTile(int x, int y, int left, int top)
         {
             Rectangle sourceRectangle = new Rectangle(left, top, 16, 16);

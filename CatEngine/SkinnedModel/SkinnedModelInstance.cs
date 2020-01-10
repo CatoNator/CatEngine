@@ -26,6 +26,8 @@ namespace CatEngine.SkinnedMdl
 
         public double AnimationSpeedScale = 1.0;
 
+        public float FrameIndex = 0.0f;
+
         public struct BoneInstance
         {
             public BoneAnimationInstance BoneAnimationInstance { get; set; }
@@ -82,22 +84,23 @@ namespace CatEngine.SkinnedMdl
                 return boneAnimation.Transformation;
             }
 
-            int FrameIndex = (int)(((gt.TotalGameTime.TotalSeconds-TimeAnimationChanged.TotalSeconds) * FramePerSecond)*AnimationSpeedScale);
+            //AnimationSpeedScale = 1.0;
+            int FrameIndexInt = (int)FrameIndex; //(int)(((gt.TotalGameTime.TotalSeconds-TimeAnimationChanged.TotalSeconds) * FramePerSecond)*AnimationSpeedScale);
 
             Matrix transform = Matrix.Identity;
             if (boneAnimation.Scales.Any())
             {
-                int frameIndex = FrameIndex % boneAnimation.Scales.Count;
+                int frameIndex = FrameIndexInt % boneAnimation.Scales.Count;
                 transform *= Matrix.CreateScale(boneAnimation.Scales[frameIndex]);
             }
             if (boneAnimation.Scales.Any())
             {
-                int frameIndex = FrameIndex % boneAnimation.Rotations.Count;
+                int frameIndex = FrameIndexInt % boneAnimation.Rotations.Count;
                 transform *= Matrix.CreateFromQuaternion(boneAnimation.Rotations[frameIndex]);
             }
             if (boneAnimation.Scales.Any())
             {
-                int frameIndex = FrameIndex % boneAnimation.Positions.Count;
+                int frameIndex = FrameIndexInt % boneAnimation.Positions.Count;
                 transform *= Matrix.CreateTranslation(boneAnimation.Positions[frameIndex]);
             }
 

@@ -18,6 +18,9 @@ namespace CatEngine
         private float fHInput = 0.0f;
         private float fVInput = 0.0f;
 
+        private float fHInput2 = 0.0f;
+        private float fVInput2 = 0.0f;
+
         public float fDir = 0;
 
         private float fMoveDir = 0.0f;
@@ -38,6 +41,8 @@ namespace CatEngine
         private bool bLanded = false;
 
         private const float fPlayerHeight = 0.0f;
+
+        private float fAnimFrame = 0.0f;
         
         public override void InstanceSpawn()
         {
@@ -70,19 +75,35 @@ namespace CatEngine
             //CSprite.Instance.Render("sprPlayer", x+8, y+8, iAnimFrame % 4, false, -(float)(iDir*(Math.PI/2)), 1.0f, Color.White);
             //CRender.Instance.DrawModel("textured_cube", new Vector3(x, z, y), fDir);
 
-            String anime = "player_tpose";
+            String anime = "player_tposebones";
 
             if (fHorSpeed != 0 || fVerSpeed != 0)
+            {
                 anime = "player_walkcyclebones";
+                float animSp = (float)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed))/fMaxSpeed)*2;
+                fAnimFrame += animSp;
+                CConsole.Instance.debugString2 = "animframe";
+                CConsole.Instance.debugValue2 = animSp;
+            }
             else
-                anime = "player_tpose";
+            {
+                anime = "player_tposebones";
+                fAnimFrame = 0.0f;
+            }
+                
 
             double spSp = (double)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed);
-            CConsole.Instance.debugString2 = "animSp";
-            CConsole.Instance.debugValue2 = (float)spSp;
+            //CConsole.Instance.debugString2 = "animSp";
+            //CConsole.Instance.debugValue2 = (float)spSp;
 
-            CRender.Instance.DrawPlayer(anime, new Vector3(x, z, y), fDir+((float)Math.PI/2), spSp);
-            //CRender.Instance.DrawBillBoard(new Vector3(10.0f, 10.0f, 10.0f), new Vector2(5, 5), new Vector2(2.5f, 2.5f), "grasstop");
+            CRender.Instance.DrawPlayer(anime, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame);
+
+            float shadowSize = 2.5f;
+
+            CRender.Instance.DrawRectangle(new Vector3(x - shadowSize, fMinHeight + 0.1f, y + shadowSize),
+                    new Vector3(x + shadowSize, fMinHeight + 0.1f, y + shadowSize),
+                    new Vector3(x - shadowSize, fMinHeight + 0.1f, y - shadowSize),
+                    new Vector3(x + shadowSize, fMinHeight + 0.1f, y - shadowSize), "shadow", false, 0.5f);
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)
@@ -134,6 +155,8 @@ namespace CatEngine
         {
             fHInput = gamepadState.ThumbSticks.Left.X;
             fVInput = gamepadState.ThumbSticks.Left.Y;
+            fHInput2 = gamepadState.ThumbSticks.Right.X;
+            fVInput2 = gamepadState.ThumbSticks.Right.Y;
 
             if (gamepadState.IsButtonDown(Buttons.A) && bLanded)
             {
@@ -160,13 +183,20 @@ namespace CatEngine
             float fCamDir = degToRad(camera.GetCameraDirection() + 90.0f);
 
             //handling movement
-            float inputDir = PointDirection(0, 0, fHInput, fVInput);
-            float inputSp = PointDistance(0, 0, fHInput, fVInput);
+            float inputDir = 0;
+            float inputSp = 0;
 
-            if (fHInput != 0 || fVInput != 0)
+            if ((fHInput != 0 || fVInput != 0) && (fHInput2 == 0 && fVInput2 == 0))
             {
+                inputDir = inputDir = PointDirection(0, 0, fHInput, fVInput);
+                inputSp = PointDistance(0, 0, fHInput, fVInput);
                 fDir = inputDir+fCamDir;
                 //fMoveDir = fCamDir;
+            }
+            else if (fHInput2 != 0 || fVInput2 != 0)
+            {
+                float inputDirR = PointDirection(0, 0, fHInput2, fVInput2);
+                fDir = inputDirR + fCamDir;
             }
 
             fHorSpeed += distDirX(inputSp * fAcceleration, fDir);
@@ -187,10 +217,10 @@ namespace CatEngine
                 fVerSpeed = 0;
             }
 
-            if (spSp > fMaxSpeed)
+            if (spSp > fMaxSpeed*inputSp)
             {
-                fHorSpeed = distDirX(fMaxSpeed, spDir);
-                fVerSpeed = distDirY(fMaxSpeed, spDir);
+                fHorSpeed = distDirX(fMaxSpeed * inputSp, spDir);
+                fVerSpeed = distDirY(fMaxSpeed * inputSp, spDir);
             }
 
             float angleMeasureDist = spSp;
@@ -200,8 +230,8 @@ namespace CatEngine
             float angle = radToDeg(PointDirection(0, heightPBack, spSp, heightPFront));
             float angleSpeed = (angle / 90.0f) * 4.0f;
 
-            CConsole.Instance.debugString = "angle";
-            CConsole.Instance.debugValue = angle;
+            //CConsole.Instance.debugString = "angle";
+            //CConsole.Instance.debugValue = angle;
 
             if (angle < 0 && bLanded && angle > -72.0f)
             {

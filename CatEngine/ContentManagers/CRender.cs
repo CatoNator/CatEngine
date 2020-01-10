@@ -80,7 +80,7 @@ namespace CatEngine.Content
             playerInstance.Mesh.Meshes[1].Texture = dTextureDict["pankka_head"];
             playerInstance.SpeedTransitionSecond = 0.05f;
             playerInstance.Initialize();
-            playerInstance.SetAnimation(dSkinnedAnimationDict["player_tpose"], gameTime);
+            //playerInstance.SetAnimation(dSkinnedAnimationDict["player_tposebones"], gameTime);
         }
 
         public void InitEditor()
@@ -129,7 +129,7 @@ namespace CatEngine.Content
             {
                 SimpleModel mdl = new SimpleModel();
                 mdl.GraphicsDevice = graphicsDevice;
-                mdl.FilePath = "AssetData/Models/" + modelName + ".dae";
+                mdl.FilePath = "AssetData/Models/" + modelName + ".fbx";
                 mdl.Initialize();
                 CRender.Instance.dSimpleModelDict.Add(modelName, mdl);
             }
@@ -231,6 +231,11 @@ namespace CatEngine.Content
             cameraTarget = targetPosition;
         }
 
+        public Vector3 GetCameraTarget()
+        {
+            return cameraTarget;
+        }
+
         public void UpdateGameTime(GameTime time)
         {
             gameTime = time;
@@ -291,6 +296,31 @@ namespace CatEngine.Content
             }
         }
 
+        public void DrawSimpleModel(string modelName, Vector3 position, float rotation)
+        {
+            SimpleModel simpleModel = dSimpleModelDict[modelName];
+            simpleModel.GraphicsDevice = graphicsDevice;
+            simpleModel.Initialize();
+
+            Matrix rotationMatrix = Matrix.CreateRotationZ(rotation)* Matrix.CreateRotationX(-(float)Math.PI / 2.0f);
+            Matrix transformMatrix = Matrix.CreateTranslation(position);
+
+            Matrix scale = Matrix.CreateScale(0.5f);
+
+            SimpleModelEffect.Parameters["World"].SetValue(scale * rotationMatrix * transformMatrix * worldMatrix);
+            SimpleModelEffect.Parameters["WorldViewProjection"].SetValue(scale * rotationMatrix * transformMatrix * worldMatrix * viewMatrix * projectionMatrix);
+            SimpleModelEffect.Parameters["Texture1"].SetValue(dTextureDict["natsa"]);
+
+            graphicsDevice.SetVertexBuffer(simpleModel.VertexBuffer);
+            graphicsDevice.Indices = simpleModel.IndexBuffer;
+            graphicsDevice.DepthStencilState = DepthStencilState.Default;
+            foreach (EffectPass pass in SimpleModelEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphicsDevice.DrawIndexedPrimitives(Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleList, 0, 0, simpleModel.FaceCount);
+            }
+        }
+
         public void DrawSkinnedModel(String modelName, String animName, Vector3 position, float rotation)
         {
             SkinnedModelInstance skinnedModelInstance = new SkinnedModelInstance();
@@ -331,14 +361,14 @@ namespace CatEngine.Content
             //skinnedModelInstance.Dispose();
         }
 
-        public void DrawPlayer(String animName, Vector3 position, float rotation, double animSpeed)
+        public void DrawPlayer(String animName, Vector3 position, float rotation, float animFrame)
         {
             if (playerInstance.Animation != dSkinnedAnimationDict[animName])
             {
                 playerInstance.SetAnimation(dSkinnedAnimationDict[animName], gameTime);
             }
 
-            playerInstance.AnimationSpeedScale = animSpeed;
+            playerInstance.FrameIndex = animFrame;
 
             Matrix positionMatrix = Matrix.CreateTranslation(position);
             Matrix rotationMatrix = Matrix.CreateRotationY(rotation);
@@ -386,7 +416,7 @@ namespace CatEngine.Content
 
             float lightValue = (CalculateAngleDifference(SunOrientation.X, Normal.X) + CalculateAngleDifference(SunOrientation.Y, Normal.Y) + CalculateAngleDifference(SunOrientation.Z, Normal.Z)) / 3.0f;
 
-            Color color = Color.White * (0.1f + (0.9f * lightValue));
+            Color color = Color.Lerp(Color.Black, Color.White, 0.1f + (0.9f * lightValue));
 
             VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6]
             {
@@ -404,7 +434,7 @@ namespace CatEngine.Content
             return vertices;
         }
 
-        public void DrawRectangle(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, String textureName, bool flipTexV)
+        public void DrawRectangle(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, String textureName, bool flipTexV, float alpha)
         {
             VertexPositionColorTexture[] vertices = RectanglePrimitive(C1, C2, C3, C4, flipTexV);
             //rectangleBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
@@ -416,6 +446,7 @@ namespace CatEngine.Content
             basicEffect.VertexColorEnabled = true;
             basicEffect.LightingEnabled = false;
             basicEffect.TextureEnabled = true;
+            basicEffect.Alpha = alpha;
             basicEffect.Texture = dTextureDict[textureName];
 
             graphicsDevice.SetVertexBuffer(rectangleBuffer);
@@ -451,6 +482,7 @@ namespace CatEngine.Content
             basicEffect.World = Matrix.CreateRotationX(-(float)Math.PI / 2) * Matrix.CreateRotationY(cameraDirection) * Matrix.CreateTranslation(position) * worldMatrix;
             basicEffect.VertexColorEnabled = false;
             basicEffect.LightingEnabled = false;
+            basicEffect.Alpha = alpha;
             basicEffect.TextureEnabled = true;
 
             basicEffect.Texture = dTextureDict[textureName];

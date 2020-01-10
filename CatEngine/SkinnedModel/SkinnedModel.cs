@@ -102,11 +102,15 @@ namespace CatEngine.SkinnedMdl
 
                 var c = aScene.Materials[aMesh.MaterialIndex].ColorDiffuse;
 
-                for (int faceIndex = 0; faceIndex < aMesh.FaceCount; faceIndex++)
+                for (int faceIndex = 0; faceIndex < aMesh.Faces.Count(); faceIndex++)
                 {
                     for (int vertexNum = 0; vertexNum < 3; vertexNum++)
                     {
-                        int verticeIndice = aMesh.Faces[faceIndex].Indices[vertexNum];
+                        int verticeIndice = 0;
+
+                        if (vertexNum < aMesh.Faces[faceIndex].Indices.Count())
+                            verticeIndice = aMesh.Faces[faceIndex].Indices[vertexNum];
+
                         Vector3 verticePosition = AssimpHelper.VectorAssimpToXna(aMesh.Vertices[verticeIndice]);
                         Vector3 verticeNormal = AssimpHelper.VectorAssimpToXna(aMesh.Normals[verticeIndice]);
 

@@ -120,7 +120,7 @@ namespace CatEngine.Content
                 CRender.Instance.DrawRectangle(new Vector3(iPosition[0] * iTileSize, fCornerHeights[2], iPosition[1] * iTileSize + iTileSize),
                     new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[3], iPosition[1] * iTileSize + iTileSize),
                     new Vector3(iPosition[0] * iTileSize, fCornerHeights[0], iPosition[1] * iTileSize),
-                    new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[1], iPosition[1] * iTileSize), textureArray[tileTextureIndex], false);
+                    new Vector3(iPosition[0] * iTileSize + iTileSize, fCornerHeights[1], iPosition[1] * iTileSize), textureArray[tileTextureIndex], false, 1.0f);
 
                 int iLevelHeight = CLevel.Instance.iLevelHeight;
                 int iLevelWidth = CLevel.Instance.iLevelWidth;
@@ -144,10 +144,15 @@ namespace CatEngine.Content
                         nextCorner2 = belowTile.fCornerHeights[1];
                     }
 
+                    bool flipTex = false;
+
+                    if (currentTile.fCornerHeights[2] > nextCorner1 || currentTile.fCornerHeights[3] > nextCorner2)
+                        flipTex = true;
+
                     CRender.Instance.DrawRectangle(new Vector3(i * iTileSize, nextCorner1, (a + 1) * iTileSize),
                         new Vector3((i + 1) * iTileSize, nextCorner2, (a + 1) * iTileSize),
                         new Vector3(i * iTileSize, currentTile.fCornerHeights[2], (a + 1) * iTileSize),
-                        new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize), textureArray[bottomWallTextureIndex], false);
+                        new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize), textureArray[bottomWallTextureIndex], flipTex, 1.0f);
                 }
 
                 //and the wall to the right of us
@@ -165,20 +170,25 @@ namespace CatEngine.Content
                         nextCorner2 = nextTile.fCornerHeights[2];
                     }
 
+                    bool flipTex = false;
+
+                    if (currentTile.fCornerHeights[1] < nextCorner1 || currentTile.fCornerHeights[3] < nextCorner2)
+                        flipTex = true;
+
                     CRender.Instance.DrawRectangle(new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[1], a * iTileSize),
                         new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize),
                         new Vector3((i + 1) * iTileSize, nextCorner1, a * iTileSize),
-                        new Vector3((i + 1) * iTileSize, nextCorner2, (a + 1) * iTileSize), textureArray[rightWallTextureIndex], false);
-                }
+                        new Vector3((i + 1) * iTileSize, nextCorner2, (a + 1) * iTileSize), textureArray[rightWallTextureIndex], flipTex, 1.0f);
+                } 
 
-                //if we're on the leftmost row, let's render a top wall
+                //if we're on the leftmost row, let's render a left wall
                 if (i == 0)
                 {
                     FloorTile currentTile = oFloorTileArray[i, a];
                     CRender.Instance.DrawRectangle(new Vector3(i, 0, a * iTileSize),
                         new Vector3(i, 0, (a + 1) * iTileSize),
                         new Vector3(i, currentTile.fCornerHeights[0], a * iTileSize),
-                        new Vector3(i, currentTile.fCornerHeights[2], (a + 1) * iTileSize), textureArray[leftWallTextureIndex], true);
+                        new Vector3(i, currentTile.fCornerHeights[2], (a + 1) * iTileSize), textureArray[leftWallTextureIndex], true, 1.0f);
                 }
 
                 //if we're on the top row, let's draw a top wall
@@ -188,7 +198,7 @@ namespace CatEngine.Content
                     CRender.Instance.DrawRectangle(new Vector3(i * iTileSize, currentTile.fCornerHeights[0], a),
                         new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[1], a),
                         new Vector3(i * iTileSize, 0, a),
-                        new Vector3((i + 1) * iTileSize, 0, a), textureArray[topWallTextureIndex], false);
+                        new Vector3((i + 1) * iTileSize, 0, a), textureArray[topWallTextureIndex], false, 1.0f);
                 }
 
                 //if we're on the rightmost row, let's render a right wall
@@ -198,7 +208,7 @@ namespace CatEngine.Content
                     CRender.Instance.DrawRectangle(new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[1], a * iTileSize),
                         new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize),
                         new Vector3((i + 1) * iTileSize, 0, a * iTileSize),
-                        new Vector3((i + 1) * iTileSize, 0, (a + 1) * iTileSize), textureArray[rightWallTextureIndex], false);
+                        new Vector3((i + 1) * iTileSize, 0, (a + 1) * iTileSize), textureArray[rightWallTextureIndex], false, 1.0f);
                 }
 
                 //if we're on the bottom row, let's draw a bottom wall
@@ -208,7 +218,7 @@ namespace CatEngine.Content
                     CRender.Instance.DrawRectangle(new Vector3(i * iTileSize, 0, (a + 1) * iTileSize),
                         new Vector3((i + 1) * iTileSize, 0, (a + 1) * iTileSize),
                         new Vector3(i * iTileSize, currentTile.fCornerHeights[2], (a + 1) * iTileSize),
-                        new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize), textureArray[bottomWallTextureIndex], true);
+                        new Vector3((i + 1) * iTileSize, currentTile.fCornerHeights[3], (a + 1) * iTileSize), textureArray[bottomWallTextureIndex], true, 1.0f);
                 }
             }
 
@@ -343,12 +353,36 @@ namespace CatEngine.Content
 
         public void SetCornerHeigth(int tileX, int tileY, float[] corners)
         {
-            if ((tileX >= 0 && tileX < iLevelWidth) && (tileY >= 0 && tileY < iLevelHeight) && oFloorTileArray[tileX, tileY] != null)
+            if ((tileX >= 0 && tileX < iLevelWidth) && (tileY >= 0 && tileY < iLevelHeight))
+            {
+                if (oFloorTileArray[tileX, tileY] == null)
+                    oFloorTileArray[tileX, tileY] = new FloorTile();
+
                 oFloorTileArray[tileX, tileY].SetProperties(tileX, tileY, iTileSize, corners);
+
+                float combinedCorners = 0.0f;
+
+                for (int e = 0; e < 4; e++)
+                {
+                    combinedCorners += corners[e];
+                }
+
+                if (combinedCorners <= 0)
+                {
+                    oFloorTileArray[tileX, tileY] = null;
+                }
+            }
+                
         }
 
-        //rendering loop
-        public void Render()
+        public void SetTextures(int tileX, int tileY, int tileTex, int topWallTex, int LWallTex, int RWallTex, int BWallTex)
+        {
+            if ((tileX >= 0 && tileX < iLevelWidth) && (tileY >= 0 && tileY < iLevelHeight) && oFloorTileArray[tileX, tileY] != null)
+                oFloorTileArray[tileX, tileY].SetTextures(tileTex, topWallTex, LWallTex, RWallTex, BWallTex);
+        }
+
+            //rendering loop
+            public void Render()
         {
             for (int i = 0; i < iLevelWidth; i++)
             {
@@ -453,13 +487,16 @@ namespace CatEngine.Content
                         {
                             for (int a = 0; a < iLevelHeight; a++)
                             {
-                                int iTileTex = reader.ReadByte();
-                                int iTopWallTex = reader.ReadByte();
-                                int iLWallTex = reader.ReadByte();
-                                int iRWallTex = reader.ReadByte();
-                                int iBWallTex = reader.ReadByte();
+                                if (oFloorTileArray[i, a] != null)
+                                {
+                                    int iTileTex = reader.ReadByte();
+                                    int iTopWallTex = reader.ReadByte();
+                                    int iLWallTex = reader.ReadByte();
+                                    int iRWallTex = reader.ReadByte();
+                                    int iBWallTex = reader.ReadByte();
 
-                                oFloorTileArray[i, a].SetTextures(iTileTex, iTopWallTex, iLWallTex, iRWallTex, iBWallTex);
+                                    oFloorTileArray[i, a].SetTextures(iTileTex, iTopWallTex, iLWallTex, iRWallTex, iBWallTex);
+                                }
                             }
                         }
 

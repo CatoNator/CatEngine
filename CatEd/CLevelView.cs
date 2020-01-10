@@ -16,6 +16,8 @@ namespace CatEd
 {
     public class CLevelView : MonoGame.Forms.Controls.MonoGameControl
     {
+        public CatEdMainForm Form;
+
         private float fCameraRotation = 0.0f;
         private float fCameraVRotation = 15.0f;
         private float fCameraDistance = 30.0f;
@@ -67,6 +69,8 @@ namespace CatEd
             //load terrain data
             CLevel.Instance.LoadTerrainData(path + "/terrain.bin");
             CLevel.Instance.SetTextureArray(textureList.ToArray());
+
+            Form.RefreshTextureList(textureList);
         }
 
         private void CameraBehaviour()

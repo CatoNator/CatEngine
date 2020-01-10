@@ -56,12 +56,15 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "cube_tex" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
-            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "dustCloud" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "dustcloud" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "pankka_body" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "pankka_head" });
             QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "player" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "player_tpose" });
+            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "player_tposebones" });
             QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "player_walkcyclebones" });
+            QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { "natsa" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "natsa" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "shadow" });
             QueueLoadCommand(CRender.Instance, "InitPlayer", new List<string>());
 
             PrepareLevelData("Test");
@@ -108,6 +111,9 @@ namespace CatEngine
             //load terrain data
             QueueLoadCommand(CLevel.Instance, "LoadTerrainData", new List<string>() { path+"/terrain.bin" });
             CLevel.Instance.SetTextureArray(textureList.ToArray());
+
+            //skybox
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "background" });
 
             //load prop models into memory
 

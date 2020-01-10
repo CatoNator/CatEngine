@@ -95,6 +95,14 @@ namespace CatEngine
 
             CLoadingScreen.Instance.game = this;
 
+            BlendState bs = new BlendState();
+            bs.AlphaSourceBlend = Blend.One;
+            bs.AlphaDestinationBlend = Blend.Zero;
+            bs.ColorSourceBlend = Blend.Zero;
+            bs.ColorDestinationBlend = Blend.One;
+            bs.AlphaBlendFunction = BlendFunction.Add;
+            GraphicsDevice.BlendState = bs;
+
             //setting up CSpritebasics...
             CSprite.Instance.content = Content;
             CSprite.Instance.sbSpriteBatch = spriteBatch;
@@ -117,6 +125,7 @@ namespace CatEngine
             //DEBUG: creating objects that aren't configured to be loaded in CLevel yet
             CObjectManager.Instance.CreateInstance(typeof(CCamera), 0, 10, -30);
             CObjectManager.Instance.CreateInstance(typeof(CPlayer), 5, 20, 5);
+            CObjectManager.Instance.CreateInstance(typeof(CNatsa), 5, 20, 5);
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
             CLoadingScreen.Instance.Load();
@@ -221,10 +230,14 @@ namespace CatEngine
             }
             else if (CurrentGameState == GameState.Game)
             {
+                //skybox
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+                CSprite.Instance.DrawSkyBox();
+                spriteBatch.End();
+
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-                GraphicsDevice.BlendState = BlendState.Opaque;
-                GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+                //GraphicsDevice.RasterizerState = RasterizerState.CullNone;
                 CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
                 CParticleManager.Instance.Render();
@@ -237,9 +250,12 @@ namespace CatEngine
             }
             else if (CurrentGameState == GameState.Paused)
             {
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+                CSprite.Instance.DrawSkyBox();
+                spriteBatch.End();
+
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-                GraphicsDevice.BlendState = BlendState.Opaque;
                 CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
 

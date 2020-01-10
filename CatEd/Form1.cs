@@ -25,11 +25,14 @@ namespace CatEd
 
         public string sLevelName = "Test";
 
+        private List<string> textureList;
+
         public CatEdMainForm()
         {
             InitializeComponent();
 
             cLevelView1.sLevelName = sLevelName;
+            cLevelView1.Form = this;
 
             for (int i = 0; i < 4; i++)
             {
@@ -48,6 +51,17 @@ namespace CatEd
 
             LevelWBox.Text = CLevel.Instance.iLevelWidth.ToString();
             LevelHBox.Text = CLevel.Instance.iLevelHeight.ToString();
+        }
+
+        public void RefreshTextureList(List<string> txList)
+        {
+            textureList = txList;
+
+            TileTTexBox.Items.AddRange(textureList.ToArray());
+            TileBTexBox.Items.AddRange(textureList.ToArray());
+            TileLTexBox.Items.AddRange(textureList.ToArray());
+            TileRTexBox.Items.AddRange(textureList.ToArray());
+            TileWTexBox.Items.AddRange(textureList.ToArray());
         }
 
         private void LoadLevel()
@@ -139,6 +153,8 @@ namespace CatEd
                     arr[3] = BiLinearInterp(i+1, a+1, fCorners[0], fCorners[1], fCorners[2], fCorners[3]);
 
                     CLevel.Instance.SetCornerHeigth(SelX+i, SelY+a, arr);
+
+                    CLevel.Instance.SetTextures(SelX + i, SelY + i, 1, 1, 1, 1, 1);
                 }
             }
         }
