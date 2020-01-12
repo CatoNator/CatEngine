@@ -463,6 +463,35 @@ namespace CatEngine.Content
             //rectangleBuffer = null;
         }
 
+        public void DrawRectangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, String textureName, bool flipTexV, float alpha)
+        {
+            VertexPositionColorTexture[] vertices = RectanglePrimitive(C1, C2, C3, C4, flipTexV);
+            rectangleBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+            basicEffect.Projection = projectionMatrix;
+            basicEffect.View = viewMatrix;
+            basicEffect.World = worldMatrix;
+            basicEffect.VertexColorEnabled = true;
+            basicEffect.LightingEnabled = false;
+            basicEffect.TextureEnabled = true;
+            basicEffect.Alpha = alpha;
+            basicEffect.Texture = dTextureDict[textureName];
+
+            RasterizerState ogState = graphicsDevice.RasterizerState;
+            graphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
+
+            graphicsDevice.SetVertexBuffer(rectangleBuffer);
+
+            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
+            }
+
+            graphicsDevice.RasterizerState = ogState;
+            graphicsDevice.SetVertexBuffer(null);
+        }
+
         public void DrawBillBoard(Vector3 position, Vector2 scale, Vector2 origin, float angle, float alpha, String textureName)
         {
             float cameraDirection = (float)(Math.PI/2)-(float)Math.Atan2((double)(cameraPosition.Z - cameraTarget.Z), (double)(cameraPosition.X - cameraTarget.X));
