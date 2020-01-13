@@ -49,9 +49,9 @@ namespace CatEngine
                 fCeilHeights[i] = z - 2.5f;
             }
 
-            float scale = 2.0f;
+            float scale = 0.5f;
 
-            string fileName = "RobloxAnim";
+            string fileName = "whomp";
 
             string vertName = fileName + ".bin";
 

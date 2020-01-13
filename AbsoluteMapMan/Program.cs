@@ -10,6 +10,11 @@ using System.Xml.Linq;
  * I don't really care about compatibility that much right now, as the engine is only designed for one specific game project using a specific set of tools
 */
 
+/*TO DO:
+ * precalculate whether the poly is a wall or floor or ceiling based on the polygon's normal's y-component
+ * split the polygons to several cells by their location
+*/
+
 namespace AbsoluteMapMan
 {
     class Program
