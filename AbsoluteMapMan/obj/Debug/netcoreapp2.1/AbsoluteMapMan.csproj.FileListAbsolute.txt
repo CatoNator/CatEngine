@@ -1,0 +1,11 @@
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\bin\Debug\netcoreapp2.1\AbsoluteMapMan.deps.json
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\bin\Debug\netcoreapp2.1\AbsoluteMapMan.runtimeconfig.json
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\bin\Debug\netcoreapp2.1\AbsoluteMapMan.runtimeconfig.dev.json
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\bin\Debug\netcoreapp2.1\AbsoluteMapMan.dll
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\bin\Debug\netcoreapp2.1\AbsoluteMapMan.pdb
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\obj\Debug\netcoreapp2.1\AbsoluteMapMan.csprojAssemblyReference.cache
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\obj\Debug\netcoreapp2.1\AbsoluteMapMan.csproj.CoreCompileInputs.cache
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\obj\Debug\netcoreapp2.1\AbsoluteMapMan.AssemblyInfoInputs.cache
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\obj\Debug\netcoreapp2.1\AbsoluteMapMan.AssemblyInfo.cs
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\obj\Debug\netcoreapp2.1\AbsoluteMapMan.dll
+C:\Users\teho\Documents\GitHub\CatEngine\AbsoluteMapMan\obj\Debug\netcoreapp2.1\AbsoluteMapMan.pdb

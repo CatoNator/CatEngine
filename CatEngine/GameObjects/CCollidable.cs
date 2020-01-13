@@ -22,9 +22,24 @@ namespace CatEngine
         //ceiling heights
         public float[] fCeilHeights = new float[4];
 
-        private List<float> fVertexes = new List<float>();
+        private List<Triangle> sTriangles = new List<Triangle>();
+        private List<Vector3> fVectors = new List<Vector3>();
 
         public Vector2 fSize = new Vector2(5, 5);
+
+        private struct Triangle
+        {
+            public Vector3 C1;
+            public Vector3 C2;
+            public Vector3 C3;
+
+            public Triangle(Vector3 V1, Vector3 V2, Vector3 V3)
+            {
+                C1 = V1;
+                C2 = V2;
+                C3 = V3;
+            }
+        }
 
         public override void InstanceSpawn()
         {
@@ -34,13 +49,17 @@ namespace CatEngine
                 fCeilHeights[i] = z - 2.5f;
             }
 
-            string fileName = "cube.bin";
+            float scale = 2.0f;
 
-            if (File.Exists(fileName))
+            string fileName = "RobloxAnim";
+
+            string vertName = fileName + ".bin";
+
+            if (File.Exists(vertName))
             {
-                using (FileStream stream = new FileStream(fileName, FileMode.Open))
-                {
-                    CConsole.Instance.Print("reading model data from file " + fileName);
+                using (FileStream stream = new FileStream(vertName, FileMode.Open))
+                {  
+                    CConsole.Instance.Print("reading vertex data from file " + vertName);
 
                     using (BinaryReader reader = new BinaryReader(stream))
                     {
@@ -49,38 +68,34 @@ namespace CatEngine
 
                         for (int i = 0; i < iVertices; i++)
                         {
-                            double val = reader.ReadDouble();
-                            Console.WriteLine(val.ToString());
-                            fVertexes.Add((float)val);
+                            double val1 = reader.ReadDouble();
+                            double val2 = reader.ReadDouble();
+                            double val3 = reader.ReadDouble();
+
+                            Vector3 vec = new Vector3(((float)val1 * scale) + x, ((float)val2 * scale) + z, ((float)val3 * scale) + y);
+
+                            fVectors.Add(vec);
+                            Console.WriteLine(vec.ToString());
                         }
                     }
                 }
             }
+            else
+            {
+                Console.WriteLine("could not find vertdata!");
+            }
 
-
+            for (int i = 0; i < fVectors.Count; i+=3)
+            {
+                sTriangles.Add(new Triangle(fVectors[i], fVectors[i + 1], fVectors[i + 2]));
+            }
         }
 
         public override void Render()
         {
-            List<Vector3> arr = new List<Vector3>();
-
-            for (int i = 0; i < fVertexes.Count(); i += 3)
+            foreach (Triangle tri in sTriangles)
             {
-                if (i + 2 < fVertexes.Count)
-                {
-                    Vector3 val = new Vector3(x + fVertexes[i], z + fVertexes[i + 1], y + fVertexes[i + 2]);
-
-                    //Console.WriteLine("added vector3 to arr " + val.ToString());
-                    arr.Add(val);
-                }
-            }
-
-            for (int i = 0; i < arr.Count(); i++)
-            {
-                if (i + 3 < arr.Count)
-                {
-                    CRender.Instance.DrawTriangleWireframe(arr[i], arr[i + 1], arr[i + 2]);
-                }
+                CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3);
             }
         }
     }

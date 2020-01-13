@@ -531,6 +531,49 @@ namespace CatEngine.Content
             vertexBuffer.Dispose();
         }
 
+        public void DrawCustomWireframe(List<Vector3> vecList, List<float> indexList)
+        {
+            Color color = Color.Red;
+
+            List<VertexPositionColor> vertices = new List<VertexPositionColor>();
+
+            foreach (Vector3 vec in vecList)
+            {
+                vertices.Add(new VertexPositionColor(vec, color));
+            }
+
+            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColor), vertices.Count, BufferUsage.WriteOnly);
+            vertexBuffer.SetData<VertexPositionColor>(vertices.ToArray());
+
+            IndexBuffer indexBuffer = new IndexBuffer(graphicsDevice, typeof(float), indexList.Count, BufferUsage.WriteOnly);
+            indexBuffer.SetData(indexList.ToArray());
+
+            basicEffect.Projection = projectionMatrix;
+            basicEffect.View = viewMatrix;
+            basicEffect.World = worldMatrix;
+            basicEffect.VertexColorEnabled = true;
+            basicEffect.LightingEnabled = false;
+            basicEffect.TextureEnabled = false;
+
+            RasterizerState ogState = graphicsDevice.RasterizerState;
+            RasterizerState newState = new RasterizerState();
+            newState.FillMode = FillMode.WireFrame;
+            graphicsDevice.RasterizerState = newState;
+
+            graphicsDevice.SetVertexBuffer(vertexBuffer);
+            graphicsDevice.Indices = indexBuffer;
+
+            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
+            }
+
+            graphicsDevice.RasterizerState = ogState;
+            graphicsDevice.SetVertexBuffer(null);
+            vertexBuffer.Dispose();
+        }
+
         public void DrawBillBoard(Vector3 position, Vector2 scale, Vector2 origin, float angle, float alpha, String textureName)
         {
             float cameraDirection = (float)(Math.PI/2)-(float)Math.Atan2((double)(cameraPosition.Z - cameraTarget.Z), (double)(cameraPosition.X - cameraTarget.X));
