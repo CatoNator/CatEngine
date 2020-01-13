@@ -34,7 +34,7 @@ namespace CatEngine
         public Keys kCRotateCamUp = Keys.Up;
         public Keys kCRotateCamDown = Keys.Down;
 
-        public bool bGamepadEnabled = true;
+        public bool bGamepadEnabled = false;
 
         public Keys kPFire = Keys.Space;
 

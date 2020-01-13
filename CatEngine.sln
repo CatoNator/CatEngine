@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullSheet", "BullSheet\Bull
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropsForThat", "PropsForThat\PropsForThat.csproj", "{17284F1F-EB8A-4719-82F3-C5F106DC3F6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbsoluteMapMan", "AbsoluteMapMan\AbsoluteMapMan.csproj", "{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,14 @@ Global
 		{17284F1F-EB8A-4719-82F3-C5F106DC3F6D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{17284F1F-EB8A-4719-82F3-C5F106DC3F6D}.Release|x86.ActiveCfg = Release|Any CPU
 		{17284F1F-EB8A-4719-82F3-C5F106DC3F6D}.Release|x86.Build.0 = Release|Any CPU
+		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Debug|x86.Build.0 = Debug|Any CPU
+		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Release|x86.ActiveCfg = Release|Any CPU
+		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

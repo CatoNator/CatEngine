@@ -463,9 +463,9 @@ namespace CatEngine.Content
             //rectangleBuffer = null;
         }
 
-        public void DrawRectangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4, String textureName, bool flipTexV, float alpha)
+        public void DrawRectangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4)
         {
-            VertexPositionColorTexture[] vertices = RectanglePrimitive(C1, C2, C3, C4, flipTexV);
+            VertexPositionColorTexture[] vertices = RectanglePrimitive(C1, C2, C3, C4, false);
             rectangleBuffer.SetData<VertexPositionColorTexture>(vertices);
 
             basicEffect.Projection = projectionMatrix;
@@ -473,12 +473,12 @@ namespace CatEngine.Content
             basicEffect.World = worldMatrix;
             basicEffect.VertexColorEnabled = true;
             basicEffect.LightingEnabled = false;
-            basicEffect.TextureEnabled = true;
-            basicEffect.Alpha = alpha;
-            basicEffect.Texture = dTextureDict[textureName];
+            basicEffect.TextureEnabled = false;
 
             RasterizerState ogState = graphicsDevice.RasterizerState;
-            graphicsDevice.RasterizerState.FillMode = FillMode.WireFrame;
+            RasterizerState newState = new RasterizerState();
+            newState.FillMode = FillMode.WireFrame;
+            graphicsDevice.RasterizerState = newState;
 
             graphicsDevice.SetVertexBuffer(rectangleBuffer);
 
@@ -490,6 +490,45 @@ namespace CatEngine.Content
 
             graphicsDevice.RasterizerState = ogState;
             graphicsDevice.SetVertexBuffer(null);
+        }
+
+        public void DrawTriangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3)
+        {
+            Color color = Color.Red;
+            VertexPositionColor[] vertices = new VertexPositionColor[3]
+            {
+                //polygon 1
+                new VertexPositionColor(new Vector3(C1.X, C1.Y, C1.Z), color),
+                new VertexPositionColor(new Vector3(C3.X, C3.Y, C3.Z), color),
+                new VertexPositionColor(new Vector3(C2.X, C2.Y, C2.Z), color)
+            };
+
+            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
+            vertexBuffer.SetData<VertexPositionColor>(vertices);
+
+            basicEffect.Projection = projectionMatrix;
+            basicEffect.View = viewMatrix;
+            basicEffect.World = worldMatrix;
+            basicEffect.VertexColorEnabled = true;
+            basicEffect.LightingEnabled = false;
+            basicEffect.TextureEnabled = false;
+
+            RasterizerState ogState = graphicsDevice.RasterizerState;
+            RasterizerState newState = new RasterizerState();
+            newState.FillMode = FillMode.WireFrame;
+            graphicsDevice.RasterizerState = newState;
+
+            graphicsDevice.SetVertexBuffer(vertexBuffer);
+
+            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
+            }
+
+            graphicsDevice.RasterizerState = ogState;
+            graphicsDevice.SetVertexBuffer(null);
+            vertexBuffer.Dispose();
         }
 
         public void DrawBillBoard(Vector3 position, Vector2 scale, Vector2 origin, float angle, float alpha, String textureName)
