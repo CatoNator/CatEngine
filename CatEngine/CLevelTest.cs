@@ -175,7 +175,7 @@ namespace CatEngine.Content
                 if (possibleHeights.Count > 0)
                 {
                     //remove the ones above the player
-                    float min = 100.0f;
+                    float min = z;
                     
                     //foreach (float f in possibleHeights)
                     for (int i = 0; i < possibleHeights.Count; i++)
@@ -185,7 +185,7 @@ namespace CatEngine.Content
 
                         //Console.WriteLine(f + " " + z + " " + diff);
 
-                        if (diff >= -fCollisionBufferSize && diff < min)
+                        if (diff < min) //diff >= -fCollisionBufferSize && 
                         {
                             Height = f;
                             min = diff;
