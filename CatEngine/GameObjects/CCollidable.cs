@@ -48,55 +48,11 @@ namespace CatEngine
                 fFloorHeights[i] = z + 2.5f;
                 fCeilHeights[i] = z - 2.5f;
             }
-
-            float scale = 0.5f;
-
-            string fileName = "whomp";
-
-            string vertName = fileName + ".bin";
-
-            if (File.Exists(vertName))
-            {
-                using (FileStream stream = new FileStream(vertName, FileMode.Open))
-                {  
-                    CConsole.Instance.Print("reading vertex data from file " + vertName);
-
-                    using (BinaryReader reader = new BinaryReader(stream))
-                    {
-                        int iVertices = (int)reader.ReadInt32();
-                        Console.WriteLine(iVertices.ToString() + " vertices");
-
-                        for (int i = 0; i < iVertices; i++)
-                        {
-                            double val1 = reader.ReadDouble();
-                            double val2 = reader.ReadDouble();
-                            double val3 = reader.ReadDouble();
-
-                            Vector3 vec = new Vector3(((float)val1 * scale) + x, ((float)val2 * scale) + z, ((float)val3 * scale) + y);
-
-                            fVectors.Add(vec);
-                            Console.WriteLine(vec.ToString());
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("could not find vertdata!");
-            }
-
-            for (int i = 0; i < fVectors.Count; i+=3)
-            {
-                sTriangles.Add(new Triangle(fVectors[i], fVectors[i + 1], fVectors[i + 2]));
-            }
         }
 
         public override void Render()
         {
-            foreach (Triangle tri in sTriangles)
-            {
-                CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3);
-            }
+            
         }
     }
 }

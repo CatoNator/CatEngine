@@ -492,9 +492,8 @@ namespace CatEngine.Content
             graphicsDevice.SetVertexBuffer(null);
         }
 
-        public void DrawTriangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3)
+        public void DrawTriangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3, Color color)
         {
-            Color color = Color.Red;
             VertexPositionColor[] vertices = new VertexPositionColor[3]
             {
                 //polygon 1
@@ -531,37 +530,28 @@ namespace CatEngine.Content
             vertexBuffer.Dispose();
         }
 
-        public void DrawCustomWireframe(List<Vector3> vecList, List<float> indexList)
+        public void DrawTriangleTextured(Vector3 C1, Vector3 C2, Vector3 C3, Color color)
         {
-            Color color = Color.Red;
-
-            List<VertexPositionColor> vertices = new List<VertexPositionColor>();
-
-            foreach (Vector3 vec in vecList)
+            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[3]
             {
-                vertices.Add(new VertexPositionColor(vec, color));
-            }
+                //polygon 1
+                new VertexPositionColorTexture(new Vector3(C1.X, C1.Y, C1.Z), color, new Vector2(0, 0)),
+                new VertexPositionColorTexture(new Vector3(C3.X, C3.Y, C3.Z), color, new Vector2(0, 1)),
+                new VertexPositionColorTexture(new Vector3(C2.X, C2.Y, C2.Z), color, new Vector2(1, 1))
+            };
 
-            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColor), vertices.Count, BufferUsage.WriteOnly);
-            vertexBuffer.SetData<VertexPositionColor>(vertices.ToArray());
-
-            IndexBuffer indexBuffer = new IndexBuffer(graphicsDevice, typeof(float), indexList.Count, BufferUsage.WriteOnly);
-            indexBuffer.SetData(indexList.ToArray());
+            VertexBuffer vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 3, BufferUsage.WriteOnly);
+            vertexBuffer.SetData<VertexPositionColorTexture>(vertices);
 
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
             basicEffect.World = worldMatrix;
             basicEffect.VertexColorEnabled = true;
             basicEffect.LightingEnabled = false;
-            basicEffect.TextureEnabled = false;
-
-            RasterizerState ogState = graphicsDevice.RasterizerState;
-            RasterizerState newState = new RasterizerState();
-            newState.FillMode = FillMode.WireFrame;
-            graphicsDevice.RasterizerState = newState;
+            basicEffect.TextureEnabled = true;
+            basicEffect.Texture = dTextureDict["tex_empty"];
 
             graphicsDevice.SetVertexBuffer(vertexBuffer);
-            graphicsDevice.Indices = indexBuffer;
 
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
@@ -569,7 +559,6 @@ namespace CatEngine.Content
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
             }
 
-            graphicsDevice.RasterizerState = ogState;
             graphicsDevice.SetVertexBuffer(null);
             vertexBuffer.Dispose();
         }

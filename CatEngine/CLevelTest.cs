@@ -21,9 +21,14 @@ namespace CatEngine.Content
 
         //this is the max levelsize in cells per direction. Max levelsize is thus 255x255 cells = 65,025‬ cells
         public const int MAX_LEVELSIZE = 256;
-        public static int CELL_SIZE = 10;
+        public static int CELL_SIZE = 400;
 
-        private FloorTile[,] oFloorTileArray = new FloorTile[MAX_LEVELSIZE, MAX_LEVELSIZE];
+        private int activeCellX = 0;
+        private int activeCellY = 0;
+
+        //private FloorTile[,] oFloorTileArray = new FloorTile[MAX_LEVELSIZE, MAX_LEVELSIZE];
+
+        private Cell[,] LevelCells = new Cell[MAX_LEVELSIZE, MAX_LEVELSIZE];
 
         private String[] sLevelTextures = new String[] { "grasstop", "grass_path_side" };
 
@@ -55,174 +60,142 @@ namespace CatEngine.Content
                 C2 = V2;
                 C3 = V3;
             }
+
+            public Vector3 GetNormal()
+            {
+                //subtract the vectors
+                Vector3 ab = C1 - C3;
+                Vector3 cb = C2 - C3;
+
+                ab.Normalize();
+                cb.Normalize();
+                //get a vector perpendicular to those two edges
+                return Vector3.Cross(ab, cb);
+            }
+
+            //(Point A, Point B, Point C, Point P)
+            public bool PointInTriangle(Vector2 point)
+            {
+                float s1 = C3.Z - C1.Z;
+                float s2 = C3.X - C1.X;
+                float s3 = C2.Z - C1.Z;
+                float s4 = point.Y - C1.Z;
+
+                float w1 = (C1.X * s1 + s4 * s2 - point.X * s1) / (s3 * s2 - (C2.X - C1.X) * s1);
+                float w2 = (s4 - w1 * s3) / s1;
+                return w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1;
+            }
+
+            public float HeightAt(Vector2 point)
+            {
+                float h = 0.0f;
+                float s1 = C3.Z - C1.Z;
+                float s2 = C3.X - C1.X;
+                float s3 = C2.Z - C1.Z;
+                float s4 = point.Y - C1.Z;
+
+                float w1 = (C1.X * s1 + s4 * s2 - point.X * s1) / (s3 * s2 - (C2.X - C1.X) * s1);
+                float w2 = (s4 - w1 * s3) / s1;
+
+                //Console.WriteLine("w1 " + w1 + " w2 " + w2);
+
+                float a1 = (C1.Y * (1.0f - w1)) + (C2.Y * w1);
+                float a2 = (C1.Y * (1.0f - w2)) + (C3.Y * w2);
+
+                h = (a1 + a2)/2.0f;
+
+                return h;
+            }
         }
 
         private class Cell
         {
+            public List<Triangle> Ceilings = new List<Triangle>();
             public List<Triangle> Floors = new List<Triangle>();
-        }
+            public List<Triangle> Walls = new List<Triangle>();
 
-        private class FloorTile
-        {
-            public int iTileSize;
-            public int[] iPosition = new int[2];
-            public float[] fCornerHeights = new float[4];
-
-            public float fAverageHeight = 10;
-
-            //the texture indexes for whatever textures the tile needs to render
-            //the one visible on tope of the tile
-            private int tileTextureIndex = 0;
-
-            //side textures, these ones are only visible in special cases
-            private int topWallTextureIndex = 0;
-            private int leftWallTextureIndex = 0;
-
-            //these ones are basically always visible
-            private int rightWallTextureIndex = 0;
-            private int bottomWallTextureIndex = 0;
-
-            /*
-            0-----1
-            |     |
-            |     |
-            2-----3
-            */
-
-            public FloorTile()
+            public Cell()
             {
 
             }
 
-            public void SetProperties(int x, int y, int tileSize, float[] cornerHeights)
+            public void RenderCell()
             {
-                iPosition[0] = x;
-                iPosition[1] = y;
-                iTileSize = tileSize;
-
-                fCornerHeights = cornerHeights;
-            }
-
-            public void SetTextures(int tileTex, int topWallTex, int LWallTex, int RWallTex, int BWallTex)
-            {
-                tileTextureIndex = tileTex;
-
-                topWallTextureIndex = topWallTex;
-                leftWallTextureIndex = LWallTex;
-
-                rightWallTextureIndex = RWallTex;
-                bottomWallTextureIndex = BWallTex;
-            }
-
-            /*
-                 0
-              |-----|
-            1 |     | 3
-              |-----|
-                 2
-            */
-
-
-            public void RenderTile(String[] textureArray)
-            {
-                
-            }
-
-            public float GetHeightAt(float x, float y)
-            {
-                //the values
-                float q11 = fCornerHeights[0];
-                float q12 = fCornerHeights[2];
-                float q21 = fCornerHeights[1];
-                float q22 = fCornerHeights[3];
-
-                //corner positions
-                float x1 = 0;
-                float y1 = 0;
-                float x2 = (float)iTileSize;
-                float y2 = (float)iTileSize;
-
-                //bilinear interpolation
-                float x2x1, y2y1, x2x, y2y, yy1, xx1;
-                x2x1 = x2 - x1;
-                y2y1 = y2 - y1;
-                x2x = x2 - x;
-                y2y = y2 - y;
-                yy1 = y - y1;
-                xx1 = x - x1;
-                return 1.0f / (x2x1 * y2y1) * (
-                    q11 * x2x * y2y +
-                    q21 * xx1 * y2y +
-                    q12 * x2x * yy1 +
-                    q22 * xx1 * yy1
-                );
-            }
-        }
-
-
-        public void SetCornerHeigth(int tileX, int tileY, float[] corners)
-        {
-            if ((tileX >= 0 && tileX < MAX_LEVELSIZE) && (tileY >= 0 && tileY < MAX_LEVELSIZE))
-            {
-                if (oFloorTileArray[tileX, tileY] == null)
-                    oFloorTileArray[tileX, tileY] = new FloorTile();
-
-                oFloorTileArray[tileX, tileY].SetProperties(tileX, tileY, CELL_SIZE, corners);
-
-                float combinedCorners = 0.0f;
-
-                for (int e = 0; e < 4; e++)
+                foreach (Triangle tri in Ceilings)
                 {
-                    combinedCorners += corners[e];
+                    //CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3, Color.Red);
+                    CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Red);
                 }
 
-                if (combinedCorners <= 0)
+                foreach (Triangle tri in Floors)
                 {
-                    oFloorTileArray[tileX, tileY] = null;
+                    //CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3, Color.Green);
+                    CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Green);
+                }
+
+                foreach (Triangle tri in Walls)
+                {
+                    //CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3, Color.Green);
+                    CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Blue);
                 }
             }
-                
-        }
 
-        public void SetTextures(int tileX, int tileY, int tileTex, int topWallTex, int LWallTex, int RWallTex, int BWallTex)
-        {
-            if ((tileX >= 0 && tileX < MAX_LEVELSIZE) && (tileY >= 0 && tileY < MAX_LEVELSIZE) && oFloorTileArray[tileX, tileY] != null)
-                oFloorTileArray[tileX, tileY].SetTextures(tileTex, topWallTex, LWallTex, RWallTex, BWallTex);
+            public float GetFloorHeightAt(float x, float y)
+            {
+                float Height = 0.0f;
+
+                foreach (Triangle tri in Floors)
+                {
+                    if (tri.PointInTriangle(new Vector2(x, y)))
+                    {
+                        Height = tri.HeightAt(new Vector2(x, y));
+                        //Console.WriteLine("point is in tri");
+                    }
+                }
+
+                return Height;
+            }
         }
 
             //rendering loop
-            public void Render()
+        public void Render()
         {
             for (int i = 0; i < MAX_LEVELSIZE; i++)
             {
                 for (int a = 0; a < MAX_LEVELSIZE; a++)
                 {
-                    if (oFloorTileArray[i, a] != null)
+                    if (LevelCells[i, a] != null && i == activeCellX && a == activeCellY)
                     {
-                        oFloorTileArray[i, a].RenderTile(sLevelTextures);
+                        LevelCells[i, a].RenderCell();
                     }
                 }
             }
         }
 
         //public float to return the linearly interpolated height in a tile
-        public float GetMapHeightAt(float x, float y)
+        public float GetHeightAt(float x, float y)
         {
-            float height = 0.0f;
+            int CellX = (int)(x / CELL_SIZE);
+            int CellY = (int)(x / CELL_SIZE);
 
-            int tileX = (int)x / CELL_SIZE;
-            int tileY = (int)y / CELL_SIZE;
+            float Height = 0.0f;
 
-            if ((tileX >= 0 && tileX < MAX_LEVELSIZE)
-               && (tileY >= 0 && tileY < MAX_LEVELSIZE)
-               && oFloorTileArray[tileX, tileY] != null)
+            if ((CellX >= 0 && CellX < MAX_LEVELSIZE)
+                && (CellY >= 0 && CellY < MAX_LEVELSIZE)
+                && LevelCells[CellX, CellY] != null)
             {
-                float xInTile = x % CELL_SIZE;
-                float yInTile = y % CELL_SIZE;
-                height = oFloorTileArray[tileX, tileY].GetHeightAt(xInTile, yInTile);
+                Height = LevelCells[CellX, CellY].GetFloorHeightAt(x, y);
             }
+            /*else
+                Console.WriteLine("collision wasn't in a cell dumbass");*/
 
-            return height;
+            return Height;
+        }
+
+        public void UpdateActiveCell(float x, float y)
+        {
+            activeCellX = (int)(x / CELL_SIZE);
+            activeCellY = (int)(y / CELL_SIZE);
         }
 
         public void LoadPropData()
@@ -246,70 +219,94 @@ namespace CatEngine.Content
             //GenerateLevel();
             //SaveTerrain();
 
-            if (File.Exists(levelName))
+            //we load the collision data
+            float scale = 0.5f;
+
+            string vertName = levelName + ".bin";
+
+            List<Vector3> fVectors = new List<Vector3>();
+
+            //checkie
+            if (File.Exists(vertName))
             {
-                using (FileStream stream = new FileStream(levelName, FileMode.Open))
+                //open sesame
+                using (FileStream stream = new FileStream(vertName, FileMode.Open))
                 {
-                    CConsole.Instance.Print("reading level data from file " + levelName);
+                    CConsole.Instance.Print("reading vertex data from file " + vertName);
 
                     using (BinaryReader reader = new BinaryReader(stream))
                     {
-                        //CELL_SIZE = (int)reader.ReadByte();
-                        //MAX_LEVELSIZE = (int)reader.ReadByte();
-                        //MAX_LEVELSIZE = (int)reader.ReadByte();
+                        int iVertices = (int)reader.ReadInt32();
+                        Console.WriteLine(iVertices.ToString() + " vertices");
 
-                        //padding, "TILEDATABEGIN"
-                        for (int i= 0; i < 13; i++)
+                        //we make vectors out of the values
+                        for (int i = 0; i < iVertices; i++)
                         {
-                            int padding = reader.ReadByte();
+                            double val1 = reader.ReadDouble();
+                            double val2 = reader.ReadDouble();
+                            double val3 = reader.ReadDouble();
+
+                            Vector3 vec = new Vector3(((float)val1 * scale), ((float)val2 * scale), -((float)val3 * scale));
+
+                            fVectors.Add(vec);
+                            //Console.WriteLine(vec.ToString());
                         }
+                    }
+                }
+            }
+            else //fuck
+            {
+                Console.WriteLine("could not find vertdata!");
+            }
 
-                        for (int i = 0; i < MAX_LEVELSIZE; i++)
+            //now the fuck
+            for (int i = 0; i < fVectors.Count; i += 3)
+            {
+                //we make a triangle
+                Triangle tri = new Triangle(fVectors[i], fVectors[i + 1], fVectors[i + 2]);
+
+                //we loop through the cells
+                for (int a = 0; a < MAX_LEVELSIZE; a++)
+                {
+                    for (int e = 0; e < MAX_LEVELSIZE; e++)
+                    {
+                        //looping through the corners
+                        for (int o = 0; o < 3; o++)
                         {
-                            for (int a = 0; a < MAX_LEVELSIZE; a++)
+                            //if one of the corners exists within a cell, we add it to the list
+                            if ((fVectors[i + o].X >= a*CELL_SIZE && fVectors[i + o].X <= (a + 1) * CELL_SIZE)
+                                && (fVectors[i + o].Z >= e * CELL_SIZE && fVectors[i + o].Z <= (e + 1) * CELL_SIZE))
                             {
-                                float[] cornerHeights = new float[4];
-                                float combinedCorners = 0;
-
-                                for(int e = 0; e < 4; e++)
+                                //if the cell doesn't exist we make it
+                                if (LevelCells[a, e] == null)
                                 {
-                                    cornerHeights[e] = (float)reader.ReadDouble();
-                                    combinedCorners += cornerHeights[e];
+                                    LevelCells[a, e] = new Cell();
                                 }
 
-                                if (combinedCorners > 0)
+                                Vector3 normal = tri.GetNormal();
+
+                                float normalLimit = 0.05f;
+
+                                //REMEMBER TO FIX ME
+                                if (normal.Y > normalLimit) //add to ceilings if the normal is pointing down
                                 {
-                                    oFloorTileArray[i, a] = new FloorTile();
-                                    oFloorTileArray[i, a].SetProperties(i, a, CELL_SIZE, cornerHeights);
+                                    if (!LevelCells[a, e].Ceilings.Contains(tri))
+                                        LevelCells[a, e].Ceilings.Add(tri);
                                 }
+                                else if (normal.Y < -normalLimit)//add to floors if the normal is pointing upwards
+                                {
+                                    //if we haven't indexed the tri here already we add it
+                                    if (!LevelCells[a, e].Floors.Contains(tri))
+                                        LevelCells[a, e].Floors.Add(tri);
+                                }
+                                else //if it's neither a ceiling or a floor, it's a wall
+                                {
+                                    if (!LevelCells[a, e].Walls.Contains(tri))
+                                        LevelCells[a, e].Walls.Add(tri);
+                                }
+                                    
                             }
                         }
-
-                        //more padding, "TEXDATABEGIN"
-                        for (int i = 0; i < 12; i++)
-                        {
-                            int padding = reader.ReadByte();
-                        }
-
-                        //texture data
-                        for (int i = 0; i < MAX_LEVELSIZE; i++)
-                        {
-                            for (int a = 0; a < MAX_LEVELSIZE; a++)
-                            {
-                                if (oFloorTileArray[i, a] != null)
-                                {
-                                    int iTileTex = reader.ReadByte();
-                                    int iTopWallTex = reader.ReadByte();
-                                    int iLWallTex = reader.ReadByte();
-                                    int iRWallTex = reader.ReadByte();
-                                    int iBWallTex = reader.ReadByte();
-
-                                    oFloorTileArray[i, a].SetTextures(iTileTex, iTopWallTex, iLWallTex, iRWallTex, iBWallTex);
-                                }
-                            }
-                        }
-
-                        reader.Close();
                     }
                 }
             }

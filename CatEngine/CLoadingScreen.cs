@@ -65,7 +65,9 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { "natsa" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "natsa" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "shadow" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "tex_empty" });
             QueueLoadCommand(CRender.Instance, "InitPlayer", new List<string>());
+            QueueLoadCommand(CLevelTest.Instance, "LoadTerrainData", new List<string>() { "whomp2" });
 
             PrepareLevelData("Test");
         }

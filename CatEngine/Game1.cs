@@ -126,7 +126,6 @@ namespace CatEngine
             CObjectManager.Instance.CreateInstance(typeof(CCamera), 0, 10, -30);
             CObjectManager.Instance.CreateInstance(typeof(CPlayer), 5, 20, 5);
             //CObjectManager.Instance.CreateInstance(typeof(CNatsa), 5, 20, 5);
-            CObjectManager.Instance.CreateInstance(typeof(CCollidable), 5, 20, 5);
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
             CLoadingScreen.Instance.Load();
@@ -238,8 +237,9 @@ namespace CatEngine
 
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-                //GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-                CLevel.Instance.Render();
+                GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+                //CLevel.Instance.Render();
+                CLevelTest.Instance.Render();
                 CObjectManager.Instance.Render();
                 CParticleManager.Instance.Render();
 

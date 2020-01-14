@@ -68,6 +68,8 @@ namespace CatEngine
 
             PlayerPhysics();
             PlayerCollision(fHeightBufferZone, 4.0f);
+
+            CLevelTest.Instance.UpdateActiveCell(x, y);
         }
 
         public override void Render()
@@ -100,10 +102,12 @@ namespace CatEngine
 
             float shadowSize = 2.5f;
 
-            CRender.Instance.DrawRectangle(new Vector3(x - shadowSize, fMinHeight + 0.1f, y + shadowSize),
+            CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
+
+            /*CRender.Instance.DrawRectangle(new Vector3(x - shadowSize, fMinHeight + 0.1f, y + shadowSize),
                     new Vector3(x + shadowSize, fMinHeight + 0.1f, y + shadowSize),
                     new Vector3(x - shadowSize, fMinHeight + 0.1f, y - shadowSize),
-                    new Vector3(x + shadowSize, fMinHeight + 0.1f, y - shadowSize), "shadow", false, 0.5f);
+                    new Vector3(x + shadowSize, fMinHeight + 0.1f, y - shadowSize), "shadow", false, 0.5f);*/
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)
@@ -244,9 +248,11 @@ namespace CatEngine
             //CConsole.Instance.debugValue = angle;
 
             //handling gravity
-            fMinHeight = CLevel.Instance.GetMapHeightAt(x, y) + fPlayerHeight;
+            fMinHeight = CLevelTest.Instance.GetHeightAt(x, y) + fPlayerHeight;
 
-            if (z > fMinHeight)
+            z = fMinHeight;
+
+            /*if (z > fMinHeight)
             {
                 bLanded = false;
                 fZSpeed -= fGravity;
@@ -257,7 +263,7 @@ namespace CatEngine
                     {
                         z += fGravity;
                     }
-                }*/
+                }
             }
             else
             {
@@ -276,7 +282,7 @@ namespace CatEngine
                 }
             }
 
-            z += fZSpeed;
+            z += fZSpeed;*/
         }
 
         private void PlayerCollision(float bufferZone, float colBoxSize)
@@ -284,7 +290,7 @@ namespace CatEngine
             float hsp = distDirX(fHorSpeed, fMoveDir) + distDirX(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
             float vsp = distDirY(fHorSpeed, fMoveDir) + distDirY(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
 
-            float heightPoint = CLevel.Instance.GetMapHeightAt(x + colBoxSize*Math.Sign(hsp), y);
+            /*float heightPoint = CLevel.Instance.GetMapHeightAt(x + colBoxSize*Math.Sign(hsp), y);
             if (heightPoint > z + bufferZone)
             {
                 hsp = 0;
@@ -296,7 +302,7 @@ namespace CatEngine
             {
                 vsp = 0;
                 //CConsole.Instance.Print("player x y " + x + " " + y + " col x y " + x + " " + y+vsp*2 + " height " + heightPoint);
-            }
+            }*/
 
             x += hsp;
             y += vsp;
