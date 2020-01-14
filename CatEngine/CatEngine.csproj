@@ -61,7 +61,6 @@
     <Compile Include="CConsole.cs" />
     <Compile Include="CGameObject.cs" />
     <Compile Include="CHud.cs" />
-    <Compile Include="CLevel.cs" />
     <Compile Include="CLight.cs" />
     <Compile Include="CLoadingScreen.cs" />
     <Compile Include="CObjectManager.cs" />

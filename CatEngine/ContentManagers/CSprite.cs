@@ -226,8 +226,8 @@ namespace CatEngine.Content
 
             float offset = (cameraDirection/(float)(Math.PI * 2)) * texture.Width;
 
-            CConsole.Instance.debugString = "camdir";
-            CConsole.Instance.debugValue = cameraDirection;
+            //CConsole.Instance.debugString = "camdir";
+            //CConsole.Instance.debugValue = cameraDirection;
 
             for (int i = 0; i < (CSettings.Instance.iBackBufferWidth/(texture.Width-offset)); i++)
             {

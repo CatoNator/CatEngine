@@ -84,8 +84,8 @@ namespace CatEngine
                 anime = "player_walkcyclebones";
                 float animSp = (float)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed))/fMaxSpeed)*2;
                 fAnimFrame += animSp;
-                CConsole.Instance.debugString2 = "animframe";
-                CConsole.Instance.debugValue2 = animSp;
+                /*CConsole.Instance.debugString2 = "animframe";
+                CConsole.Instance.debugValue2 = animSp;*/
             }
             else
             {
@@ -95,19 +95,17 @@ namespace CatEngine
                 
 
             double spSp = (double)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed);
-            //CConsole.Instance.debugString2 = "animSp";
-            //CConsole.Instance.debugValue2 = (float)spSp;
 
             CRender.Instance.DrawPlayer(anime, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame);
 
             float shadowSize = 2.5f;
 
-            CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
+            //CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
 
-            /*CRender.Instance.DrawRectangle(new Vector3(x - shadowSize, fMinHeight + 0.1f, y + shadowSize),
+            CRender.Instance.DrawRectangle(new Vector3(x - shadowSize, fMinHeight + 0.1f, y + shadowSize),
                     new Vector3(x + shadowSize, fMinHeight + 0.1f, y + shadowSize),
                     new Vector3(x - shadowSize, fMinHeight + 0.1f, y - shadowSize),
-                    new Vector3(x + shadowSize, fMinHeight + 0.1f, y - shadowSize), "shadow", false, 0.5f);*/
+                    new Vector3(x + shadowSize, fMinHeight + 0.1f, y - shadowSize), "shadow", false, 0.5f);
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)
@@ -228,11 +226,18 @@ namespace CatEngine
             }
 
             float angleMeasureDist = spSp;
-            float heightPFront = CLevel.Instance.GetMapHeightAt(x + distDirX(angleMeasureDist, fDir), y + distDirY(angleMeasureDist, fDir));
-            float heightPBack = CLevel.Instance.GetMapHeightAt(x + distDirX(-angleMeasureDist, fDir), y + distDirY(-angleMeasureDist, fDir));
+            float heightPFront = CLevelTest.Instance.GetHeightAt(x + distDirX(angleMeasureDist, fDir), y + distDirY(angleMeasureDist, fDir), z+10.0f);
+            float heightPBack = CLevelTest.Instance.GetHeightAt(x + distDirX(-angleMeasureDist, fDir), y + distDirY(-angleMeasureDist, fDir), z + 10.0f);
+
+            
 
             float angle = radToDeg(PointDirection(0, heightPBack, spSp, heightPFront));
             float angleSpeed = (angle / 90.0f) * 4.0f;
+
+            CConsole.Instance.debugString2 = "angle";
+            CConsole.Instance.debugValue2 = angle;
+
+            Console.WriteLine(angle);
 
             //CConsole.Instance.debugString = "angle";
             //CConsole.Instance.debugValue = angle;
@@ -248,11 +253,17 @@ namespace CatEngine
             //CConsole.Instance.debugValue = angle;
 
             //handling gravity
-            fMinHeight = CLevelTest.Instance.GetHeightAt(x, y) + fPlayerHeight;
+            fMinHeight = CLevelTest.Instance.GetHeightAt(x, y, z) + fPlayerHeight;
 
-            z = fMinHeight;
+            //z = fMinHeight;
 
-            /*if (z > fMinHeight)
+            CConsole.Instance.debugString = "minh";
+            CConsole.Instance.debugValue = fMinHeight;
+
+            //CConsole.Instance.debugString2 = "z";
+            //CConsole.Instance.debugValue2 = z;
+
+            if (z > fMinHeight)
             {
                 bLanded = false;
                 fZSpeed -= fGravity;
@@ -263,7 +274,7 @@ namespace CatEngine
                     {
                         z += fGravity;
                     }
-                }
+                }*/
             }
             else
             {
@@ -282,7 +293,7 @@ namespace CatEngine
                 }
             }
 
-            z += fZSpeed;*/
+            z += fZSpeed;
         }
 
         private void PlayerCollision(float bufferZone, float colBoxSize)

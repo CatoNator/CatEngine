@@ -19,9 +19,11 @@ namespace CatEngine.Content
         private List<int> sPropColH = new List<int>();
         private List<int> sPropHealth = new List<int>();
 
-        //this is the max levelsize in cells per direction. Max levelsize is thus 255x255 cells = 65,025‬ cells
+        //this is the max levelsize in cells per direction. Max levelsize is thus 255C2.X55 cells = 65,025‬ cells
         public const int MAX_LEVELSIZE = 256;
-        public static int CELL_SIZE = 400;
+        public static int CELL_SIZE = 600;
+
+        public const float fCollisionBufferSize = 2.0f;
 
         private int activeCellX = 0;
         private int activeCellY = 0;
@@ -48,17 +50,21 @@ namespace CatEngine.Content
             internal static readonly CLevelTest instance = new CLevelTest();
         }
 
-        private struct Triangle
+        private class Triangle
         {
             public Vector3 C1;
             public Vector3 C2;
             public Vector3 C3;
+
+            public bool isActive;
 
             public Triangle(Vector3 V1, Vector3 V2, Vector3 V3)
             {
                 C1 = V1;
                 C2 = V2;
                 C3 = V3;
+
+                isActive = false;
             }
 
             public Vector3 GetNormal()
@@ -89,22 +95,23 @@ namespace CatEngine.Content
             public float HeightAt(Vector2 point)
             {
                 float h = 0.0f;
-                float s1 = C3.Z - C1.Z;
-                float s2 = C3.X - C1.X;
-                float s3 = C2.Z - C1.Z;
-                float s4 = point.Y - C1.Z;
+                float w1 = ((C2.Z - C3.Z) * (point.X - C3.X) + (C3.X - C2.X) * (point.Y - C3.Z)) / ((C2.Z - C3.Z) * (C1.X - C3.X) + (C3.X - C2.X) * (C1.Z - C3.Z));
 
-                float w1 = (C1.X * s1 + s4 * s2 - point.X * s1) / (s3 * s2 - (C2.X - C1.X) * s1);
-                float w2 = (s4 - w1 * s3) / s1;
+                float w2 = ((C3.Z - C1.Z) * (point.X - C3.X) + (C1.X - C3.X) * (point.Y - C3.Z)) / ((C2.Z - C3.Z) * (C1.X - C3.X) + (C3.X - C2.X) * (C1.Z - C3.Z));
 
-                //Console.WriteLine("w1 " + w1 + " w2 " + w2);
+                float w3 = 1 - w1 - w2;
 
-                float a1 = (C1.Y * (1.0f - w1)) + (C2.Y * w1);
-                float a2 = (C1.Y * (1.0f - w2)) + (C3.Y * w2);
-
-                h = (a1 + a2)/2.0f;
+                h = (w1 * C1.Y) + (w2 * C2.Y) + (w3 * C3.Y);
 
                 return h;
+            }
+
+            public void SetActivity(bool activity)
+            {
+                isActive = activity;
+
+                //if (activity)
+                //Console.WriteLine("set tri activity to "+activity.ToString()+", activity is now " + isActive.ToString());
             }
         }
 
@@ -130,7 +137,13 @@ namespace CatEngine.Content
                 foreach (Triangle tri in Floors)
                 {
                     //CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3, Color.Green);
-                    CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Green);
+                    if (tri.isActive)
+                    {
+                        CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Yellow);
+                        tri.SetActivity(false);
+                    }
+                    else
+                        CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Green);
                 }
 
                 foreach (Triangle tri in Walls)
@@ -140,17 +153,48 @@ namespace CatEngine.Content
                 }
             }
 
-            public float GetFloorHeightAt(float x, float y)
+            public float GetFloorHeightAt(float x, float y, float z)
             {
                 float Height = 0.0f;
+
+                //make a list of possible floors the player could stand on
+                List<Triangle> possibleTris = new List<Triangle>();
+                List<float> possibleHeights = new List<float>();
 
                 foreach (Triangle tri in Floors)
                 {
                     if (tri.PointInTriangle(new Vector2(x, y)))
                     {
-                        Height = tri.HeightAt(new Vector2(x, y));
+                        possibleHeights.Add(tri.HeightAt(new Vector2(x, y)));
+                        possibleTris.Add(tri);
                         //Console.WriteLine("point is in tri");
                     }
+                }
+
+                //we loop through the floor candidates and select the one below the player and closes to the player
+                if (possibleHeights.Count > 0)
+                {
+                    //remove the ones above the player
+                    float min = 100.0f;
+                    
+                    //foreach (float f in possibleHeights)
+                    for (int i = 0; i < possibleHeights.Count; i++)
+                    {
+                        float f = possibleHeights[i];
+                        float diff = z - f;
+
+                        //Console.WriteLine(f + " " + z + " " + diff);
+
+                        if (diff >= -fCollisionBufferSize && diff < min)
+                        {
+                            Height = f;
+                            min = diff;
+
+                            possibleTris[i].SetActivity(true);
+                        }
+                    }
+
+                    //Height = min;
                 }
 
                 return Height;
@@ -173,10 +217,13 @@ namespace CatEngine.Content
         }
 
         //public float to return the linearly interpolated height in a tile
-        public float GetHeightAt(float x, float y)
+        public float GetHeightAt(float x, float y, float z)
         {
             int CellX = (int)(x / CELL_SIZE);
             int CellY = (int)(x / CELL_SIZE);
+
+            activeCellX = CellX;
+            activeCellY = CellY;
 
             float Height = 0.0f;
 
@@ -184,7 +231,7 @@ namespace CatEngine.Content
                 && (CellY >= 0 && CellY < MAX_LEVELSIZE)
                 && LevelCells[CellX, CellY] != null)
             {
-                Height = LevelCells[CellX, CellY].GetFloorHeightAt(x, y);
+                Height = LevelCells[CellX, CellY].GetFloorHeightAt(x, y, z);
             }
             /*else
                 Console.WriteLine("collision wasn't in a cell dumbass");*/
@@ -194,8 +241,7 @@ namespace CatEngine.Content
 
         public void UpdateActiveCell(float x, float y)
         {
-            activeCellX = (int)(x / CELL_SIZE);
-            activeCellY = (int)(y / CELL_SIZE);
+            
         }
 
         public void LoadPropData()

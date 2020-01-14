@@ -549,6 +549,7 @@ namespace CatEngine.Content
             basicEffect.VertexColorEnabled = true;
             basicEffect.LightingEnabled = false;
             basicEffect.TextureEnabled = true;
+            basicEffect.Alpha = 1.0f;
             basicEffect.Texture = dTextureDict["tex_empty"];
 
             graphicsDevice.SetVertexBuffer(vertexBuffer);

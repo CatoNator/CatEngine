@@ -27,10 +27,11 @@ namespace CatEngine
         private enum CameraStates
         {
             PlayerControlled,
-            LevelStart
+            LevelStart,
+            Victory
         };
 
-        private CameraStates cameraState = CameraStates.LevelStart;
+        private CameraStates cameraState = CameraStates.PlayerControlled;
 
         public override void Update()
         {
@@ -66,8 +67,8 @@ namespace CatEngine
 
             //PlayerCamera(iCameraRot, iCameraVRot);
 
-            if (cameraState == CameraStates.LevelStart)
-                LevelCamera();
+            /*if (cameraState == CameraStates.LevelStart)
+                LevelCamera();*/
             else if (cameraState == CameraStates.PlayerControlled)
             {
                 if (iCameraRot != 0 || iCameraVRot != 0)
@@ -156,7 +157,7 @@ namespace CatEngine
             //CRender.Instance.SetCameraTarget(new Vector3(distDirX(30.0f, degToRad(fCameraRotation)), 0.0f, distDirY(30.0f, degToRad(fCameraRotation))));
         }
 
-        private void LevelCamera()
+        /*private void LevelCamera()
         {
             int LevelW = CLevel.Instance.iLevelWidth;
             int LevelH = CLevel.Instance.iLevelHeight;
@@ -175,6 +176,6 @@ namespace CatEngine
             z = targetPos.Y + -distDirY(fLevelCamDist, degToRad(fCameraVRotation));
 
             TargetVector = targetPos;
-        }
+        }*/
     }
 }
