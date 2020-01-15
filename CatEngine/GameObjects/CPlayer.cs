@@ -43,6 +43,8 @@ namespace CatEngine
         private const float fPlayerHeight = 0.0f;
 
         private float fAnimFrame = 0.0f;
+
+        String sCurrentAnimation = "player_tposebones";
         
         public override void InstanceSpawn()
         {
@@ -69,34 +71,14 @@ namespace CatEngine
             PlayerPhysics();
             PlayerCollision(fHeightBufferZone, 4.0f);
 
-            CLevelTest.Instance.UpdateActiveCell(x, y);
+            CLevel.Instance.UpdateActiveCell(x, y);
         }
 
         public override void Render()
         {
-            //CSprite.Instance.Render("sprPlayer", x+8, y+8, iAnimFrame % 4, false, -(float)(iDir*(Math.PI/2)), 1.0f, Color.White);
-            //CRender.Instance.DrawModel("textured_cube", new Vector3(x, z, y), fDir);
+            UpdateAnimation();
 
-            String anime = "player_tposebones";
-
-            if (fHorSpeed != 0 || fVerSpeed != 0)
-            {
-                anime = "player_walkcyclebones";
-                float animSp = (float)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed))/fMaxSpeed)*2;
-                fAnimFrame += animSp;
-                /*CConsole.Instance.debugString2 = "animframe";
-                CConsole.Instance.debugValue2 = animSp;*/
-            }
-            else
-            {
-                anime = "player_tposebones";
-                fAnimFrame = 0.0f;
-            }
-                
-
-            double spSp = (double)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed);
-
-            CRender.Instance.DrawPlayer(anime, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame);
+            CRender.Instance.DrawPlayer(sCurrentAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame);
 
             float shadowSize = 2.5f;
 
@@ -145,6 +127,7 @@ namespace CatEngine
             if (keyboardState.IsKeyDown(CSettings.Instance.kPJump) && bLanded)
             {
                 fZSpeed = fJumpSpeed;
+                CAudioManager.Instance.PlaySound("footstep_solid1");
                 //bLanded = false;
             }
 
@@ -163,6 +146,7 @@ namespace CatEngine
             if (gamepadState.IsButtonDown(Buttons.A) && bLanded)
             {
                 fZSpeed = fJumpSpeed;
+                CAudioManager.Instance.PlaySound("footstep_solid1");
                 //bLanded = false;
             }
         }
@@ -226,8 +210,8 @@ namespace CatEngine
             }
 
             float angleMeasureDist = spSp;
-            float heightPFront = CLevelTest.Instance.GetHeightAt(x + distDirX(angleMeasureDist, fDir), y + distDirY(angleMeasureDist, fDir), z+10.0f);
-            float heightPBack = CLevelTest.Instance.GetHeightAt(x + distDirX(-angleMeasureDist, fDir), y + distDirY(-angleMeasureDist, fDir), z + 10.0f);
+            float heightPFront = CLevel.Instance.GetHeightAt(x + distDirX(angleMeasureDist, fDir), y + distDirY(angleMeasureDist, fDir), z+10.0f);
+            float heightPBack = CLevel.Instance.GetHeightAt(x + distDirX(-angleMeasureDist, fDir), y + distDirY(-angleMeasureDist, fDir), z + 10.0f);
 
             
 
@@ -236,11 +220,6 @@ namespace CatEngine
 
             CConsole.Instance.debugString2 = "angle";
             CConsole.Instance.debugValue2 = angle;
-
-            Console.WriteLine(angle);
-
-            //CConsole.Instance.debugString = "angle";
-            //CConsole.Instance.debugValue = angle;
 
             if (angle < 0 && bLanded && angle > -72.0f)
             {
@@ -253,7 +232,7 @@ namespace CatEngine
             //CConsole.Instance.debugValue = angle;
 
             //handling gravity
-            fMinHeight = CLevelTest.Instance.GetHeightAt(x, y, z) + fPlayerHeight;
+            fMinHeight = CLevel.Instance.GetHeightAt(x, y, z) + fPlayerHeight;
 
             //z = fMinHeight;
 
@@ -282,6 +261,8 @@ namespace CatEngine
                 {
                     bLanded = true;
                     fZSpeed = 0f;
+
+                    CAudioManager.Instance.PlaySound("footstep_solid1");
 
                     CParticleManager.Instance.CreateParticle(new Vector3(x, z, y), new Vector3(0, 0, 0));
                 }
@@ -317,6 +298,29 @@ namespace CatEngine
 
             x += hsp;
             y += vsp;
+        }
+
+        private void UpdateAnimation()
+        {
+            if (fHorSpeed != 0 || fVerSpeed != 0)
+            {
+                sCurrentAnimation = "player_walkcyclebones";
+                float animSp = (float)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed) * 2;
+                fAnimFrame += animSp;
+                fAnimFrame %= 89;
+                /*CConsole.Instance.debugString2 = "animframe";
+                CConsole.Instance.debugValue2 = animSp;*/
+
+                if ((fAnimFrame >= 1 && fAnimFrame <= 3) || (fAnimFrame >= 45 && fAnimFrame <= 47))
+                {
+                    CAudioManager.Instance.PlaySound("footstep_solid1");
+                }
+}
+            else
+            {
+                sCurrentAnimation = "player_tposebones";
+                fAnimFrame = 0.0f;
+            }
         }
     }
 }

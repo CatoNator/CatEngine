@@ -56,8 +56,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AssimpHelper.cs" />
+    <Compile Include="CDebug.cs" />
     <Compile Include="CLevel.cs" />
-    <Compile Include="CLevelTest.cs" />
     <Compile Include="ContentManagers\CAudioManager.cs" />
     <Compile Include="CConsole.cs" />
     <Compile Include="CGameObject.cs" />
@@ -66,6 +66,7 @@
     <Compile Include="CLoadingScreen.cs" />
     <Compile Include="CObjectManager.cs" />
     <Compile Include="ContentManagers\CRender.cs" />
+    <Compile Include="CPauseMenu.cs" />
     <Compile Include="CSettings.cs" />
     <Compile Include="ContentManagers\CContentManager.cs" />
     <Compile Include="CParticleManager.cs" />

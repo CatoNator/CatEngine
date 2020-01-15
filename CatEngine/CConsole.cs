@@ -17,9 +17,11 @@ namespace CatEngine
 
         private int ConsoleClearTimer = 240;
 
-        private bool showConsole = true;
+        private bool consoleEnabled = true;
 
-        private bool showDebug = true;
+        private bool showConsole = false;
+
+        private bool showDebug = false;
 
         public string debugString = "";
         public float debugValue = 0.0f;
@@ -66,7 +68,7 @@ namespace CatEngine
 
             sMessages[sMessages.Length-1] = str;
 
-            //Debug.Print(str);
+            Debug.Print(str);
 
             showConsole = true;
             ConsoleClearTimer = ConsoleTimerDef;
@@ -76,7 +78,7 @@ namespace CatEngine
         {
             Update();
 
-            if (showConsole)
+            if (consoleEnabled && showConsole)
             {
                 CSprite.Instance.DrawRect(new Rectangle(0, 0, CSettings.Instance.GAME_VIEW_WIDTH, 5 + 16 * (sMessages.Length)), Color.Black * 0.75f);
 

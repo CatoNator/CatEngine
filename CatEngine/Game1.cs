@@ -186,6 +186,7 @@ namespace CatEngine
 
                 if (Keyboard.GetState().IsKeyDown(Keys.L))
                 {
+                    CLoadingScreen.Instance.UnloadLevelData();
                     CLoadingScreen.Instance.PrepareLevelData("Test2");
                     CLoadingScreen.Instance.Load();
                 }
@@ -220,12 +221,14 @@ namespace CatEngine
             {
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 //CMainMenu.Instance.Render();
+                CConsole.Instance.Render();
                 spriteBatch.End();
             }
             else if (CurrentGameState == GameState.Loading)
             {
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 CLoadingScreen.Instance.Render();
+                CConsole.Instance.Render();
                 spriteBatch.End();
             }
             else if (CurrentGameState == GameState.Game)
@@ -239,7 +242,7 @@ namespace CatEngine
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 GraphicsDevice.RasterizerState = RasterizerState.CullNone;
                 //CLevel.Instance.Render();
-                CLevelTest.Instance.Render();
+                CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
                 CParticleManager.Instance.Render();
 
@@ -247,6 +250,7 @@ namespace CatEngine
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 //CObjectManager.Instance.Render2D();
                 CHud.Instance.Render();
+                CConsole.Instance.Render();
                 spriteBatch.End();
             }
             else if (CurrentGameState == GameState.Paused)
@@ -258,13 +262,14 @@ namespace CatEngine
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 //CLevel.Instance.Render();
-                CLevelTest.Instance.Render();
+                CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
 
                 //rendering 2D objects
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 //CObjectManager.Instance.Render2D();
                 //CPauseMenu.Instance.Render();
+                CConsole.Instance.Render();
                 spriteBatch.End();
             }
 

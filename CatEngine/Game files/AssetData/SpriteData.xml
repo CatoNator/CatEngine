@@ -103,4 +103,16 @@
 		<xorig>0</xorig>
 		<yorig>0</yorig>
 	</sprite>
+	<sprite>
+		<index>7</index>
+		<name>sprLoadCircle</name>
+		<texture>LoadingScreen</texture>
+		<left>8</left>
+		<top>0</top>
+		<width>3</width>
+		<height>24</height>
+		<images>24</images>
+		<xorig>12</xorig>
+		<yorig>12</yorig>
+	</sprite>
 </spritedata>

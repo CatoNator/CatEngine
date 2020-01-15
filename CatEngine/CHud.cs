@@ -31,7 +31,6 @@ namespace CatEngine
 
         public void Render()
         {
-            CConsole.Instance.Render();
         }
     }
 }

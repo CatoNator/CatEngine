@@ -22,6 +22,7 @@ namespace CatEngine.Content
 
         public ContentManager content;
 
+        private Dictionary<string, ModelData> dModelDataDict = new Dictionary<string, ModelData>();
         private Dictionary<string, Model> dModelDict = new Dictionary<string, Model>();
         private Dictionary<string, Texture2D> dTextureDict = new Dictionary<string, Texture2D>();
 
@@ -110,67 +111,14 @@ namespace CatEngine.Content
             internal static readonly CRender instance = new CRender();
         }
 
-        public void LoadModel(String modelName)
+        private struct ModelData
         {
-            try
+            public String Model;
+            public String[] Textures;
+            public ModelData(String mdl, String[] tx)
             {
-                CRender.Instance.dModelDict.Add(modelName, content.Load<Model>(modelName));
-            }
-            catch (ContentLoadException e)
-            {
-                CRender.Instance.dModelDict.Add(modelName, null);
-                CConsole.Instance.Print("Tried to load model " + modelName + " but failed, error " + e.ToString());
-            }
-        }
-
-        public void LoadSimpleModel(String modelName)
-        {
-            try
-            {
-                SimpleModel mdl = new SimpleModel();
-                mdl.GraphicsDevice = graphicsDevice;
-                mdl.FilePath = "AssetData/Models/" + modelName + ".fbx";
-                mdl.Initialize();
-                CRender.Instance.dSimpleModelDict.Add(modelName, mdl);
-            }
-            catch (ContentLoadException e)
-            {
-                CRender.Instance.dSimpleModelDict.Add(modelName, null);
-                CConsole.Instance.Print("Tried to load skinned model " + modelName + " but failed, error " + e.ToString());
-            }
-        }
-
-        public void LoadSkinnedModel(String modelName)
-        {
-            try
-            {
-                SkinnedModel mdl = new SkinnedModel();
-                mdl.GraphicsDevice = graphicsDevice;
-                mdl.FilePath = "AssetData/Models/"+modelName+".fbx";
-                mdl.Initialize();
-                CRender.Instance.dSkinnedModelDict.Add(modelName, mdl);
-            }
-            catch (ContentLoadException e)
-            {
-                CRender.Instance.dSkinnedModelDict.Add(modelName, null);
-                CConsole.Instance.Print("Tried to load skinned model " + modelName + " but failed, error " + e.ToString());
-            }
-        }
-
-        public void LoadSkinnedAnimation(String animationName)
-        {
-            try
-            {
-                SkinnedModelAnimation anim = new SkinnedModelAnimation();
-                anim.FilePath = "AssetData/Models/Animations/" + animationName + ".fbx";
-                anim.Load();
-
-                CRender.Instance.dSkinnedAnimationDict.Add(animationName, anim);
-            }
-            catch (ContentLoadException e)
-            {
-                CRender.Instance.dSkinnedAnimationDict.Add(animationName, null);
-                CConsole.Instance.Print("Tried to load skinned animation " + animationName + " but failed, error " + e.ToString());
+                Model = mdl;
+                Textures = tx;
             }
         }
 
@@ -198,7 +146,7 @@ namespace CatEngine.Content
         {
             try
             {
-                FileStream fileStream = new FileStream(path+"/"+textureName+".png", FileMode.Open);
+                FileStream fileStream = new FileStream(path + "/" + textureName + ".png", FileMode.Open);
                 CRender.Instance.dTextureDict.Add(textureName, Texture2D.FromStream(graphicsDevice, fileStream));
                 fileStream.Dispose();
             }
@@ -213,6 +161,135 @@ namespace CatEngine.Content
                 {
                     CConsole.Instance.Print("Tried to add texture " + textureName + " but it was already there");
                 }
+            }
+        }
+
+        public void LoadModel(String modelName)
+        {
+            try
+            {
+                CRender.Instance.dModelDict.Add(modelName, content.Load<Model>(modelName));
+            }
+            catch (ContentLoadException e)
+            {
+                CRender.Instance.dModelDict.Add(modelName, null);
+                CConsole.Instance.Print("Tried to load model " + modelName + " but failed, error " + e.ToString());
+            }
+        }
+
+        public void LoadSimpleModel(String path, String modelName, String fileType)
+        {
+            try
+            {
+                SimpleModel mdl = new SimpleModel();
+                mdl.GraphicsDevice = graphicsDevice;
+                mdl.FilePath = path + "/" + modelName + fileType;
+                mdl.Initialize();
+                CRender.Instance.dSimpleModelDict.Add(modelName, mdl);
+            }
+            catch (ContentLoadException e)
+            {
+                CRender.Instance.dSimpleModelDict.Add(modelName, null);
+                CConsole.Instance.Print("Tried to load skinned model " + modelName + " but failed, error " + e.ToString());
+            }
+        }
+
+        public void LoadSkinnedModel(String path, String modelName)
+        {
+            try
+            {
+                SkinnedModel mdl = new SkinnedModel();
+                mdl.GraphicsDevice = graphicsDevice;
+                mdl.FilePath = path+"/"+modelName+".fbx";
+                mdl.Initialize();
+                CRender.Instance.dSkinnedModelDict.Add(modelName, mdl);
+            }
+            catch (ContentLoadException e)
+            {
+                CRender.Instance.dSkinnedModelDict.Add(modelName, null);
+                CConsole.Instance.Print("Tried to load skinned model " + modelName + " but failed, error " + e.ToString());
+            }
+        }
+
+        public void LoadSkinnedAnimation(String path, String animationName)
+        {
+            try
+            {
+                SkinnedModelAnimation anim = new SkinnedModelAnimation();
+                anim.FilePath = path+"/" + animationName + ".fbx";
+                anim.Load();
+
+                CRender.Instance.dSkinnedAnimationDict.Add(animationName, anim);
+            }
+            catch (ContentLoadException e)
+            {
+                CRender.Instance.dSkinnedAnimationDict.Add(animationName, null);
+                CConsole.Instance.Print("Tried to load skinned animation " + animationName + " but failed, error " + e.ToString());
+            }
+        }
+
+        public void AddModelData(string modelName, string[] textures)
+        {
+            try
+            {
+                CRender.Instance.dModelDataDict.Add(modelName, new ModelData(modelName, textures));
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("Tried to load model " + modelName + " but failed, error " + e.ToString());
+            }
+        }
+
+        //disposing of non-contentmanager stuff here
+        public void UnloadSimpleModel(String modelName)
+        {
+            try
+            {
+                //dSimpleModelDict[modelName].Dispose();
+                dSimpleModelDict.Remove(modelName);
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("Tried to unload simple model " + modelName + ", but it wasn't present");
+            }
+        }
+
+        public void UnloadSkinnedModel(String modelName)
+        {
+            try
+            {
+                //dSkinnedModelDict[modelName].Dispose();
+                dSkinnedModelDict.Remove(modelName);
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("Tried to unload skinned model " + modelName + ", but it wasn't present");
+            }
+        }
+
+        public void UnloadSkinnedAnimation(String animationName)
+        {
+            try
+            {
+                //dSkinnedModelDict[modelName].Dispose();
+                dSkinnedAnimationDict.Remove(animationName);
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("Tried to unload skinned model " + animationName + ", but it wasn't present");
+            }
+        }
+
+        public void UnloadTexture(String textureName)
+        {
+            try
+            {
+                dTextureDict[textureName].Dispose();
+                dTextureDict.Remove(textureName);
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("Tried to unload texture " + textureName + ", but it wasn't present");
             }
         }
 
@@ -273,12 +350,12 @@ namespace CatEngine.Content
                     (C1.B * (1 - amount) + C2.B * amount) / 2.0f);
         }
 
-        public void DrawModel(string modelName, Vector3 position, float rotation)
+        public void DrawModel(string modelName, Vector3 position, float rotation, float scale)
         {
             Matrix positionMatrix = Matrix.CreateTranslation(position);
             Matrix rotationMatrix =  Matrix.CreateRotationY(rotation);
 
-            Matrix transformMatrix = rotationMatrix * positionMatrix;
+            Matrix transformMatrix = Matrix.CreateScale(scale)*rotationMatrix * positionMatrix;
 
             Model model = dModelDict[modelName];
 
@@ -296,19 +373,19 @@ namespace CatEngine.Content
             }
         }
 
-        public void DrawSimpleModel(string modelName, Vector3 position, float rotation)
+        public void DrawSimpleModel(string modelName, Vector3 position, Vector3 rotation, float scale)
         {
             SimpleModel simpleModel = dSimpleModelDict[modelName];
             simpleModel.GraphicsDevice = graphicsDevice;
             simpleModel.Initialize();
 
-            Matrix rotationMatrix = Matrix.CreateRotationZ(rotation)* Matrix.CreateRotationX(-(float)Math.PI / 2.0f);
+            Matrix rotationMatrix = Matrix.CreateRotationX(rotation.X) * Matrix.CreateRotationY(rotation.Y) * Matrix.CreateRotationZ(rotation.Z);
             Matrix transformMatrix = Matrix.CreateTranslation(position);
 
-            Matrix scale = Matrix.CreateScale(0.5f);
+            Matrix scaleMatrix = Matrix.CreateScale(scale);
 
-            SimpleModelEffect.Parameters["World"].SetValue(scale * rotationMatrix * transformMatrix * worldMatrix);
-            SimpleModelEffect.Parameters["WorldViewProjection"].SetValue(scale * rotationMatrix * transformMatrix * worldMatrix * viewMatrix * projectionMatrix);
+            SimpleModelEffect.Parameters["World"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * worldMatrix);
+            SimpleModelEffect.Parameters["WorldViewProjection"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * worldMatrix * viewMatrix * projectionMatrix);
             SimpleModelEffect.Parameters["Texture1"].SetValue(dTextureDict["natsa"]);
 
             graphicsDevice.SetVertexBuffer(simpleModel.VertexBuffer);
@@ -365,7 +442,14 @@ namespace CatEngine.Content
         {
             if (playerInstance.Animation != dSkinnedAnimationDict[animName])
             {
-                playerInstance.SetAnimation(dSkinnedAnimationDict[animName], gameTime);
+                try
+                {
+                    playerInstance.SetAnimation(dSkinnedAnimationDict[animName], gameTime);
+                }
+                catch (KeyNotFoundException e)
+                {
+                    playerInstance.SetAnimation(dSkinnedAnimationDict["player_tposebones"], gameTime);
+                }
             }
 
             playerInstance.FrameIndex = animFrame;

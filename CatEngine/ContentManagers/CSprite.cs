@@ -108,10 +108,10 @@ namespace CatEngine.Content
             {
                 CSprite.Instance.dTextureDict.Add(sheetName, content.Load<Texture2D>(sheetName));
             }
-            catch(ContentLoadException e)
+            catch(Exception e)
             {
-                CSprite.Instance.dTextureDict.Add(sheetName, content.Load<Texture2D>("empty"));
                 CConsole.Instance.Print("Tried to load texture " + sheetName + " but failed, error " + e.ToString());
+                CSprite.Instance.dTextureDict.Add(sheetName, content.Load<Texture2D>("empty"));
             }
         }
 
