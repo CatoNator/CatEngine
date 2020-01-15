@@ -80,14 +80,9 @@ namespace CatEngine
 
             CRender.Instance.DrawPlayer(sCurrentAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame);
 
-            float shadowSize = 2.5f;
-
             //CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
 
-            CRender.Instance.DrawRectangle(new Vector3(x - shadowSize, fMinHeight + 0.1f, y + shadowSize),
-                    new Vector3(x + shadowSize, fMinHeight + 0.1f, y + shadowSize),
-                    new Vector3(x - shadowSize, fMinHeight + 0.1f, y - shadowSize),
-                    new Vector3(x + shadowSize, fMinHeight + 0.1f, y - shadowSize), "shadow", false, 0.5f);
+            CRender.Instance.DrawShadow(new Vector3(x, z+2.5f, y), 2.5f);
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)
@@ -175,7 +170,7 @@ namespace CatEngine
             if ((fHInput != 0 || fVInput != 0) && (fHInput2 == 0 && fVInput2 == 0))
             {
                 inputDir = inputDir = PointDirection(0, 0, fHInput, fVInput);
-                inputSp = PointDistance(0, 0, fHInput, fVInput);
+                inputSp = 1.0f;//PointDistance(0, 0, fHInput, fVInput);
                 fDir = inputDir+fCamDir;
                 //fMoveDir = fCamDir;
             }

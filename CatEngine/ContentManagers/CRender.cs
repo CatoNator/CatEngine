@@ -683,6 +683,41 @@ namespace CatEngine.Content
             //rectangleBuffer.Dispose();
         }
 
+        private float PointDistance(float x1, float y1, float x2, float y2)
+        {
+            return (float)Math.Sqrt(Math.Pow((double)(x2 - x1), 2) + Math.Pow((double)(y2 - y1), 2));
+        }
+
+        public void DrawShadow(Vector3 position, float shadowSize)
+        {
+            if (PointDistance(position.X, position.Y, cameraPosition.X, cameraPosition.Z) < CSettings.Instance.iShadowDrawDist)
+            {
+                float cornerHeight1 = CLevel.Instance.GetHeightAt(position.X - shadowSize, position.Z + shadowSize, position.Y);
+                float cornerHeight2 = CLevel.Instance.GetHeightAt(position.X + shadowSize, position.Z + shadowSize, position.Y);
+                float cornerHeight3 = CLevel.Instance.GetHeightAt(position.X - shadowSize, position.Z - shadowSize, position.Y);
+                float cornerHeight4 = CLevel.Instance.GetHeightAt(position.X + shadowSize, position.Z - shadowSize, position.Y);
+
+                CRender.Instance.DrawRectangle(new Vector3(position.X - shadowSize, cornerHeight1 + 0.1f, position.Z + shadowSize),
+                        new Vector3(position.X + shadowSize, cornerHeight2 + 0.1f, position.Z + shadowSize),
+                        new Vector3(position.X - shadowSize, cornerHeight3 + 0.1f, position.Z - shadowSize),
+                        new Vector3(position.X + shadowSize, cornerHeight4 + 0.1f, position.Z - shadowSize), "shadow", false, 0.5f);
+            }
+        }
+
+        public void DrawShadowSimple(Vector3 position, float shadowSize)
+        {
+            if (PointDistance(position.X, position.Y, cameraPosition.X, cameraPosition.Z) < CSettings.Instance.iShadowDrawDist)
+            {
+                float cornerHeight = CLevel.Instance.GetHeightAt(position.X, position.Z, position.Y);
+
+                CRender.Instance.DrawRectangle(new Vector3(position.X - shadowSize, cornerHeight + 0.1f, position.Z + shadowSize),
+                        new Vector3(position.X + shadowSize, cornerHeight + 0.1f, position.Z + shadowSize),
+                        new Vector3(position.X - shadowSize, cornerHeight + 0.1f, position.Z - shadowSize),
+                        new Vector3(position.X + shadowSize, cornerHeight + 0.1f, position.Z - shadowSize), "shadow", false, 0.5f);
+            }
+        }
+
+
         public void UpdateCamera()
         {
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);

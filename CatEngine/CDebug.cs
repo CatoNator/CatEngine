@@ -8,7 +8,7 @@ namespace CatEngine
 {
     class CDebug
     {
-        public bool ShowTerrainDebug = true;
+        public bool ShowTerrainDebug = false;
 
         public bool ShowDebugValues = false;
 

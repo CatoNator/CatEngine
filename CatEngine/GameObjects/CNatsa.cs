@@ -20,7 +20,8 @@ namespace CatEngine
 
             rotation %= (float)Math.PI * 2.0f;
 
-            CRender.Instance.DrawSimpleModel("natsa", new Vector3(x, z + 2.5f*(float)Math.Sin((double)rotation), y), new Vector3(-(float)(Math.PI/2.0), 0, rotation), 1.0f);
+            CRender.Instance.DrawSimpleModel("natsa", new Vector3(x, z + (float)Math.Sin((double)rotation), y), new Vector3(-(float)(Math.PI / 2.0), rotation, 0), 0.5f);
+            CRender.Instance.DrawShadowSimple(new Vector3(x, z, y), 1.5f);
         }
     }
 }

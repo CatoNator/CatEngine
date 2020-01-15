@@ -60,14 +60,10 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "dustcloud" });
-            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "pankka_body" });
-            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "pankka_head" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { "AssetData/Models/Player", "player" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "AssetData/Models/Player/Animations", "player_tposebones" });
-            QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { "AssetData/Models/Player/Animations", "player_walkcyclebones" });
-            //QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { "AssetData/Models", "natsa", ".fbx" });
-            //QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "natsa" });
+
+            PrepareModel("Player");
             PrepareModel("Natsa");
+
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "shadow" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "tex_empty" });
             QueueLoadCommand(CRender.Instance, "InitPlayer", new List<string>());
@@ -167,6 +163,8 @@ namespace CatEngine
 
                 Console.WriteLine(xmlText);
 
+                string modelType = file.Root.Attribute("type").Value;
+
                 foreach (XElement e in file.Descendants("texture"))
                 {
                     string name = e.Attribute("name").Value;
@@ -183,14 +181,25 @@ namespace CatEngine
                     string type = e.Attribute("filetype").Value;
 
                     Console.WriteLine("model " + mdlName);
-                    QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { path + modelName, mdlName, "."+type });
+                    if (modelType.Equals("skinnedmodel"))
+                        QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { path + modelName, mdlName });
+                    else
+                        QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { path + modelName, mdlName, "."+type });
+                }
+
+                foreach (XElement e in file.Descendants("animation"))
+                {
+                    string name = e.Attribute("name").Value;
+
+                    tex.Add(name);
+
+                    Console.WriteLine("texture " + name);
+                    QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { path + modelName + "/Animations", name });
                 }
             }
             else
                 CConsole.Instance.Print("Metadata for " + modelName + " wasn't found!");
 
-            //QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { "AssetData/Models", modelName, ".fbx" });
-            //QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", modelName });
             CRender.Instance.AddModelData(modelName, tex.ToArray());
         }
 

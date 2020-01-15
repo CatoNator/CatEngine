@@ -21,6 +21,9 @@ namespace CatEngine
 
         public int iFovAngle = 45;
 
+        public int iShadowDrawDist = 80;
+        public int iModelDrawDist = 160;
+
         public float fMusicVolume = 1.0f;
         public float fSoundVolume = 1.0f;
 
