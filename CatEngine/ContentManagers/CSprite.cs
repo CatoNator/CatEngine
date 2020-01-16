@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
@@ -18,6 +19,8 @@ namespace CatEngine.Content
         public ContentManager content;
 
         public SpriteBatch sbSpriteBatch;
+
+        public GraphicsDevice graphicsDevice;
 
         public GraphicsDeviceManager graphics;
 
@@ -115,6 +118,28 @@ namespace CatEngine.Content
             }
         }
 
+        public void LoadTextureSheetRaw(String path, String textureName)
+        {
+            try
+            {
+                FileStream fileStream = new FileStream(path + "/" + textureName + ".png", FileMode.Open);
+                dTextureDict.Add(textureName, Texture2D.FromStream(graphicsDevice, fileStream));
+                fileStream.Dispose();
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    dTextureDict.Add(textureName, content.Load<Texture2D>("empty"));
+                    CConsole.Instance.Print("Tried to load texture " + textureName + " but failed, error " + e.ToString());
+                }
+                catch (Exception a)
+                {
+                    CConsole.Instance.Print("Tried to add texture " + textureName + " but it was already there");
+                }
+            }
+        }
+
         //mem leak, texture2ds won't get deleted once they fall out of scope
         public void DrawRect(Rectangle rectangle, Color color)
         {
@@ -150,8 +175,6 @@ namespace CatEngine.Content
                 Rectangle destRectangle = new Rectangle((int)location.X+i*w, (int)location.Y, w, h);
                 sbSpriteBatch.Draw(dTextureDict["spriteFont"], destRectangle, sourceRectangle, color, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
             }
-
-            //sbSpriteBatch.DrawString(testFont, text, location, color);
         }
         
         public void Render(string spriteName, float x, float y, int imageIndex, bool flip, float rotation, float layerDepth, Color color)
@@ -210,6 +233,8 @@ namespace CatEngine.Content
 
             //drawing the sprite
             sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, color, rotation, Origin, spriteEffect, layerDepth);
+
+            //texture.Dispose();
         }
 
         public void DrawSkyBox()
@@ -220,11 +245,13 @@ namespace CatEngine.Content
             Vector3 cameraTarget = CRender.Instance.GetCameraTarget();
 
             float cameraDirection = (float)(Math.Atan2((double)(cameraPosition.Z - cameraTarget.Z), (double)(cameraPosition.X - cameraTarget.X)));
+            float cameraDirV = (float)(Math.Atan2((double)(cameraPosition.Y - cameraTarget.Y), 30.0));
 
             if (cameraDirection < 0)
                 cameraDirection += (float)(Math.PI * 2);
 
             float offset = (cameraDirection/(float)(Math.PI * 2)) * texture.Width;
+            float offsetV = -(cameraDirV / (150*(float)Math.PI/180.0f)) * texture.Height;
 
             //CConsole.Instance.debugString = "camdir";
             //CConsole.Instance.debugValue = cameraDirection;
@@ -232,22 +259,12 @@ namespace CatEngine.Content
             for (int i = 0; i < (CSettings.Instance.iBackBufferWidth/(texture.Width-offset)); i++)
             {
                 Rectangle sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
-                Rectangle destRectangle = new Rectangle(texture.Width*i - (int)offset, 0, texture.Width, texture.Height);
+                Rectangle destRectangle = new Rectangle(texture.Width*i - (int)offset, (int)offsetV, texture.Width, texture.Height);
 
                 sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
             }
-            
-        }
 
-        public void RenderTile(int x, int y, int left, int top)
-        {
-            Rectangle sourceRectangle = new Rectangle(left, top, 16, 16);
-            Rectangle destRectangle = new Rectangle(x, y, 16,16);
-
-            Texture2D texture = dTextureDict["Tiles"];
-
-            //drawing the sprite
-            //sbSpriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 1.0f);
+            //texture.Dispose();
         }
     }
 }

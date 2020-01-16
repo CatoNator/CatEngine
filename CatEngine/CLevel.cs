@@ -20,7 +20,7 @@ namespace CatEngine.Content
         private List<int> sPropHealth = new List<int>();
 
         //this is the max levelsize in cells per direction. Max levelsize is thus 255C2.X55 cells = 65,025‬ cells
-        public const int MAX_LEVELSIZE = 256;
+        public const int MAX_LEVELSIZE = 128;
         public static int CELL_SIZE = 60;
 
         public const float fCollisionBufferSize = 2.0f;
@@ -56,7 +56,7 @@ namespace CatEngine.Content
             internal static readonly CLevel instance = new CLevel();
         }
 
-        private class Triangle
+        private struct Triangle
         {
             public Vector3 C1;
             public Vector3 C2;
@@ -85,19 +85,6 @@ namespace CatEngine.Content
                 return Vector3.Cross(ab, cb);
             }
 
-            //(Point A, Point B, Point C, Point P)
-            /*public bool PointInTriangle(Vector2 point)
-            {
-                float s1 = C3.Z - C1.Z;
-                float s2 = C3.X - C1.X;
-                float s3 = C2.Z - C1.Z;
-                float s4 = point.Y - C1.Z;
-
-                float w1 = (C1.X * s1 + s4 * s2 - point.X * s1) / (s3 * s2 - (C2.X - C1.X) * s1);
-                float w2 = (s4 - w1 * s3) / s1;
-                return w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1;
-            }*/
-
             public bool PointInTriangle(Vector2 point)
             {
                 float w1 = ((C2.Z - C3.Z) * (point.X - C3.X) + (C3.X - C2.X) * (point.Y - C3.Z)) / ((C2.Z - C3.Z) * (C1.X - C3.X) + (C3.X - C2.X) * (C1.Z - C3.Z));
@@ -121,9 +108,9 @@ namespace CatEngine.Content
                 return h;
             }
 
-            public void SetActivity(bool activity)
+            public void SetActivity(ref Triangle tri, bool activity)
             {
-                isActive = activity;
+                tri.isActive = activity;
 
                 //if (activity)
                 //Console.WriteLine("set tri activity to "+activity.ToString()+", activity is now " + isActive.ToString());
@@ -154,7 +141,9 @@ namespace CatEngine.Content
                     if (tri.isActive)
                     {
                         CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Yellow);
-                        tri.SetActivity(false);
+                        Triangle t_tri = tri;
+
+                        tri.SetActivity(ref t_tri, true);
                     }
                     else
                     {
@@ -207,7 +196,12 @@ namespace CatEngine.Content
                             Height = f;
                             min = diff;
 
-                            possibleTris[i].SetActivity(true);
+                            if (CDebug.Instance.ShowTerrainDebug)
+                            {
+                                Triangle t_tri = possibleTris[i];
+
+                                possibleTris[i].SetActivity(ref t_tri, true);
+                            }
                         }
                     }
 

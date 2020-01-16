@@ -233,8 +233,9 @@ namespace CatEngine.Content
             try
             {
                 CRender.Instance.dModelDataDict.Add(modelName, new ModelData(modelName, textures));
+                CConsole.Instance.Print("added model " + modelName);
             }
-            catch (KeyNotFoundException e)
+            catch (Exception e)
             {
                 CConsole.Instance.Print("Tried to load model " + modelName + " but failed, error " + e.ToString());
             }
@@ -375,9 +376,23 @@ namespace CatEngine.Content
 
         public void DrawSimpleModel(string modelName, Vector3 position, Vector3 rotation, float scale)
         {
-            SimpleModel simpleModel = dSimpleModelDict[modelName];
-            simpleModel.GraphicsDevice = graphicsDevice;
-            simpleModel.Initialize();
+            ModelData mdl;
+
+            try
+            {
+                mdl = dModelDataDict[modelName];
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("model " + modelName + " wasn't found in dModelDataDict");
+                mdl = new ModelData("fuck", new string[] { "off" });
+            }
+
+            string mdlName = mdl.Model;
+            string[] textures = mdl.Textures;
+            
+            //SimpleModel simpleModel = dSimpleModelDict[modelName];
+            dSimpleModelDict[mdlName].GraphicsDevice = graphicsDevice;
 
             Matrix rotationMatrix = Matrix.CreateRotationX(rotation.X) * Matrix.CreateRotationY(rotation.Y) * Matrix.CreateRotationZ(rotation.Z);
             Matrix transformMatrix = Matrix.CreateTranslation(position);
@@ -386,16 +401,19 @@ namespace CatEngine.Content
 
             SimpleModelEffect.Parameters["World"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * worldMatrix);
             SimpleModelEffect.Parameters["WorldViewProjection"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * worldMatrix * viewMatrix * projectionMatrix);
-            SimpleModelEffect.Parameters["Texture1"].SetValue(dTextureDict["natsa"]);
+            SimpleModelEffect.Parameters["Texture1"].SetValue(dTextureDict[textures[0]]);
 
-            graphicsDevice.SetVertexBuffer(simpleModel.VertexBuffer);
-            graphicsDevice.Indices = simpleModel.IndexBuffer;
-            graphicsDevice.DepthStencilState = DepthStencilState.Default;
+            graphicsDevice.SetVertexBuffer(dSimpleModelDict[modelName].VertexBuffer);
+            graphicsDevice.Indices = dSimpleModelDict[modelName].IndexBuffer;
+            //graphicsDevice.DepthStencilState = DepthStencilState.Default;
             foreach (EffectPass pass in SimpleModelEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                graphicsDevice.DrawIndexedPrimitives(Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleList, 0, 0, simpleModel.FaceCount);
+                graphicsDevice.DrawIndexedPrimitives(Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleList, 0, 0, dSimpleModelDict[modelName].FaceCount);
             }
+
+            graphicsDevice.SetVertexBuffer(null);
+            graphicsDevice.Indices = null;
         }
 
         public void DrawSkinnedModel(String modelName, String animName, Vector3 position, float rotation)
@@ -434,6 +452,9 @@ namespace CatEngine.Content
                     graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshInstance.Mesh.FaceCount);
                 }
             }
+
+            graphicsDevice.SetVertexBuffer(null);
+            graphicsDevice.Indices = null;
 
             //skinnedModelInstance.Dispose();
         }
@@ -690,7 +711,7 @@ namespace CatEngine.Content
 
         public void DrawShadow(Vector3 position, float shadowSize)
         {
-            if (PointDistance(position.X, position.Y, cameraPosition.X, cameraPosition.Z) < CSettings.Instance.iShadowDrawDist)
+            if (PointDistance(position.X, position.Z, cameraPosition.X, cameraPosition.Z) < CSettings.Instance.iShadowDrawDist)
             {
                 float cornerHeight1 = CLevel.Instance.GetHeightAt(position.X - shadowSize, position.Z + shadowSize, position.Y);
                 float cornerHeight2 = CLevel.Instance.GetHeightAt(position.X + shadowSize, position.Z + shadowSize, position.Y);
@@ -706,7 +727,7 @@ namespace CatEngine.Content
 
         public void DrawShadowSimple(Vector3 position, float shadowSize)
         {
-            if (PointDistance(position.X, position.Y, cameraPosition.X, cameraPosition.Z) < CSettings.Instance.iShadowDrawDist)
+            if (PointDistance(position.X, position.Z, cameraPosition.X, cameraPosition.Z) < CSettings.Instance.iShadowDrawDist)
             {
                 float cornerHeight = CLevel.Instance.GetHeightAt(position.X, position.Z, position.Y);
 

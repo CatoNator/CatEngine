@@ -29,7 +29,6 @@ namespace CatEngine
         GraphicsDeviceManager graphics;
         DepthStencilState depthBuffer = new DepthStencilState() { DepthBufferEnable = true, DepthBufferFunction = CompareFunction.Less };
         SpriteBatch spriteBatch;
-        SpriteBatch lightBatch;
 
         SpriteBatch screenBatch;
         RenderTarget2D renderTarget;
@@ -106,6 +105,7 @@ namespace CatEngine
             //setting up CSpritebasics...
             CSprite.Instance.content = Content;
             CSprite.Instance.sbSpriteBatch = spriteBatch;
+            CSprite.Instance.graphicsDevice = GraphicsDevice;
             CSprite.Instance.graphics = graphics;
             //loading the debug texture...
             CSprite.Instance.LoadTextureSheet("empty");
@@ -210,9 +210,7 @@ namespace CatEngine
             GraphicsDevice.SetRenderTarget(renderTarget);
 
             //the actual game engine draw calls            
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            CSprite.Instance.sbSpriteBatch = spriteBatch;
+            //GraphicsDevice.Clear(Color.CornflowerBlue);
 
             CRender.Instance.UpdateGameTime(gameTime);
             CRender.Instance.UpdateCamera();
@@ -226,6 +224,7 @@ namespace CatEngine
             }
             else if (CurrentGameState == GameState.Loading)
             {
+                GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 CLoadingScreen.Instance.Render();
                 CConsole.Instance.Render();
@@ -240,7 +239,7 @@ namespace CatEngine
 
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-                GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+                GraphicsDevice.RasterizerState = RasterizerState.CullNone; //kinnunen pls
                 //CLevel.Instance.Render();
                 CLevel.Instance.Render();
                 CObjectManager.Instance.Render();

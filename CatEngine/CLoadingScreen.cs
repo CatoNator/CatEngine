@@ -44,12 +44,10 @@ namespace CatEngine
         {
             //DEBUG: preparing level data for first load
             QueueLoadCommand(CSprite.Instance, "AllocateSprites", new List<string>());
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Player" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Lights" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Tiles" });
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Player" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "footstep_solid1.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "footstep_solid1.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
@@ -61,13 +59,13 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "dustcloud" });
 
-            PrepareModel("Player");
-            PrepareModel("Natsa");
+            PrepareModel("AssetData/Models/Player/", "player");
+            PrepareModel("AssetData/Models/Natsa/", "natsa");
 
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "shadow" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "tex_empty" });
             QueueLoadCommand(CRender.Instance, "InitPlayer", new List<string>());
-            QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "background" });
+            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "background" });
 
             PrepareLevelData("Test3");
         }
@@ -115,11 +113,12 @@ namespace CatEngine
             //CLevel.Instance.SetTextureArray(textureList.ToArray());
 
             //QueueLoadCommand(CRender.Instance, "LoadModel", new List<string>() { "terrain" });
-            QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { path, "terrain", ".dae" });
+            //QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { path, "terrain", ".dae" });
+            PrepareModel(path+"/", "terrain");
             CLevel.Instance.SetLevelInfo(textureList.ToArray(), "terrain");
 
             //skybox
-            //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "background" });
+            QueueLoadCommand(CSprite.Instance, "LoadTextureSheetRaw", new List<string>() { "AssetData/Textures", "background" });
 
             //load prop models into memory
 
@@ -146,11 +145,11 @@ namespace CatEngine
             //unload music
         }
 
-        public void PrepareModel(String modelName)
+        public void PrepareModel(String path, String modelName)
         {
-            string path = "AssetData/Models/";
+            //string path = "AssetData/Models/";
 
-            string metaData = path + modelName + "/" + modelName + ".meta";
+            string metaData = path + modelName + ".meta"; //+ modelName + "/" 
 
             List<string> tex = new List<string>();
             string mdlName;
@@ -161,7 +160,7 @@ namespace CatEngine
                 string xmlText = File.ReadAllText(metaData);
                 file = XDocument.Parse(xmlText);
 
-                Console.WriteLine(xmlText);
+                //Console.WriteLine(xmlText);
 
                 string modelType = file.Root.Attribute("type").Value;
 
@@ -172,7 +171,7 @@ namespace CatEngine
                     tex.Add(name);
 
                     Console.WriteLine("texture " + name);
-                    QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { path + modelName + "/Textures", name });
+                    QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { path + "Textures", name });
                 }
 
                 foreach (XElement e in file.Descendants("model"))
@@ -180,11 +179,12 @@ namespace CatEngine
                     mdlName = e.Attribute("name").Value;
                     string type = e.Attribute("filetype").Value;
 
-                    Console.WriteLine("model " + mdlName);
                     if (modelType.Equals("skinnedmodel"))
-                        QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { path + modelName, mdlName });
+                        QueueLoadCommand(CRender.Instance, "LoadSkinnedModel", new List<string>() { path, mdlName });
                     else
-                        QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { path + modelName, mdlName, "."+type });
+                        QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { path, mdlName, "."+type });
+
+                    Console.WriteLine("model " + path + mdlName);
                 }
 
                 foreach (XElement e in file.Descendants("animation"))
@@ -194,11 +194,11 @@ namespace CatEngine
                     tex.Add(name);
 
                     Console.WriteLine("texture " + name);
-                    QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { path + modelName + "/Animations", name });
+                    QueueLoadCommand(CRender.Instance, "LoadSkinnedAnimation", new List<string>() { path + "Animations", name });
                 }
             }
             else
-                CConsole.Instance.Print("Metadata for " + modelName + " wasn't found!");
+                CConsole.Instance.Print("Metadata for " + metaData + " wasn't found!");
 
             CRender.Instance.AddModelData(modelName, tex.ToArray());
         }
@@ -219,17 +219,8 @@ namespace CatEngine
 
         public void Render()
         {
-            CSprite.Instance.DrawRect(new Rectangle(0, 0, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT), Color.Black);
-
-            float maxLength = 160.0f;
-            int xpos = CSettings.GAME_VIEW_HEIGHT-100;
-            int ypos = CSettings.Instance.GAME_VIEW_WIDTH/2;
-
             int xpos2 = CSettings.Instance.GAME_VIEW_WIDTH - 64;
             int ypos2 = CSettings.GAME_VIEW_HEIGHT - 64;
-
-
-            float length = maxLength * ((float)iExecutedFunctions / (float)sCommands.Count());
 
             /*CSprite.Instance.Render("sprLoadBar", xpos, ypos, 0, false, 0.0f, 1.0f, Color.White);
             CSprite.Instance.Render("sprLoadBar", xpos+maxLength, ypos, 2, false, 0.0f, 1.0f, Color.White);

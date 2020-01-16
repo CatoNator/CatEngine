@@ -68,7 +68,7 @@ namespace CatEngine
         public override void Render2D()
         {
             //debug render box
-            CSprite.Instance.DrawRect(rCollisionRectangle, Color.Red);
+            //CSprite.Instance.DrawRect(rCollisionRectangle, Color.Red);
 
             CSprite.Instance.Render("sprEnemyA" + (bAnim ? "1" : "2") , x, y, iDir, false, -0.0f, 1.0f, Color.White);
         }
