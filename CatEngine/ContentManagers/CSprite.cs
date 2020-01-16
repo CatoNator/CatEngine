@@ -135,7 +135,7 @@ namespace CatEngine.Content
                 }
                 catch (Exception a)
                 {
-                    CConsole.Instance.Print("Tried to add texture " + textureName + " but it was already there");
+                    CConsole.Instance.Print("Tried to add texture " + textureName + " but it was already there "+a.Message);
                 }
             }
         }

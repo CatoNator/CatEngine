@@ -51,12 +51,9 @@ namespace CatEngine
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "footstep_solid1.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "footstep_solid1.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
-            //QueueLoadCommand(CLevel.Instance, "LoadPropData", new List<string>());
-            //QueueLoadCommand(CRender.Instance, "LoadModel", new List<string>() { "textured_cube" });
-            //QueueLoadCommand(CRender.Instance, "LoadModel", new List<string>() { "board" });
-            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "cube_tex" });
-            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
-            QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
+            //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "cube_tex" });
+            //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
+            //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "dustcloud" });
 
             PrepareModel("AssetData/Models/Player/", "player");
@@ -95,7 +92,7 @@ namespace CatEngine
             DirectoryInfo D = new DirectoryInfo(path);
 
             //pack textures
-            FileInfo[] textureFiles = D.GetFiles("*.png");
+            /*FileInfo[] textureFiles = D.GetFiles("*.png");
 
             List<string> textureList = new List<string>();
             
@@ -106,7 +103,7 @@ namespace CatEngine
                 Debug.Print(path+texNameShort);
                 QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { path, texNameShort });
                 textureList.Add(texNameShort);
-            }
+            }*/
 
             //load terrain data
             QueueLoadCommand(CLevel.Instance, "LoadTerrainData", new List<string>() { path });
@@ -115,7 +112,7 @@ namespace CatEngine
             //QueueLoadCommand(CRender.Instance, "LoadModel", new List<string>() { "terrain" });
             //QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { path, "terrain", ".dae" });
             PrepareModel(path+"/", "terrain");
-            CLevel.Instance.SetLevelInfo(textureList.ToArray(), "terrain");
+            //CLevel.Instance.SetLevelInfo(textureList.ToArray(), "terrain");
 
             //skybox
             QueueLoadCommand(CSprite.Instance, "LoadTextureSheetRaw", new List<string>() { "AssetData/Textures", "background" });
@@ -130,7 +127,7 @@ namespace CatEngine
 
         public void UnloadLevelData()
         {
-            //unload textures
+            //unload level mesh and textures
             string[] textures = CLevel.Instance.GetTextureArray();
 
             for(int i = 0; i < textures.Length; i++)

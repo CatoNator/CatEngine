@@ -78,6 +78,7 @@
     <Compile Include="GameObjects\CDoor.cs" />
     <Compile Include="GameObjects\CEnemy.cs" />
     <Compile Include="GameObjects\CEnemyBullet.cs" />
+    <Compile Include="CGame.cs" />
     <Compile Include="GameObjects\CNatsa.cs" />
     <Compile Include="GameObjects\CPlayer.cs" />
     <Compile Include="ContentManagers\CSprite.cs" />
@@ -126,7 +127,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AssetData\" />
-    <Folder Include="GameObjects\NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

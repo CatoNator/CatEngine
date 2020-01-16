@@ -164,7 +164,7 @@ namespace CatEngine
 
         private Vector2 EnemyCollision(Type instanceType, double collisionRadius)
         {
-            CGameObject collidedInstance = null;
+            //CGameObject collidedInstance = null;
             CGameObject otherInstance = null;
 
             Vector2 collisionLocation = new Vector2(this.x, this.y);

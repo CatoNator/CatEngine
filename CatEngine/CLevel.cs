@@ -147,7 +147,7 @@ namespace CatEngine.Content
                     }
                     else
                     {
-                        CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3, Color.Green);
+                        CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3, Color.Black);
                         //CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Green);
                     } 
                 }
@@ -297,7 +297,7 @@ namespace CatEngine.Content
                     using (BinaryReader reader = new BinaryReader(stream))
                     {
                         int iVertices = (int)reader.ReadInt32();
-                        CConsole.Instance.Print("loaded" + iVertices.ToString() + " vertices");
+                        CConsole.Instance.Print("CLevel: loaded " + iVertices.ToString() + " vertices of terraindata");
 
                         //we make vectors out of the values
                         for (int i = 0; i < iVertices; i++)

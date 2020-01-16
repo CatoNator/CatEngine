@@ -5,13 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using CatEngine.Content;
 
 namespace CatEngine
 {
     class CConsole
     {
-        private string[] sMessages = new string[10];
+        //private string[] sMessages = new string[10];
+        private List<string> sMessages = new List<string>();
 
         private int ConsoleTimerDef = 240;
 
@@ -29,13 +31,13 @@ namespace CatEngine
         public string debugString2 = "";
         public float debugValue2 = 0.0f;
 
-        private CConsole()
+        /*private CConsole()
         {
             for (int i = 0; i < sMessages.Length; i++)
             {
                 sMessages[i] = "";
             }
-        }
+        }*/
 
         //singletoning the singleton
         public static CConsole Instance { get { return Nested.instance; } }
@@ -51,27 +53,33 @@ namespace CatEngine
 
         private void Update()
         {
-            if (ConsoleClearTimer <= 0)
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            if (keyboardState.IsKeyDown(CSettings.Instance.kCCShowConsole))
+            {
+                showConsole = true;
+            }
+            else if(keyboardState.IsKeyDown(CSettings.Instance.kCCHideConsole))
             {
                 showConsole = false;
             }
-            else
-                ConsoleClearTimer--;
         }
 
         public void Print(String str)
         {
-            for (int i = 0; i < sMessages.Length - 1; i++)
+            /*for (int i = 0; i < sMessages.Length - 1; i++)
             {
                 sMessages[i] = sMessages[i+1];
             }
 
-            sMessages[sMessages.Length-1] = str;
+            sMessages[sMessages.Length-1] = str;*/
+
+            sMessages.Add(str);
 
             Debug.Print(str);
 
-            showConsole = true;
-            ConsoleClearTimer = ConsoleTimerDef;
+            //showConsole = true;
+            //ConsoleClearTimer = ConsoleTimerDef;
         }
 
         public void Render()
@@ -80,11 +88,14 @@ namespace CatEngine
 
             if (consoleEnabled && showConsole)
             {
-                CSprite.Instance.DrawRect(new Rectangle(0, 0, CSettings.Instance.GAME_VIEW_WIDTH, 5 + 16 * (sMessages.Length)), Color.Black * 0.75f);
+                int height = ((5 + 16 * (sMessages.Count) > CSettings.GAME_VIEW_HEIGHT) ? (5 + 16 * (sMessages.Count)) : CSettings.GAME_VIEW_HEIGHT);
+                float textOffset = ((5 + 16 * (sMessages.Count) > CSettings.GAME_VIEW_HEIGHT) ? (CSettings.GAME_VIEW_HEIGHT - (5 + 16 * (sMessages.Count))) : 0);
 
-                for (int i = 0; i < sMessages.Length; i++)
+                CSprite.Instance.DrawRect(new Rectangle(0, 0, CSettings.Instance.GAME_VIEW_WIDTH, height), Color.Black * 0.75f);
+
+                for (int i = 0; i < sMessages.Count; i++)
                 {
-                    CSprite.Instance.DrawText(sMessages[i], new Vector2(5, 5 + 16 * i), Color.White);
+                    CSprite.Instance.DrawText(sMessages[i], new Vector2(5, 5 + 16 * i+textOffset), Color.White);
                 }
             }
 
