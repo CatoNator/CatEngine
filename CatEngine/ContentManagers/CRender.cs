@@ -747,7 +747,7 @@ namespace CatEngine.Content
         public void DrawBillBoard(Vector3 position, Vector2 scale, Vector2 origin, float angle, float alpha, String textureName)
         {
             float cameraDirection = (float)(Math.PI/2)-(float)Math.Atan2((double)(cameraPosition.Z - cameraTarget.Z), (double)(cameraPosition.X - cameraTarget.X));
-            float cameraVDirection = (float)Math.Atan2((double)(cameraPosition.Y - cameraTarget.Y), (double)(cameraPosition.X - cameraTarget.X));
+            float cameraVDirection = (float)(Math.Atan2((double)(cameraPosition.Y - cameraTarget.Y), 30.0));//(float)Math.Atan2((double)(cameraPosition.Y - cameraTarget.Y), (double)(cameraPosition.X - cameraTarget.X));
 
             Vector3 C1 = new Vector3(scale.X - origin.X, 0, -origin.Y);
             Vector3 C2 = new Vector3(scale.X - origin.X, 0, scale.Y - origin.Y);
@@ -760,7 +760,7 @@ namespace CatEngine.Content
 
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
-            basicEffect.World = Matrix.CreateRotationX(-(float)Math.PI / 2) * Matrix.CreateRotationY(cameraDirection) * Matrix.CreateTranslation(position) * worldMatrix;
+            basicEffect.World = Matrix.CreateRotationX(-(float)Math.PI / 2 - cameraVDirection) * Matrix.CreateRotationY(cameraDirection) * Matrix.CreateTranslation(position) * worldMatrix;
             basicEffect.VertexColorEnabled = false;
             basicEffect.LightingEnabled = false;
             basicEffect.Alpha = alpha;

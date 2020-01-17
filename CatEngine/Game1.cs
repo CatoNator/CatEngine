@@ -49,7 +49,7 @@ namespace CatEngine
             graphics = new GraphicsDeviceManager(this);
 
             CSettings.Instance.SetGameViewSize();
-            CSettings.Instance.SetBackbufferSize(960);
+            CSettings.Instance.SetBackbufferSize(360);
 
             graphics.PreparingDeviceSettings += GraphicsDeviceManager_PreparingDeviceSettings;
             graphics.PreferredBackBufferWidth = CSettings.Instance.iBackBufferWidth;
@@ -271,6 +271,7 @@ namespace CatEngine
 
                 //rendering 3D objects
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                GraphicsDevice.RasterizerState = RasterizerState.CullNone; //kinnunen pls
                 //CLevel.Instance.Render();
                 CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
