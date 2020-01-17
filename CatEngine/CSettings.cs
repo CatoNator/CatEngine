@@ -10,14 +10,14 @@ namespace CatEngine
 {
     public sealed class CSettings
     {
-        public int GAME_VIEW_WIDTH = 416;
-        public const int GAME_VIEW_HEIGHT = 480;
+        public int GAME_VIEW_WIDTH = 640;
+        public const int GAME_VIEW_HEIGHT = 360;
 
         private int iAspectRatioH = 16;
         private int iAspectRatioV = 9;
 
-        public int iBackBufferWidth = 1280;
-        public int iBackBufferHeight = 720;
+        public int iBackBufferWidth = 640;
+        public int iBackBufferHeight = 360;
 
         public int iFovAngle = 45;
 

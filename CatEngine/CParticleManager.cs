@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Xml.Linq;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using CatEngine.Content;
@@ -13,6 +15,7 @@ namespace CatEngine
         private Particle[] pParticleList = new Particle[MAX_PARTICLES];
         public const int MAX_PARTICLES = 512;
 
+        private Dictionary<String, ParticleData> dPartDataDict = new Dictionary<string, ParticleData>();
         private CParticleManager()
         {
         }
@@ -27,6 +30,47 @@ namespace CatEngine
             }
 
             internal static readonly CParticleManager instance = new CParticleManager();
+        }
+
+        private struct ParticleData
+        {
+            public string TextureName;
+
+            public float AngleMin;
+            public float AngleMax;
+            public float SizeMin;
+            public float SizeMax;
+            public float AlphaMin;
+            public float AlphaMax;
+
+            public Vector3 Speed;
+            public float RotationSpeed;
+            public float SizeChangeSpeed;
+            public float AlphaChangeSpeed;
+
+            public bool bHasGravity;
+
+            public int Life;
+
+            public ParticleData(string tex, float minAngle, float maxAngle, float minSize, float maxSize, float minAlpha, float maxAlpha, Vector3 sp, float rotSp, float sizeSp, float aSp)
+            {
+                TextureName = tex;
+                AngleMin = minAngle;
+                AngleMax = maxAngle;
+                SizeMin = minSize;
+                SizeMax = maxSize;
+                AlphaMin = minAlpha;
+                AlphaMax = maxAlpha;
+
+                Speed = sp;
+                RotationSpeed = rotSp;
+                SizeChangeSpeed = sizeSp;
+                AlphaChangeSpeed = aSp;
+
+                bHasGravity = false;
+
+                Life = 69;
+            }
         }
 
         private class Particle
@@ -54,11 +98,20 @@ namespace CatEngine
 
             }
 
-            public void Spawn (Vector3 pos, Vector3 spd, int lifeTime, int ind)
+            public void Spawn (int ind, Vector3 pos, ParticleData partData)
             {
+                Random rand = new Random();
+
                 ID = ind;
                 Position = pos;
-                Speed = spd;
+                Speed = partData.Speed;
+                Life = partData.Life;
+                Angle = partData.AngleMin + (float)(rand.NextDouble() * (partData.AngleMax - partData.AngleMin));
+                Size = partData.SizeMin + (float)(rand.NextDouble() * (partData.SizeMax - partData.SizeMin));
+                Alpha = partData.AlphaMin + (float)(rand.NextDouble() * (partData.AlphaMax - partData.AlphaMin));
+                RotationSpeed = partData.RotationSpeed;
+                SizeChangeSpeed = partData.SizeChangeSpeed;
+                AlphaChangeSpeed = partData.AlphaChangeSpeed;
             }
 
             public void Update()
@@ -84,7 +137,107 @@ namespace CatEngine
             }
         }
 
-        public void CreateParticle(Vector3 position, Vector3 speed)
+        public void LoadParticleData()
+        {
+            String partData = "AssetData/PartData.xml";
+
+            /*
+            <partdata>
+	            <particle name="part_dustcloud"/>
+		            <texture name="dust_cloud"/>
+		            <angle min="0" max="360"/>
+		            <size min="1" max="2.5"/>
+		            <alpha min="1" max = "1"/>
+		
+		            <speed xmin="0" xmax="0" ymin="0" ymax="0" zmin="0" zmax="0"/>
+		            <rotspeed value="0.3"/>
+		            <sizespeed value="-0.05"/>
+		            <alphaspeed value="0.0"/>
+	            </particle>
+            </partdata>
+            */
+
+            if (File.Exists(partData))
+            {
+                Console.WriteLine("opening partdata");
+
+                XDocument file;
+                string xmlText = File.ReadAllText(partData);
+                file = XDocument.Parse(xmlText);
+
+                foreach (XElement e in file.Descendants("particle"))
+                {
+                    string name = e.Attribute("name").Value;
+
+                    Console.WriteLine("particle " + name);
+
+                    string tex = "";
+                    float amin = 0;
+                    float amax = 0;
+                    float anmin = 0;
+                    float anmax = 0;
+                    float smin = 0;
+                    float smax = 0;
+                    Vector3 sp = new Vector3(0, 0, 0);
+                    float ssp = 0;
+                    float asp = 0;
+                    float rsp = 0;
+
+                    foreach (XElement d in e.Descendants("texture"))
+                    {
+                        tex = d.Attribute("name").Value;
+                    }
+
+                    foreach (XElement d in e.Descendants("alpha"))
+                    {
+                        amin = float.Parse(d.Attribute("min").Value);
+                        amax = float.Parse(d.Attribute("max").Value);
+                    }
+
+                    foreach (XElement d in e.Descendants("angle"))
+                    {
+                        anmin = float.Parse(d.Attribute("min").Value);
+                        anmax = float.Parse(d.Attribute("max").Value);
+                    }
+
+                    foreach (XElement d in e.Descendants("size"))
+                    {
+                        smin = float.Parse(d.Attribute("min").Value);
+                        smax = float.Parse(d.Attribute("max").Value);
+                    }
+
+                    foreach (XElement d in e.Descendants("speed"))
+                    {
+                        float x = float.Parse(d.Attribute("xmin").Value);
+                        float y = float.Parse(d.Attribute("ymin").Value);
+                        float z = float.Parse(d.Attribute("zmin").Value);
+
+                        sp = new Vector3(x, y, z);
+                    }
+
+                    foreach (XElement d in e.Descendants("rotspeed"))
+                    {
+                        rsp = float.Parse(d.Attribute("value").Value);
+                    }
+
+                    foreach (XElement d in e.Descendants("sizespeed"))
+                    {
+                        ssp = float.Parse(d.Attribute("value").Value);
+                    }
+
+                    foreach (XElement d in e.Descendants("alphaspeed"))
+                    {
+                        asp = float.Parse(d.Attribute("value").Value);
+                    }
+
+                    dPartDataDict.Add(name, new ParticleData(tex, anmin, anmax, smin, smax, amin, amax, sp, rsp, ssp, asp));
+                }
+            }
+            else
+                CConsole.Instance.Print("could not locate partdata!");
+        }
+
+        public void CreateParticle(String particleName, Vector3 position)
         {
             //find the first empty slot in the array and put the object there
             for (int i = 0; i < MAX_PARTICLES; i++)
@@ -95,7 +248,7 @@ namespace CatEngine
                     pParticleList[i] = new Particle();
 
                     //here we make sure the object spawns correctly
-                    pParticleList[i].Spawn(position, speed, 240, i);
+                    pParticleList[i].Spawn(i, position, dPartDataDict[particleName]);
 
                     //debugObjSlot = i;
 

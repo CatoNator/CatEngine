@@ -12,6 +12,11 @@ namespace CatEngine
     {
         public float rotation = 0.0f;
 
+        public override void InstanceSpawn()
+        {
+            hitCylinder = new CylinderCollider(new Vector3(x, z-2, y), 4, 2);
+        }
+
         public override void Render()
         {
             //UpdateCollision();
@@ -22,6 +27,9 @@ namespace CatEngine
 
             CRender.Instance.DrawSimpleModel("natsa", new Vector3(x, z + (float)Math.Sin((double)rotation), y), new Vector3(-(float)(Math.PI / 2.0), rotation, 0), 0.5f);
             CRender.Instance.DrawShadowSimple(new Vector3(x, z, y), 1.5f);
+
+            if (CDebug.Instance.ShowHitBoxes)
+                CRender.Instance.DrawHitBox(hitCylinder.Position, hitCylinder.Height, hitCylinder.Radius);
         }
     }
 }

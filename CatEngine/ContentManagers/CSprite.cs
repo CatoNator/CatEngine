@@ -173,7 +173,7 @@ namespace CatEngine.Content
 
                 Rectangle sourceRectangle = new Rectangle(0 + (w * hCell), 0 + (h * vCell), w, h);
                 Rectangle destRectangle = new Rectangle((int)location.X+i*w, (int)location.Y, w, h);
-                sbSpriteBatch.Draw(dTextureDict["spriteFont"], destRectangle, sourceRectangle, color, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
+                sbSpriteBatch.Draw(dTextureDict["spritefont"], destRectangle, sourceRectangle, color, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
             }
         }
         

@@ -395,5 +395,15 @@ namespace CatEngine.Content
         {
             return sLevelTextures;
         }
+
+        public void SetLevelModelName(string levelName)
+        {
+           sLevelModelName = levelName;
+        }
+
+        public string GetLevelModelName()
+        {
+            return sLevelModelName;
+        }
     }
 }

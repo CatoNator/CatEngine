@@ -105,7 +105,11 @@ namespace CatEngine.Content
             foreach (Sound i in SoundFX)
             {
                 if (i.name.Equals(name))
+                {
                     soundId = SoundFX.IndexOf(i);
+                    Console.WriteLine("found sound with name of " + name + " at index " + soundId);
+                }
+                    
             }
 
             if (SoundFX[soundId].sound != null)

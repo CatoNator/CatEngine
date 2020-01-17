@@ -24,4 +24,40 @@
 		<xorig>12</xorig>
 		<yorig>12</yorig>
 	</sprite>
+	<sprite>
+		<index>2</index>
+		<name>sprHudChoco</name>
+		<texture>choco_health</texture>
+		<left>0</left>
+		<top>0</top>
+		<width>41</width>
+		<height>24</height>
+		<images>1</images>
+		<xorig>0</xorig>
+		<yorig>0</yorig>
+	</sprite>
+	<sprite>
+		<index>3</index>
+		<name>sprHudNatsa</name>
+		<texture>hud_natsa</texture>
+		<left>0</left>
+		<top>0</top>
+		<width>24</width>
+		<height>16</height>
+		<images>8</images>
+		<xorig>0</xorig>
+		<yorig>0</yorig>
+	</sprite>
+	<sprite>
+		<index>4</index>
+		<name>numeric_font</name>
+		<texture>numeric_font</texture>
+		<left>0</left>
+		<top>0</top>
+		<width>13</width>
+		<height>13</height>
+		<images>11</images>
+		<xorig>0</xorig>
+		<yorig>0</yorig>
+	</sprite>
 </spritedata>

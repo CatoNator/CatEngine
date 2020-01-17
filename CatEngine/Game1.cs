@@ -110,9 +110,13 @@ namespace CatEngine
             //loading the debug texture...
             CSprite.Instance.LoadTextureSheet("empty");
             //loading the loading screen so we don't crash while loading assets
-            CSprite.Instance.LoadTextureSheet("LoadingScreen");
+            //CSprite.Instance.LoadTextureSheet("LoadingScreen");
+            CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "LoadingScreen");
             //loading a font for testing
-            CSprite.Instance.LoadTextureSheet("spriteFont");
+            CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "spritefont");
+            CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "numeric_font");
+            CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "choco_health");
+            CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "hud_natsa");
             //loading screen stuff NEEDS to be loaded here! it can't be loaded in during runtime, it'll just crash.
 
             //setting up 3D and loading debug cube
@@ -126,7 +130,14 @@ namespace CatEngine
             CObjectManager.Instance.CreateInstance(typeof(CCamera), 0, 10, -30);
             CObjectManager.Instance.CreateInstance(typeof(CPlayer), 5, 20, 5);
             CObjectManager.Instance.CreateInstance(typeof(CNatsa), 5, 20, 5);
+            CObjectManager.Instance.CreateInstance(typeof(CNatsa), 20, 20, 5);
+            CObjectManager.Instance.CreateInstance(typeof(CNatsa), 5, 20, 20);
+            CObjectManager.Instance.CreateInstance(typeof(CNatsa), 20, 20, 20);
+            CObjectManager.Instance.CreateInstance(typeof(CNatsa), 20, 30, 30);
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
+
+            //debug
+            CParticleManager.Instance.LoadParticleData();
 
             CLoadingScreen.Instance.Load();
         }
@@ -186,11 +197,12 @@ namespace CatEngine
 
                 if (Keyboard.GetState().IsKeyDown(Keys.L))
                 {
-                    CLoadingScreen.Instance.UnloadLevelData();
-                    CLoadingScreen.Instance.PrepareLevelData("Test2");
-                    CLoadingScreen.Instance.Load();
+                    CGame.Instance.InitiateFadeLevel("Test2");
                 }
             }
+
+            if (CurrentGameState != GameState.Loading)
+                CGame.Instance.UpdateFade();
             //updating the object list
 
             //updating the HUD
@@ -219,7 +231,7 @@ namespace CatEngine
             {
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 //CMainMenu.Instance.Render();
-                CConsole.Instance.Render();
+                CGame.Instance.RenderFadeOut();
                 spriteBatch.End();
             }
             else if (CurrentGameState == GameState.Loading)
@@ -227,7 +239,6 @@ namespace CatEngine
                 GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 CLoadingScreen.Instance.Render();
-                CConsole.Instance.Render();
                 spriteBatch.End();
             }
             else if (CurrentGameState == GameState.Game)
@@ -249,7 +260,7 @@ namespace CatEngine
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 //CObjectManager.Instance.Render2D();
                 CHud.Instance.Render();
-                CConsole.Instance.Render();
+                CGame.Instance.RenderFadeOut();
                 spriteBatch.End();
             }
             else if (CurrentGameState == GameState.Paused)
@@ -267,10 +278,16 @@ namespace CatEngine
                 //rendering 2D objects
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 //CObjectManager.Instance.Render2D();
+                CHud.Instance.Render();
                 //CPauseMenu.Instance.Render();
-                CConsole.Instance.Render();
+                CGame.Instance.RenderFadeOut();
                 spriteBatch.End();
             }
+
+            //global 2D render
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);            
+            CConsole.Instance.Render();
+            spriteBatch.End();
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.SetVertexBuffer(null);

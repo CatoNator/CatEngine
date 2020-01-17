@@ -12,6 +12,8 @@ namespace CatEngine
 
         public bool ShowDebugValues = false;
 
+        public bool ShowHitBoxes = true;
+
         private CDebug()
         {
         }

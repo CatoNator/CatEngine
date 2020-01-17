@@ -1,0 +1,4 @@
+<ModelMetadata type="simplemodel">
+	<texture name="mc_grass" filetype="png"/>
+	<model name="Test2" filetype="dae"/>
+</ModelMetadata>

@@ -150,7 +150,7 @@ namespace CatEngine.Content
                 CRender.Instance.dTextureDict.Add(textureName, Texture2D.FromStream(graphicsDevice, fileStream));
                 fileStream.Dispose();
             }
-            catch (ContentLoadException e)
+            catch (Exception e)
             {
                 try
                 {
@@ -170,7 +170,7 @@ namespace CatEngine.Content
             {
                 CRender.Instance.dModelDict.Add(modelName, content.Load<Model>(modelName));
             }
-            catch (ContentLoadException e)
+            catch (Exception e)
             {
                 CRender.Instance.dModelDict.Add(modelName, null);
                 CConsole.Instance.Print("Tried to load model " + modelName + " but failed, error " + e.ToString());
@@ -187,10 +187,16 @@ namespace CatEngine.Content
                 mdl.Initialize();
                 CRender.Instance.dSimpleModelDict.Add(modelName, mdl);
             }
-            catch (ContentLoadException e)
+            catch (Exception e)
             {
-                CRender.Instance.dSimpleModelDict.Add(modelName, null);
-                CConsole.Instance.Print("Tried to load skinned model " + modelName + " but failed, error " + e.ToString());
+                try
+                {
+                    CRender.Instance.dSimpleModelDict.Add(modelName, null);
+                }
+                catch (Exception a)
+                {
+                    CConsole.Instance.Print("Tried to load skinned model " + modelName + " but failed, error " + e.ToString());
+                }
             }
         }
 
@@ -265,6 +271,26 @@ namespace CatEngine.Content
             catch (KeyNotFoundException e)
             {
                 CConsole.Instance.Print("Tried to unload skinned model " + modelName + ", but it wasn't present");
+            }
+        }
+
+        public void UnloadModelData(String modelName)
+        {
+            try
+            {
+                ModelData model = dModelDataDict[modelName];
+                UnloadSimpleModel(model.Model);
+                
+                foreach (string s in model.Textures)
+                {
+                    UnloadTexture(s);
+                }
+
+                dModelDataDict.Remove(modelName);
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("Tried to unload model data " + modelName + ", but data it contained was missing");
             }
         }
 
@@ -384,7 +410,7 @@ namespace CatEngine.Content
             }
             catch (KeyNotFoundException e)
             {
-                CConsole.Instance.Print("model " + modelName + " wasn't found in dModelDataDict");
+                //CConsole.Instance.Print("model " + modelName + " wasn't found in dModelDataDict");
                 mdl = new ModelData("fuck", new string[] { "off" });
             }
 
@@ -392,18 +418,33 @@ namespace CatEngine.Content
             string[] textures = mdl.Textures;
             
             //SimpleModel simpleModel = dSimpleModelDict[modelName];
-            dSimpleModelDict[mdlName].GraphicsDevice = graphicsDevice;
+            try
+            {
+                dSimpleModelDict[mdlName].GraphicsDevice = graphicsDevice;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("could not load model "+ mdlName + " to render");
+            }
 
             Matrix rotationMatrix = Matrix.CreateRotationX(rotation.X) * Matrix.CreateRotationY(rotation.Y) * Matrix.CreateRotationZ(rotation.Z);
             Matrix transformMatrix = Matrix.CreateTranslation(position);
 
             Matrix scaleMatrix = Matrix.CreateScale(scale);
 
+            
             SimpleModelEffect.Parameters["World"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * worldMatrix);
             SimpleModelEffect.Parameters["WorldViewProjection"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * worldMatrix * viewMatrix * projectionMatrix);
-            SimpleModelEffect.Parameters["Texture1"].SetValue(dTextureDict[textures[0]]);
+            try
+            {
+                SimpleModelEffect.Parameters["Texture1"].SetValue(dTextureDict[textures[0]]);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("could not load texture "+textures[0]+" to render");
+            }
 
-            graphicsDevice.SetVertexBuffer(dSimpleModelDict[modelName].VertexBuffer);
+            graphicsDevice.SetVertexBuffer(dSimpleModelDict[mdlName].VertexBuffer);
             graphicsDevice.Indices = dSimpleModelDict[modelName].IndexBuffer;
             //graphicsDevice.DepthStencilState = DepthStencilState.Default;
             foreach (EffectPass pass in SimpleModelEffect.CurrentTechnique.Passes)
@@ -595,6 +636,40 @@ namespace CatEngine.Content
 
             graphicsDevice.RasterizerState = ogState;
             graphicsDevice.SetVertexBuffer(null);
+        }
+
+        public void DrawHitBox(Vector3 pos, float height, float rad)
+        {
+            //top
+            DrawRectangleWireframe(new Vector3(pos.X - rad, pos.Y + height, pos.Z + rad),
+                new Vector3(pos.X + rad, pos.Y + height, pos.Z + rad),
+                new Vector3(pos.X - rad, pos.Y + height, pos.Z - rad),
+                new Vector3(pos.X + rad, pos.Y + height, pos.Z - rad));
+            //bottom
+            DrawRectangleWireframe(new Vector3(pos.X - rad, pos.Y, pos.Z + rad),
+                new Vector3(pos.X + rad, pos.Y, pos.Z + rad),
+                new Vector3(pos.X - rad, pos.Y, pos.Z - rad),
+                new Vector3(pos.X + rad, pos.Y, pos.Z - rad));
+            //left side
+            DrawRectangleWireframe(new Vector3(pos.X - rad, pos.Y + height, pos.Z - rad),
+                new Vector3(pos.X - rad, pos.Y + height, pos.Z + rad),
+                new Vector3(pos.X - rad, pos.Y, pos.Z - rad),
+                new Vector3(pos.X - rad, pos.Y, pos.Z + rad));
+            //right side
+            DrawRectangleWireframe(new Vector3(pos.X + rad, pos.Y, pos.Z - rad),
+                new Vector3(pos.X + rad, pos.Y, pos.Z + rad),
+                new Vector3(pos.X + rad, pos.Y + height, pos.Z - rad),
+                new Vector3(pos.X + rad, pos.Y + height, pos.Z + rad));
+            //bottom side
+            DrawRectangleWireframe(new Vector3(pos.X + rad, pos.Y, pos.Z - rad),
+                new Vector3(pos.X - rad, pos.Y, pos.Z - rad),
+                new Vector3(pos.X + rad, pos.Y + height, pos.Z - rad),
+                new Vector3(pos.X - rad, pos.Y + height, pos.Z - rad));
+            //top side
+            DrawRectangleWireframe(new Vector3(pos.X + rad, pos.Y + height, pos.Z + rad),
+                new Vector3(pos.X - rad, pos.Y + height, pos.Z + rad),
+                new Vector3(pos.X + rad, pos.Y, pos.Z + rad),
+                new Vector3(pos.X - rad, pos.Y, pos.Z + rad));
         }
 
         public void DrawTriangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3, Color color)

@@ -27,6 +27,8 @@ namespace CatEngine
         public Vector2 vCollisionOrigin;
         public Rectangle rCollisionRectangle;
 
+        public CylinderCollider hitCylinder;
+
         public Random myRandom = new Random();
 
         public CGameObject()
@@ -59,6 +61,50 @@ namespace CatEngine
         //call this code when destroying the instance
         public virtual void OnDestruction()
         {
+        }
+
+        public class CylinderCollider
+        {
+            public float Height;
+            public float Radius;
+
+            public Vector3 Position;
+
+            public CylinderCollider(Vector3 pos, float h, float r)
+            {
+                Position = pos;
+                Height = h;
+                Radius = r;
+            }
+
+            public void SetPos(Vector3 pos)
+            {
+                Position = pos;
+            }
+
+            private float PointDistance(float x1, float y1, float x2, float y2)
+            {
+                return (float)Math.Sqrt(Math.Pow((double)(x2 - x1), 2) + Math.Pow((double)(y2 - y1), 2));
+            }
+
+            public bool isColliding(CylinderCollider otherCollider)
+            {
+                bool collided = false;
+                
+                //vertical collision
+                if ((otherCollider.Position.Y+otherCollider.Height >= this.Position.Y && otherCollider.Position.Y + otherCollider.Height <= this.Position.Y+this.Height)
+                    || (otherCollider.Position.Y >= this.Position.Y && otherCollider.Position.Y <= this.Position.Y + this.Height))
+                {
+                    //horizontal collision
+                    if (PointDistance(this.Position.X, this.Position.Z, otherCollider.Position.X, otherCollider.Position.Z) < this.Radius + otherCollider.Radius)
+                    {
+                        collided = true;
+                    }
+                        
+                }
+
+                return collided;
+            }
         }
 
         //trig math
@@ -209,7 +255,7 @@ namespace CatEngine
         }
 
         //circle collider from Super Starblasters
-        public CGameObject CollisionCircle(Type instanceType, double collisionRadius)
+        public CGameObject CollisionCylinder(Type instanceType)
         {
             CGameObject collidedInstance = null;
             CGameObject otherInstance = null;
@@ -226,18 +272,8 @@ namespace CatEngine
                     //getting the reference
                     otherInstance = CObjectManager.Instance.pGameObjectList[i];
 
-                    for (int e = 0; e <= 360; e++)
-                    {
-                        int pointx = (int)this.x + (int)distDirX((float)collisionRadius, (float)e);
-                        int pointy = (int)this.y + (int)distDirY((float)collisionRadius, (float)e);
-
-                        if (otherInstance.rCollisionRectangle.Contains(pointx, pointy))
-                        {
-                            collidedInstance = otherInstance;
-                            break;
-                        }
-                    }
-                    
+                    if (hitCylinder.isColliding(otherInstance.hitCylinder))
+                        collidedInstance = otherInstance;
                 }
             }
 

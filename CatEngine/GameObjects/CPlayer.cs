@@ -50,14 +50,24 @@ namespace CatEngine
         {
             vCollisionOrigin = new Vector2(0, 0);
             rCollisionRectangle = new Rectangle(0, 0, 16, 16);
+
+            hitCylinder = new CylinderCollider(new Vector3(x, z, y), 10, 2.5f);
         }
         
         public override void Update()
         {
             UpdateCollision();
+            hitCylinder.SetPos(new Vector3(x, z, y));
 
             //floor collision
-            CGameObject collision = CollisionRectangle(new Rectangle(rCollisionRectangle.X, rCollisionRectangle.Y + rCollisionRectangle.Height, rCollisionRectangle.Width, 1), typeof(CWall), true);
+            CGameObject natsaCollision = CollisionCylinder(typeof(CNatsa));
+
+            if (natsaCollision != null)
+            {
+                CAudioManager.Instance.PlaySound("natsa.wav");
+                CGame.Instance.CollectNatsa(1);
+                CObjectManager.Instance.DestroyInstance(natsaCollision.iIndex);
+            }
 
             //input
             KeyboardState keyboardState = Keyboard.GetState();
@@ -83,6 +93,9 @@ namespace CatEngine
             //CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
 
             CRender.Instance.DrawShadow(new Vector3(x, z+2.5f, y), 2.5f);
+
+            if (CDebug.Instance.ShowHitBoxes)
+                CRender.Instance.DrawHitBox(hitCylinder.Position, hitCylinder.Height, hitCylinder.Radius);
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)
@@ -259,7 +272,7 @@ namespace CatEngine
 
                     CAudioManager.Instance.PlaySound("footstep_solid1");
 
-                    CParticleManager.Instance.CreateParticle(new Vector3(x, z, y), new Vector3(0, 0, 0));
+                    CParticleManager.Instance.CreateParticle("part_dustcloud", new Vector3(x, z, y));
                 }
 
                 z = (float)Math.Floor(z);

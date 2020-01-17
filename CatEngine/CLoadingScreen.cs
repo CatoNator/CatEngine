@@ -50,6 +50,7 @@ namespace CatEngine
             //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "footstep_solid1.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "footstep_solid1.wav" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "natsa.wav" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "cube_tex" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
@@ -111,7 +112,8 @@ namespace CatEngine
 
             //QueueLoadCommand(CRender.Instance, "LoadModel", new List<string>() { "terrain" });
             //QueueLoadCommand(CRender.Instance, "LoadSimpleModel", new List<string>() { path, "terrain", ".dae" });
-            PrepareModel(path+"/", "terrain");
+            CLevel.Instance.SetLevelModelName(levelName);
+            PrepareModel(path+"/", levelName);
             //CLevel.Instance.SetLevelInfo(textureList.ToArray(), "terrain");
 
             //skybox
@@ -134,6 +136,8 @@ namespace CatEngine
             {
                 QueueLoadCommand(CRender.Instance, "UnloadTexture", new List<string>() { textures[i] });
             }
+
+            QueueLoadCommand(CRender.Instance, "UnloadModelData", new List<string>() { CLevel.Instance.GetLevelModelName() });
 
             //unload prop models
 
@@ -197,6 +201,7 @@ namespace CatEngine
             else
                 CConsole.Instance.Print("Metadata for " + metaData + " wasn't found!");
 
+            //we are fucked lol
             CRender.Instance.AddModelData(modelName, tex.ToArray());
         }
 
@@ -212,6 +217,7 @@ namespace CatEngine
         public void QueueLoadCommand(CContentManager instance, String command, List<String> commands)
         {
             sCommands.Add(new Command(instance, command, commands));
+            Console.WriteLine("added command " + command + " to loadcommands");
         }
 
         public void Render()
