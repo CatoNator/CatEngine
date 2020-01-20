@@ -48,10 +48,16 @@ namespace CatEngine
             //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
             //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" });
             //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
-            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "footstep_solid1.wav" });
-            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "footstep_solid1.wav" });
-            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "natsa.wav" });
-            QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Menu" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Asteroid" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Test" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds", "footstep_solid1", "wav" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds", "footstep_solid2", "wav" });
+            //QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds/Menu", "menucursor", "wav" });
+            //QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds/Menu", "menucancel", "wav" });
+            //QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds/Menu", "menuselect1", "wav" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds", "natsa", "wav" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "AssetData/Music", "test", "xm" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "cube_tex" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
@@ -65,7 +71,7 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "InitPlayer", new List<string>());
             //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "background" });
 
-            PrepareLevelData("Test3");
+            //PrepareLevelData("Test3");
         }
 
         //singletoning the singleton
@@ -130,12 +136,12 @@ namespace CatEngine
         public void UnloadLevelData()
         {
             //unload level mesh and textures
-            string[] textures = CLevel.Instance.GetTextureArray();
+            /*string[] textures = CLevel.Instance.GetTextureArray();
 
             for(int i = 0; i < textures.Length; i++)
             {
                 QueueLoadCommand(CRender.Instance, "UnloadTexture", new List<string>() { textures[i] });
-            }
+            }*/
 
             QueueLoadCommand(CRender.Instance, "UnloadModelData", new List<string>() { CLevel.Instance.GetLevelModelName() });
 
@@ -271,6 +277,11 @@ namespace CatEngine
             sCommands.Clear();
 
             hasFinishedLoading = true;
+
+            if (CGame.Instance.currentFadeType == CGame.FadeTypes.FadeLevel)
+                game.CurrentGameState = Game1.GameState.Game;
+            else if (CGame.Instance.currentFadeType == CGame.FadeTypes.FadeMenu)
+                game.CurrentGameState = Game1.GameState.Menu;
         }
     }
 }

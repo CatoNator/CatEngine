@@ -40,7 +40,7 @@ namespace CatEngine
         public Keys kCCShowConsole = Keys.PageDown;
         public Keys kCCHideConsole = Keys.PageUp;
 
-        public bool bGamepadEnabled = false;
+        public bool bGamepadEnabled = true;
 
         public Keys kPFire = Keys.Space;
 

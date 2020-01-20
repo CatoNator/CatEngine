@@ -28,7 +28,7 @@ namespace CatEngine
             FadeMenu
         };
 
-        private FadeTypes currentFadeType = FadeTypes.FadeMenu;
+        public FadeTypes currentFadeType = FadeTypes.FadeMenu;
 
         private float fFadeAlpha = 0;
         private string sNextLevel = "";

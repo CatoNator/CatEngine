@@ -58,6 +58,7 @@
     <Compile Include="AssimpHelper.cs" />
     <Compile Include="CDebug.cs" />
     <Compile Include="CLevel.cs" />
+    <Compile Include="CMenu.cs" />
     <Compile Include="ContentManagers\CAudioManager.cs" />
     <Compile Include="CConsole.cs" />
     <Compile Include="CGameObject.cs" />

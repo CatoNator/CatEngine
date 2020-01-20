@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using CatEngine.UI;
 using CatEngine.Content;
 
 namespace CatEngine
@@ -134,6 +135,8 @@ namespace CatEngine
             CObjectManager.Instance.CreateInstance(typeof(CNatsa), 5, 20, 20);
             CObjectManager.Instance.CreateInstance(typeof(CNatsa), 20, 20, 20);
             CObjectManager.Instance.CreateInstance(typeof(CNatsa), 20, 30, 30);
+            CObjectManager.Instance.CreateInstance(typeof(CCollidable), 5, -5, 5);
+            //CObjectManager.Instance.CreateInstance(typeof(CCollidable), 20, 35, 30);
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
             //debug
@@ -171,13 +174,13 @@ namespace CatEngine
 
             if (CurrentGameState == GameState.Menu)
             {
-                //CMainMenu.Instance.Update();
+                CMenu.Instance.Update();
             }
             else if (CurrentGameState == GameState.Loading)
             {
                 CLoadingScreen.Instance.Update();
                 if (CLoadingScreen.Instance.hasFinishedLoading)
-                    CurrentGameState = GameState.Game;
+                    CurrentGameState = GameState.Menu;
             }
             else if (CurrentGameState == GameState.Game)
             {
@@ -230,7 +233,7 @@ namespace CatEngine
             if (CurrentGameState == GameState.Menu)
             {
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
-                //CMainMenu.Instance.Render();
+                CMenu.Instance.Render();
                 CGame.Instance.RenderFadeOut();
                 spriteBatch.End();
             }
@@ -280,7 +283,7 @@ namespace CatEngine
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 //CObjectManager.Instance.Render2D();
                 CHud.Instance.Render();
-                //CPauseMenu.Instance.Render();
+                CPauseMenu.Instance.Render();
                 CGame.Instance.RenderFadeOut();
                 spriteBatch.End();
             }

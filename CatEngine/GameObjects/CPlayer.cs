@@ -64,7 +64,7 @@ namespace CatEngine
 
             if (natsaCollision != null)
             {
-                CAudioManager.Instance.PlaySound("natsa.wav");
+                CAudioManager.Instance.PlaySound("natsa");
                 CGame.Instance.CollectNatsa(1);
                 CObjectManager.Instance.DestroyInstance(natsaCollision.iIndex);
             }
@@ -93,6 +93,7 @@ namespace CatEngine
             //CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
 
             CRender.Instance.DrawShadow(new Vector3(x, z+2.5f, y), 2.5f);
+            //CRender.Instance.DrawPlayerShadow(new Vector3(x, z + 2.5f, y), 2.5f, sCurrentAnimation, fDir, fAnimFrame);
 
             if (CDebug.Instance.ShowHitBoxes)
                 CRender.Instance.DrawHitBox(hitCylinder.Position, hitCylinder.Height, hitCylinder.Radius);
@@ -218,13 +219,13 @@ namespace CatEngine
             }
 
             float angleMeasureDist = spSp;
-            float heightPFront = CLevel.Instance.GetHeightAt(x + distDirX(angleMeasureDist, fDir), y + distDirY(angleMeasureDist, fDir), z+10.0f);
-            float heightPBack = CLevel.Instance.GetHeightAt(x + distDirX(-angleMeasureDist, fDir), y + distDirY(-angleMeasureDist, fDir), z + 10.0f);
-
-            
+            float heightPFront = HeightAtPoint(new Vector3(x + distDirX(angleMeasureDist, fDir), y + distDirY(angleMeasureDist, fDir), z + 10.0f));//CLevel.Instance.GetHeightAt(x + distDirX(angleMeasureDist, fDir), y + distDirY(angleMeasureDist, fDir), z+10.0f);
+            float heightPBack = HeightAtPoint(new Vector3(x + distDirX(-angleMeasureDist, fDir), y + distDirY(-angleMeasureDist, fDir), z + 10.0f));//CLevel.Instance.GetHeightAt(x + distDirX(-angleMeasureDist, fDir), y + distDirY(-angleMeasureDist, fDir), z + 10.0f);
 
             float angle = radToDeg(PointDirection(0, heightPBack, spSp, heightPFront));
             float angleSpeed = (angle / 90.0f) * 4.0f;
+
+            Console.WriteLine(heightPFront + " " + heightPBack + " " + angle);
 
             CConsole.Instance.debugString2 = "angle";
             CConsole.Instance.debugValue2 = angle;
@@ -234,13 +235,31 @@ namespace CatEngine
                 z -= heightPBack - heightPFront;
                 //CConsole.Instance.Print("angle " + angle + " zdiff " + (heightPBack - heightPFront));
             }
-                
+
 
             //CConsole.Instance.debugString = "floor angle";
             //CConsole.Instance.debugValue = angle;
 
             //handling gravity
-            fMinHeight = CLevel.Instance.GetHeightAt(x, y, z) + fPlayerHeight;
+
+            float groundH = CLevel.Instance.GetHeightAt(x, y, z);
+            
+            Tuple<CCollidable, float> col = GetObjectCollision(new Vector2(x, y));
+
+            float objH = col.Item2;
+
+            if (groundH > objH)
+                fMinHeight = groundH + fPlayerHeight;
+            else
+            {
+                fMinHeight = objH + fPlayerHeight;//(float)Math.Min(z-CLevel.Instance.GetHeightAt(x, y, z) + fPlayerHeight, z-GetObjectCollision()+ fPlayerHeight);
+                if (bLanded && col.Item1 != null)
+                {
+                    x += col.Item1.Speed.X;
+                    y += col.Item1.Speed.Y;
+                    z += col.Item1.Speed.Z;
+                }
+            }
 
             //z = fMinHeight;
 
@@ -329,6 +348,71 @@ namespace CatEngine
                 sCurrentAnimation = "player_tposebones";
                 fAnimFrame = 0.0f;
             }
+        }
+
+        private Tuple<CCollidable, float> GetObjectCollision(Vector2 point)
+        {
+            float Height = 0.0f;
+            List<Tuple<CCollidable, float>> heights = new List<Tuple<CCollidable, float>>();
+
+            for (int i = 0; i < CObjectManager.MAX_INSTANCES; i++)
+            {
+                if ((CObjectManager.Instance.pGameObjectList[i] != null)
+                    && Object.ReferenceEquals(typeof(CCollidable), CObjectManager.Instance.pGameObjectList[i].GetType()))
+                {
+                    //getting the reference
+                    CCollidable otherInstance = (CCollidable)CObjectManager.Instance.pGameObjectList[i];
+
+                    heights.Add(new Tuple<CCollidable, float>(otherInstance, otherInstance.GetHeightAt(point.X, point.Y)));
+                }
+            }
+
+            int ind = 0;
+
+            if (heights.Count > 0)
+            {
+                //remove the ones above the player
+                float min = z;
+
+                //foreach (float f in possibleHeights)
+                for (int i = 0; i < heights.Count; i++)
+                {
+                    float f = heights[i].Item2;
+                    float diff = z - f;
+
+                    //Console.WriteLine(f + " " + z + " " + diff);
+
+                    if (diff >= -2.0f && diff < min) //
+                    {
+                        Height = f;
+                        min = diff;
+                        ind = i;
+                    }
+                }
+
+                //Height = min;
+            }
+
+            if (Height > 0)
+                return heights[ind];
+            else
+                return new Tuple<CCollidable, float>(null, 0.0f);
+        }
+
+        private float HeightAtPoint(Vector3 point)
+        {
+            float h = 0.0f;
+
+            float groundH = CLevel.Instance.GetHeightAt(point.X, point.Y, point.Z);
+
+            float objH = GetObjectCollision(new Vector2(point.X, point.Y)).Item2;
+
+            if (groundH > objH)
+                h = groundH;
+            else
+                h = objH;//(float)Math.Min(z-CLevel.Instance.GetHeightAt(x, y, z) + fPlayerHeight, z-GetObjectCollision()+ fPlayerHeight);
+
+            return h;
         }
     }
 }

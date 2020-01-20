@@ -226,7 +226,9 @@ namespace CatEngine.Content
 
             if (CDebug.Instance.ShowTerrainDebug)
             {
-                if (LevelCells[activeCellX, activeCellY] != null)
+                if (((activeCellX >= 0 && activeCellX < MAX_LEVELSIZE)
+                && (activeCellY >= 0 && activeCellY < MAX_LEVELSIZE))
+                && LevelCells[activeCellX, activeCellY] != null)
                 {
                     LevelCells[activeCellX, activeCellY].RenderCell();
                 }

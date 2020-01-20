@@ -410,7 +410,7 @@ namespace CatEngine.Content
             }
             catch (KeyNotFoundException e)
             {
-                //CConsole.Instance.Print("model " + modelName + " wasn't found in dModelDataDict");
+                CConsole.Instance.Print("model " + modelName + " wasn't found in dModelDataDict");
                 mdl = new ModelData("fuck", new string[] { "off" });
             }
 
@@ -797,6 +797,60 @@ namespace CatEngine.Content
                         new Vector3(position.X + shadowSize, cornerHeight2 + 0.1f, position.Z + shadowSize),
                         new Vector3(position.X - shadowSize, cornerHeight3 + 0.1f, position.Z - shadowSize),
                         new Vector3(position.X + shadowSize, cornerHeight4 + 0.1f, position.Z - shadowSize), "shadow", false, 0.5f);
+            }
+        }
+
+        public void DrawPlayerShadow(Vector3 position, float shadowSize, String animName, float rotation, float animFrame)
+        {
+            if (PointDistance(position.X, position.Z, cameraPosition.X, cameraPosition.Z) < CSettings.Instance.iShadowDrawDist)
+            {
+                RenderTarget2D rend = new RenderTarget2D(graphicsDevice, 64, 64);
+
+                graphicsDevice.SetRenderTarget(rend);
+                CRender.Instance.DrawPlayer(animName, new Vector3(0, 0, 0), rotation, animFrame);
+                graphicsDevice.SetRenderTarget(null);
+
+                Texture2D shadowTex = new Texture2D(graphicsDevice, rend.Width, rend.Height);
+
+                Color[] texdata = new Color[rend.Width * rend.Height];
+                rend.GetData(texdata);
+                shadowTex.SetData(texdata);
+
+                float cornerHeight1 = CLevel.Instance.GetHeightAt(position.X - shadowSize, position.Z + shadowSize, position.Y);
+                float cornerHeight2 = CLevel.Instance.GetHeightAt(position.X + shadowSize, position.Z + shadowSize, position.Y);
+                float cornerHeight3 = CLevel.Instance.GetHeightAt(position.X - shadowSize, position.Z - shadowSize, position.Y);
+                float cornerHeight4 = CLevel.Instance.GetHeightAt(position.X + shadowSize, position.Z - shadowSize, position.Y);
+
+                Vector3 C1 = new Vector3(position.X - shadowSize, cornerHeight1 + 0.1f, position.Z + shadowSize);
+                Vector3 C2 = new Vector3(position.X + shadowSize, cornerHeight2 + 0.1f, position.Z + shadowSize);
+                Vector3 C3 = new Vector3(position.X - shadowSize, cornerHeight3 + 0.1f, position.Z - shadowSize);
+                Vector3 C4 = new Vector3(position.X + shadowSize, cornerHeight4 + 0.1f, position.Z - shadowSize);
+
+                VertexPositionColorTexture[] vertices = RectanglePrimitive(C1, C2, C3, C4, false);
+                //rectangleBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+                rectangleBuffer.SetData<VertexPositionColorTexture>(vertices);
+
+                basicEffect.Projection = projectionMatrix;
+                basicEffect.View = viewMatrix;
+                basicEffect.World = worldMatrix;
+                basicEffect.VertexColorEnabled = true;
+                basicEffect.LightingEnabled = false;
+                basicEffect.TextureEnabled = true;
+                basicEffect.Alpha = 0.5f;
+                basicEffect.Texture = shadowTex;
+
+                graphicsDevice.SetVertexBuffer(rectangleBuffer);
+
+                foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
+                }
+
+                graphicsDevice.SetVertexBuffer(null);
+
+                rend.Dispose();
+                shadowTex.Dispose();
             }
         }
 

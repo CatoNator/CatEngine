@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullSheet", "BullSheet\Bull
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropsForThat", "PropsForThat\PropsForThat.csproj", "{17284F1F-EB8A-4719-82F3-C5F106DC3F6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbsoluteMapMan", "AbsoluteMapMan\AbsoluteMapMan.csproj", "{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AbsoluteMapMan", "AbsoluteMapMan\AbsoluteMapMan.csproj", "{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankRobber", "BankRobber\BankRobber.csproj", "{4D8A10DD-9590-4FA8-A337-5F3283310F37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,14 @@ Global
 		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Release|x86.ActiveCfg = Release|Any CPU
 		{9609C0AF-A1B5-438A-AF80-66B43E4A10DB}.Release|x86.Build.0 = Release|Any CPU
+		{4D8A10DD-9590-4FA8-A337-5F3283310F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D8A10DD-9590-4FA8-A337-5F3283310F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D8A10DD-9590-4FA8-A337-5F3283310F37}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D8A10DD-9590-4FA8-A337-5F3283310F37}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D8A10DD-9590-4FA8-A337-5F3283310F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D8A10DD-9590-4FA8-A337-5F3283310F37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D8A10DD-9590-4FA8-A337-5F3283310F37}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D8A10DD-9590-4FA8-A337-5F3283310F37}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
