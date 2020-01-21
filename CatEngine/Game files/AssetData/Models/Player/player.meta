@@ -2,6 +2,7 @@
 	<texture name="pankka_body" filetype="png"/>
 	<texture name="pankka_head" filetype="png"/>
 	<model name="player" filetype="fbx"/>
-	<animation name="player_tposebones" filetype="fbx"/>
-	<animation name="player_walkcyclebones" filetype="fbx"/>
+	<animation name="player_tpose" filetype="fbx"/>
+	<animation name="player_walk" filetype="fbx"/>
+	<animation name="player_jump" filetype="fbx"/>
 </ModelMetadata>

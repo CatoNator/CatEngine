@@ -1,6 +1,6 @@
 <partdata>
 	<particle name="part_dustcloud">
-		<texture name="dust_cloud"/>
+		<texture name="dustcloud"/>
 		<angle min="0" max="360"/>
 		<size min="1" max="2.5"/>
 		<alpha min="1" max = "1"/>
@@ -9,5 +9,35 @@
 		<rotspeed value="0.3"/>
 		<sizespeed value="-0.05"/>
 		<alphaspeed value="0.0"/>
+		
+		<life value="60"/>
+	</particle>
+	
+	<particle name="part_muzzleflash">
+		<texture name="muzzleflash"/>
+		<angle min="0" max="45"/>
+		<size min="2" max="3"/>
+		<alpha min="1" max = "1"/>
+		
+		<speed xmin="0" xmax="0" ymin="0" ymax="0" zmin="0" zmax="0"/>
+		<rotspeed value="0.0"/>
+		<sizespeed value="0.0"/>
+		<alphaspeed value="0.0"/>
+		
+		<life value="2"/>
+	</particle>
+	
+	<particle name="part_gunsmoke">
+		<texture name="smoke"/>
+		<angle min="0" max="45"/>
+		<size min="1.5" max="2"/>
+		<alpha min="1" max = "1"/>
+		
+		<speed xmin="0" xmax="0" ymin="0.05" ymax="0.3" zmin="0" zmax="0"/>
+		<rotspeed value="0.03"/>
+		<sizespeed value="0.05"/>
+		<alphaspeed value="-0.01"/>
+		
+		<life value="60"/>
 	</particle>
 </partdata>
