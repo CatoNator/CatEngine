@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CatEngine.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using CatEngine.Input;
 using System.IO;
 
 namespace CatEngine.UI
@@ -58,9 +59,9 @@ namespace CatEngine.UI
                     iSelectedItem++;
             }
 
-            if (gamepadState.IsButtonDown(Buttons.A))
+            if (CInputManager.ButtonPressed(CSettings.Instance.gPJump))
             {
-                //CAudioManager.Instance.PlaySound("menuselect1");
+                CAudioManager.Instance.PlaySound("menuselect1");
 
                 //CLoadingScreen.Instance.PrepareLevelData(sMenuItems[iSelectedItem].Split('\\')[1]);
                 CGame.Instance.InitiateFadeLevel(sMenuItems[iSelectedItem]);

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using FMOD;
+using Microsoft.Xna.Framework.Audio;
 
 namespace CatEngine.Content
 {
@@ -30,29 +32,9 @@ namespace CatEngine.Content
 
         private FMOD.System FMODSystem;
         private FMOD.Channel MusicChannel;
-        private FMOD.Channel SoundChannel;
 
-        /*private struct Sound
-        {
-            public String name;
-            public FMOD.Sound sound;
-
-            public Sound(String nm, FMOD.Sound snd)
-            {
-                name = nm;
-                sound = snd;
-            }
-        }*/
-
-        private Dictionary<string, Sound> dSoundFXDict = new Dictionary<string, Sound>();
+        private Dictionary<string, SoundEffect> dSoundFXDict = new Dictionary<string, SoundEffect>();
         private Dictionary<string, Sound> dMusicDict = new Dictionary<string, Sound>();
-
-        private Dictionary<string, byte[]> Test = new Dictionary<string, byte[]>();
-
-        private List<Thread> SoundThreads = new List<Thread>();
-
-        private List<Sound> Music = new List<Sound>();
-        private List<Sound> SoundFX = new List<Sound>();
         
         private CAudioManager()
         {
@@ -78,6 +60,11 @@ namespace CatEngine.Content
             Stop();
             
             FMODSystem.release();
+
+            foreach (KeyValuePair<string, SoundEffect> s in dSoundFXDict.ToList())
+            {
+                s.Value.Dispose();
+            }
         }
 
         public void LoadSong(string path, string name, string filetype)
@@ -122,7 +109,7 @@ namespace CatEngine.Content
                                 if (isEnd)
                                 {
                                     //we move on to read the files
-                                    Console.WriteLine("got end of data at " + headerSize + " bytes");
+                                    //Console.WriteLine("got end of data at " + headerSize + " bytes");
                                     break;
                                 }
                                 else
@@ -148,8 +135,6 @@ namespace CatEngine.Content
 
                             List<Byte> byteArr = new List<byte>();
 
-                            Console.WriteLine("reading item with size of " + (int)t.Item3);
-
                             for (int i = 0; i < (int)t.Item3; i++)
                             {
                                 Byte b = reader.ReadByte();
@@ -161,18 +146,9 @@ namespace CatEngine.Content
 
                             int freq = 44100;
 
-                            CREATESOUNDEXINFO exinfo = new CREATESOUNDEXINFO();
-                            exinfo.cbsize = System.Runtime.InteropServices.Marshal.SizeOf(exinfo);
-                            exinfo.length = (uint)buffer.Length;
-                            exinfo.numchannels = 2;
-                            exinfo.defaultfrequency = freq;
-                            exinfo.format = SOUND_FORMAT.PCM16;
-
-                            FMOD.Sound snd;
-                            FMOD.RESULT r = FMODSystem.createStream(buffer, (FMOD.MODE.OPENMEMORY | FMOD.MODE.OPENRAW), ref exinfo, out snd);
+                            SoundEffect snd = new SoundEffect(buffer, freq, AudioChannels.Stereo);
                             dSoundFXDict.Add(t.Item1, snd);
-                            Test.Add(t.Item1, buffer);
-                            CConsole.Instance.Print("loaded sound " + t.Item1 + ", got result " + r);
+                            CConsole.Instance.Print("loaded sound " + t.Item1 + " with size of " + t.Item3 +" from " + name +".bnk");
                         }
                     }
                 }
@@ -183,10 +159,10 @@ namespace CatEngine.Content
 
         public void LoadSound(string path, string name, string filetype)
         {
-            FMOD.Sound snd;
+            /*FMOD.Sound snd;
             FMOD.RESULT r = FMODSystem.createStream(path + "/" + name + "." + filetype, FMOD.MODE.DEFAULT, out snd);
             dSoundFXDict.Add(name, snd);
-            CConsole.Instance.Print("loaded sound " + name + ", got result " + r);
+            CConsole.Instance.Print("loaded sound " + name + ", got result " + r);*/
         }
 
         //private int iCurrentSongID = -1;
@@ -202,7 +178,7 @@ namespace CatEngine.Content
             return isPlaying;
         }
 
-        public void PlaySoundFMOD(String name)
+        /*public void PlaySoundFMOD(String name)
         {
             try
             {
@@ -222,32 +198,11 @@ namespace CatEngine.Content
             {
                 CConsole.Instance.Print("Sound "+name+" wasn't found in dSoundFXDict, "+e.Message);
             }
-        }
-
-        public void UpdateThreads()
-        {
-            foreach (Thread t in SoundThreads)
-            {
-                if (!t.IsAlive)
-                    SoundThreads.Remove(t);
-            }
-        }
+        }*/
 
         public void PlaySound(string name)
         {
-            SoundThreads.Add(new Thread(() => SoundThread(name)));
-            SoundThreads[SoundThreads.Count - 1].Start();
-        }
-
-        private void SoundThread(string name)
-        {
-            MemoryStream ms = new MemoryStream(Test[name]);
-            var sound = new System.Media.SoundPlayer();
-            sound.Stream = ms;
-            sound.Play();
-
-            ms.Dispose();
-            sound.Dispose();
+            dSoundFXDict[name].Play();
         }
 
         public void PlaySong(String name)

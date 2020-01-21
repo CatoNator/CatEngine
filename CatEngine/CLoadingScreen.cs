@@ -277,7 +277,10 @@ namespace CatEngine
             hasFinishedLoading = true;
 
             if (CGame.Instance.currentFadeType == CGame.FadeTypes.FadeLevel)
+            {
                 game.CurrentGameState = Game1.GameState.Game;
+                CAudioManager.Instance.PlaySong("test");
+            }
             else if (CGame.Instance.currentFadeType == CGame.FadeTypes.FadeMenu)
                 game.CurrentGameState = Game1.GameState.Menu;
         }
