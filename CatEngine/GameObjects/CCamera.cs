@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using CatEngine.Content;
+using CatEngine.Input;
 
 namespace CatEngine
 {
@@ -37,33 +37,30 @@ namespace CatEngine
         {
             int iCameraRot = 0;
 
-            KeyboardState keyboardState = Keyboard.GetState();
-            GamePadState gamepadState = GamePad.GetState(PlayerIndex.One);
-
-            if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamRight) || gamepadState.IsButtonDown(Buttons.DPadRight))
+            if (CInputManager.KeyDown(CSettings.Instance.kCRotateCamRight) || CInputManager.ButtonDown(CSettings.Instance.gCRotateCamRight))
             {
                 iCameraRot = -1;
             }
-            else if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamLeft) || gamepadState.IsButtonDown(Buttons.DPadLeft))
+            else if (CInputManager.KeyDown(CSettings.Instance.kCRotateCamLeft) || CInputManager.ButtonDown(CSettings.Instance.gCRotateCamLeft))
             {
                 iCameraRot = 1;
             }
 
             int iCameraVRot = 0;
 
-            if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamUp) || gamepadState.IsButtonDown(Buttons.DPadUp))
+            if (CInputManager.KeyDown(CSettings.Instance.kCRotateCamUp) || CInputManager.ButtonDown(CSettings.Instance.gCRotateCamUp))
             {
                 iCameraVRot = 1;
             }
-            else if (keyboardState.IsKeyDown(CSettings.Instance.kCRotateCamDown) || gamepadState.IsButtonDown(Buttons.DPadDown))
+            else if (CInputManager.KeyDown(CSettings.Instance.kCRotateCamDown) || CInputManager.ButtonDown(CSettings.Instance.gCRotateCamDown))
             {
                 iCameraVRot = -1;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Enter) && cameraState == CameraStates.LevelStart)
+            /*if (keyboardState.IsKeyDown(Keys.Enter) && cameraState == CameraStates.LevelStart)
             {
                 cameraState = CameraStates.PlayerControlled;
-            }
+            }*/
 
             //PlayerCamera(iCameraRot, iCameraVRot);
 
@@ -76,10 +73,10 @@ namespace CatEngine
                 else
                     AutoCamera();
 
-                if (keyboardState.IsKeyDown(Keys.X))
+                /*if (keyboardState.IsKeyDown(Keys.X))
                 {
                     fCameraRotation = ((CPlayer)oTarget).fDir;
-                }
+                }*/
             }
 
             Vector3 lerpVector = Lerp(

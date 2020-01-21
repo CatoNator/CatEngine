@@ -52,7 +52,7 @@ namespace CatEngine
 
             public int Life;
 
-            public ParticleData(string tex, float minAngle, float maxAngle, float minSize, float maxSize, float minAlpha, float maxAlpha, Vector3 sp, float rotSp, float sizeSp, float aSp)
+            public ParticleData(string tex, float minAngle, float maxAngle, float minSize, float maxSize, float minAlpha, float maxAlpha, Vector3 sp, float rotSp, float sizeSp, float aSp, int lf)
             {
                 TextureName = tex;
                 AngleMin = minAngle;
@@ -69,7 +69,7 @@ namespace CatEngine
 
                 bHasGravity = false;
 
-                Life = 69;
+                Life = lf;
             }
         }
 
@@ -104,6 +104,7 @@ namespace CatEngine
 
                 ID = ind;
                 Position = pos;
+                TextureName = partData.TextureName;
                 Speed = partData.Speed;
                 Life = partData.Life;
                 Angle = partData.AngleMin + (float)(rand.NextDouble() * (partData.AngleMax - partData.AngleMin));
@@ -112,6 +113,7 @@ namespace CatEngine
                 RotationSpeed = partData.RotationSpeed;
                 SizeChangeSpeed = partData.SizeChangeSpeed;
                 AlphaChangeSpeed = partData.AlphaChangeSpeed;
+                Life = partData.Life;
             }
 
             public void Update()
@@ -125,6 +127,8 @@ namespace CatEngine
 
                 Size += SizeChangeSpeed;
 
+                Alpha += AlphaChangeSpeed;
+
                 Life--;
                 
                 if (Life <= 0 || Size <= 0 || Alpha <= 0)
@@ -133,7 +137,7 @@ namespace CatEngine
 
             public void Render()
             {
-                CRender.Instance.DrawBillBoard(Position, new Vector2(Size, Size), new Vector2(Size / 2.0f, Size / 2.0f), Angle, Alpha, TextureName);
+                CRender.Instance.DrawBillBoard(Position, new Vector2(Size, Size), new Vector2(Size / 2.0f, Size / 2.0f), Angle*(float)Math.PI/180, Alpha, TextureName);
             }
         }
 
@@ -182,6 +186,7 @@ namespace CatEngine
                     float ssp = 0;
                     float asp = 0;
                     float rsp = 0;
+                    int life = 0;
 
                     foreach (XElement d in e.Descendants("texture"))
                     {
@@ -230,7 +235,12 @@ namespace CatEngine
                         asp = float.Parse(d.Attribute("value").Value);
                     }
 
-                    dPartDataDict.Add(name, new ParticleData(tex, anmin, anmax, smin, smax, amin, amax, sp, rsp, ssp, asp));
+                    foreach (XElement d in e.Descendants("life"))
+                    {
+                        life = Int32.Parse(d.Attribute("value").Value);
+                    }
+
+                    dPartDataDict.Add(name, new ParticleData(tex, anmin, anmax, smin, smax, amin, amax, sp, rsp, ssp, asp, life));
                 }
             }
             else

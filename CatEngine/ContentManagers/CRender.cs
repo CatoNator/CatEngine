@@ -510,7 +510,7 @@ namespace CatEngine.Content
                 }
                 catch (KeyNotFoundException e)
                 {
-                    playerInstance.SetAnimation(dSkinnedAnimationDict["player_tposebones"], gameTime);
+                    playerInstance.SetAnimation(dSkinnedAnimationDict["player_tpose"], gameTime);
                 }
             }
 
@@ -760,7 +760,7 @@ namespace CatEngine.Content
 
             basicEffect.Projection = projectionMatrix;
             basicEffect.View = viewMatrix;
-            basicEffect.World = Matrix.CreateRotationX(-(float)Math.PI / 2 - cameraVDirection) * Matrix.CreateRotationY(cameraDirection) * Matrix.CreateTranslation(position) * worldMatrix;
+            basicEffect.World = Matrix.CreateRotationX(-(float)Math.PI / 2 - cameraVDirection) * Matrix.CreateRotationY(cameraDirection) * Matrix.CreateRotationZ(angle) * Matrix.CreateTranslation(position) * worldMatrix;
             basicEffect.VertexColorEnabled = false;
             basicEffect.LightingEnabled = false;
             basicEffect.Alpha = alpha;
@@ -805,10 +805,11 @@ namespace CatEngine.Content
             if (PointDistance(position.X, position.Z, cameraPosition.X, cameraPosition.Z) < CSettings.Instance.iShadowDrawDist)
             {
                 RenderTarget2D rend = new RenderTarget2D(graphicsDevice, 64, 64);
+                RenderTargetBinding[] PreviousRend = graphicsDevice.GetRenderTargets();
 
-                graphicsDevice.SetRenderTarget(rend);
+                //graphicsDevice.SetRenderTarget(rend);
                 CRender.Instance.DrawPlayer(animName, new Vector3(0, 0, 0), rotation, animFrame);
-                graphicsDevice.SetRenderTarget(null);
+                //graphicsDevice.SetRenderTargets(PreviousRend);
 
                 Texture2D shadowTex = new Texture2D(graphicsDevice, rend.Width, rend.Height);
 

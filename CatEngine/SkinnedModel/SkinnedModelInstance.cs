@@ -148,17 +148,22 @@ namespace CatEngine.SkinnedMdl
             {
                 foreach (var boneInstances in meshInstance.BoneInstances)
                 {
-                    Matrix transform = boneInstances.BoneAnimationInstance.Transform;
-
-                    if (boneInstances.BoneAnimationInstance.PreviousBoneAnimationInstance != null)
+                    if (boneInstances.BoneAnimationInstance != null)
                     {
-                        float transition = (float)(gameTime.TotalGameTime.TotalSeconds - TimeAnimationChanged.TotalSeconds);
-                        if(transition < SpeedTransitionSecond)
+                        Matrix transform = boneInstances.BoneAnimationInstance.Transform;
+
+                        if (boneInstances.BoneAnimationInstance.PreviousBoneAnimationInstance != null)
                         {
-                            transform = Matrix.Lerp(boneInstances.BoneAnimationInstance.PreviousBoneAnimationInstance.Transform, boneInstances.BoneAnimationInstance.Transform, transition / SpeedTransitionSecond);
+                            float transition = (float)(gameTime.TotalGameTime.TotalSeconds - TimeAnimationChanged.TotalSeconds);
+                            if (transition < SpeedTransitionSecond)
+                            {
+                                transform = Matrix.Lerp(boneInstances.BoneAnimationInstance.PreviousBoneAnimationInstance.Transform, boneInstances.BoneAnimationInstance.Transform, transition / SpeedTransitionSecond);
+                            }
                         }
+                        meshInstance.BonesOffsets[boneInstances.Bone.Index] = boneInstances.Bone.Offset * transform;
                     }
-                    meshInstance.BonesOffsets[boneInstances.Bone.Index] = boneInstances.Bone.Offset * transform;
+                    else
+                        Console.WriteLine("boneanimationinstance was null!");
                 }
             }
         }

@@ -48,20 +48,18 @@ namespace CatEngine
             //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Enemy" });
             //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Props" });
             //QueueLoadCommand(CSprite.Instance, "LoadTextureSheet", new List<string>() { "Weapons" });
+
+            QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Collectible" });
             QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Menu" });
-            QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Asteroid" });
-            QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Test" });
-            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds", "footstep_solid1", "wav" });
-            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds", "footstep_solid2", "wav" });
-            //QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds/Menu", "menucursor", "wav" });
-            //QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds/Menu", "menucancel", "wav" });
-            //QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds/Menu", "menuselect1", "wav" });
-            QueueLoadCommand(CAudioManager.Instance, "LoadSound", new List<string>() { "AssetData/Sounds", "natsa", "wav" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Player" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "AssetData/Music", "test", "xm" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "cube_tex" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grasstop" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "dustcloud" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "muzzleflash" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "smoke" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "bullet" });
 
             PrepareModel("AssetData/Models/Player/", "player");
             PrepareModel("AssetData/Models/Natsa/", "natsa");

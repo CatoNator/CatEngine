@@ -66,6 +66,7 @@ namespace CatEngine
         public void CollectNatsa(int amount)
         {
             iNatsas += amount;
+            CAudioManager.Instance.PlaySound("natsa");
         }
 
         public void InitiateFadeLevel(string nextLevel)

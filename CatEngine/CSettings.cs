@@ -27,6 +27,7 @@ namespace CatEngine
         public float fMusicVolume = 1.0f;
         public float fSoundVolume = 1.0f;
 
+        //gameplay input
         public Keys kPTurnLeft = Keys.A;
         public Keys kPTurnRight = Keys.D;
         public Keys kPMoveForward = Keys.W;
@@ -36,6 +37,13 @@ namespace CatEngine
         public Keys kCRotateCamRight = Keys.Right;
         public Keys kCRotateCamUp = Keys.Up;
         public Keys kCRotateCamDown = Keys.Down;
+
+        //gameplay input gamepad
+        public Buttons gPJump = Buttons.A;
+        public Buttons gCRotateCamLeft = Buttons.DPadLeft;
+        public Buttons gCRotateCamRight = Buttons.DPadRight;
+        public Buttons gCRotateCamUp = Buttons.DPadUp;
+        public Buttons gCRotateCamDown = Buttons.DPadDown;
 
         public Keys kCCShowConsole = Keys.PageDown;
         public Keys kCCHideConsole = Keys.PageUp;

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using CatEngine.Content;
+using CatEngine.Input;
 
 namespace CatEngine
 {
@@ -44,7 +45,10 @@ namespace CatEngine
 
         private float fAnimFrame = 0.0f;
 
-        String sCurrentAnimation = "player_tposebones";
+        String sCurrentAnimation = "player_tpose";
+
+        private int iShotCooldown = 0;
+        private const int iShotCooldownMax = 5;
         
         public override void InstanceSpawn()
         {
@@ -64,7 +68,6 @@ namespace CatEngine
 
             if (natsaCollision != null)
             {
-                CAudioManager.Instance.PlaySound("natsa");
                 CGame.Instance.CollectNatsa(1);
                 CObjectManager.Instance.DestroyInstance(natsaCollision.iIndex);
             }
@@ -81,13 +84,39 @@ namespace CatEngine
             PlayerPhysics();
             PlayerCollision(fHeightBufferZone, 4.0f);
 
-            CLevel.Instance.UpdateActiveCell(x, y);
+            //shoob
+            if (fHInput2 != 0 || fVInput2 != 0)
+            {
+                if (iShotCooldown <= 0)
+                {
+                    float xoffs = distDirX(5, fDir);
+                    float yoffs = distDirY(5, fDir);
+
+                    Vector3 bulletSpawnPoint = new Vector3(x + xoffs, z + 7, y + yoffs);
+
+                    CAudioManager.Instance.PlaySound("temp_gunshot");
+
+                    CPlayerBullet bullet = (CPlayerBullet)CObjectManager.Instance.CreateInstance(typeof(CPlayerBullet), bulletSpawnPoint.X, bulletSpawnPoint.Y, bulletSpawnPoint.Z);
+                    bullet.SetProperties(fDir, 5);
+
+                    CParticleManager.Instance.CreateParticle("part_muzzleflash", bulletSpawnPoint);
+                    CParticleManager.Instance.CreateParticle("part_gunsmoke", bulletSpawnPoint);
+
+                    iShotCooldown = iShotCooldownMax;
+                }
+            }
+
+            iShotCooldown--;
+
+            //debug
+                CLevel.Instance.UpdateActiveCell(x, y);
+
+            //we don't want to update the animation in Render() because it'll animate while paused
+            UpdateAnimation();
         }
 
         public override void Render()
         {
-            UpdateAnimation();
-
             CRender.Instance.DrawPlayer(sCurrentAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame);
 
             //CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
@@ -149,10 +178,11 @@ namespace CatEngine
         {
             fHInput = gamepadState.ThumbSticks.Left.X;
             fVInput = gamepadState.ThumbSticks.Left.Y;
+
             fHInput2 = gamepadState.ThumbSticks.Right.X;
             fVInput2 = gamepadState.ThumbSticks.Right.Y;
 
-            if (gamepadState.IsButtonDown(Buttons.A) && bLanded)
+            if (CInputManager.ButtonPressed(CSettings.Instance.gPJump) && bLanded)
             {
                 fZSpeed = fJumpSpeed;
                 CAudioManager.Instance.PlaySound("footstep_solid1");
@@ -225,10 +255,7 @@ namespace CatEngine
             float angle = radToDeg(PointDirection(0, heightPBack, spSp, heightPFront));
             float angleSpeed = (angle / 90.0f) * 4.0f;
 
-            Console.WriteLine(heightPFront + " " + heightPBack + " " + angle);
-
-            CConsole.Instance.debugString2 = "angle";
-            CConsole.Instance.debugValue2 = angle;
+            //Console.WriteLine(heightPFront + " " + heightPBack + " " + angle);
 
             if (angle < 0 && bLanded && angle > -72.0f)
             {
@@ -329,24 +356,32 @@ namespace CatEngine
 
         private void UpdateAnimation()
         {
-            if (fHorSpeed != 0 || fVerSpeed != 0)
+            if (!bLanded)
             {
-                sCurrentAnimation = "player_walkcyclebones";
-                float animSp = (float)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed) * 2;
-                fAnimFrame += animSp;
-                fAnimFrame %= 89;
-                /*CConsole.Instance.debugString2 = "animframe";
-                CConsole.Instance.debugValue2 = animSp;*/
-
-                if ((fAnimFrame >= 1 && fAnimFrame <= 3) || (fAnimFrame >= 45 && fAnimFrame <= 47))
-                {
-                    CAudioManager.Instance.PlaySound("footstep_solid1");
-                }
-}
+                sCurrentAnimation = "player_jump";
+                fAnimFrame = 0;
+            }
             else
             {
-                sCurrentAnimation = "player_tposebones";
-                fAnimFrame = 0.0f;
+                if (fHorSpeed != 0 || fVerSpeed != 0)
+                {
+                    sCurrentAnimation = "player_walk";
+                    float animSp = (float)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed) * 2;
+                    fAnimFrame += animSp;
+                    fAnimFrame %= 89;
+                    /*CConsole.Instance.debugString2 = "animframe";
+                    CConsole.Instance.debugValue2 = animSp;*/
+
+                    if ((fAnimFrame >= 1 && fAnimFrame <= 3) || (fAnimFrame >= 45 && fAnimFrame <= 47))
+                    {
+                        CAudioManager.Instance.PlaySound("footstep_solid1");
+                    }
+                }
+                else
+                {
+                    sCurrentAnimation = "player_tpose";
+                    fAnimFrame = 0.0f;
+                }
             }
         }
 

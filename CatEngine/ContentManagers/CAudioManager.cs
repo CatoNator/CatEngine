@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 using FMOD;
 
 namespace CatEngine.Content
@@ -45,6 +46,10 @@ namespace CatEngine.Content
 
         private Dictionary<string, Sound> dSoundFXDict = new Dictionary<string, Sound>();
         private Dictionary<string, Sound> dMusicDict = new Dictionary<string, Sound>();
+
+        private Dictionary<string, byte[]> Test = new Dictionary<string, byte[]>();
+
+        private List<Thread> SoundThreads = new List<Thread>();
 
         private List<Sound> Music = new List<Sound>();
         private List<Sound> SoundFX = new List<Sound>();
@@ -166,6 +171,7 @@ namespace CatEngine.Content
                             FMOD.Sound snd;
                             FMOD.RESULT r = FMODSystem.createStream(buffer, (FMOD.MODE.OPENMEMORY | FMOD.MODE.OPENRAW), ref exinfo, out snd);
                             dSoundFXDict.Add(t.Item1, snd);
+                            Test.Add(t.Item1, buffer);
                             CConsole.Instance.Print("loaded sound " + t.Item1 + ", got result " + r);
                         }
                     }
@@ -196,7 +202,7 @@ namespace CatEngine.Content
             return isPlaying;
         }
 
-        public void PlaySound(String name)
+        public void PlaySoundFMOD(String name)
         {
             try
             {
@@ -216,6 +222,32 @@ namespace CatEngine.Content
             {
                 CConsole.Instance.Print("Sound "+name+" wasn't found in dSoundFXDict, "+e.Message);
             }
+        }
+
+        public void UpdateThreads()
+        {
+            foreach (Thread t in SoundThreads)
+            {
+                if (!t.IsAlive)
+                    SoundThreads.Remove(t);
+            }
+        }
+
+        public void PlaySound(string name)
+        {
+            SoundThreads.Add(new Thread(() => SoundThread(name)));
+            SoundThreads[SoundThreads.Count - 1].Start();
+        }
+
+        private void SoundThread(string name)
+        {
+            MemoryStream ms = new MemoryStream(Test[name]);
+            var sound = new System.Media.SoundPlayer();
+            sound.Stream = ms;
+            sound.Play();
+
+            ms.Dispose();
+            sound.Dispose();
         }
 
         public void PlaySong(String name)

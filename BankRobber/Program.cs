@@ -9,19 +9,21 @@ namespace BankRobber
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("b/u foldername/bankname");
+            Console.WriteLine("b/u foldername/bankname (headersize)");
             string input = Console.ReadLine();
             string[] param = input.Split(" ");
 
             if (param[0].Equals("b"))
-                BuildBank(param[1]);
+            {
+                BuildBank(param[1], Int32.Parse(param[2]));
+            }
             else if (param[0].Equals("u"))
                 UnBuildBank(param[1]);
             else
                 Console.WriteLine("could not recognize command");
         }
 
-        static void BuildBank(string folder)
+        static void BuildBank(string folder, int headerSize)
         {
             string path = folder + "/";
 
@@ -29,7 +31,7 @@ namespace BankRobber
 
             FileInfo[] files = D.GetFiles();
 
-            int iHeaderSize = 44;
+            int iHeaderSize = headerSize;
 
             using (FileStream stream = new FileStream(folder+".bnk", FileMode.Create))
             {

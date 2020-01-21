@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using CatEngine.UI;
 using CatEngine.Content;
+using CatEngine.Input;
 
 namespace CatEngine
 {
@@ -50,8 +51,7 @@ namespace CatEngine
             graphics = new GraphicsDeviceManager(this);
 
             CSettings.Instance.SetGameViewSize();
-            CSettings.Instance.SetBackbufferSize(360);
-
+            CSettings.Instance.SetBackbufferSize(720);
             graphics.PreparingDeviceSettings += GraphicsDeviceManager_PreparingDeviceSettings;
             graphics.PreferredBackBufferWidth = CSettings.Instance.iBackBufferWidth;
             graphics.PreferredBackBufferHeight = CSettings.Instance.iBackBufferHeight;
@@ -102,6 +102,8 @@ namespace CatEngine
             bs.ColorDestinationBlend = Blend.One;
             bs.AlphaBlendFunction = BlendFunction.Add;
             GraphicsDevice.BlendState = bs;
+
+            CInputManager.InitKeys();
 
             //setting up CSpritebasics...
             CSprite.Instance.content = Content;
@@ -161,6 +163,8 @@ namespace CatEngine
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            CInputManager.Update();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 

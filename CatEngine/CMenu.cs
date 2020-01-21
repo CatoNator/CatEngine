@@ -60,7 +60,7 @@ namespace CatEngine.UI
 
             if (gamepadState.IsButtonDown(Buttons.A))
             {
-                CAudioManager.Instance.PlaySound("menuselect1");
+                //CAudioManager.Instance.PlaySound("menuselect1");
 
                 //CLoadingScreen.Instance.PrepareLevelData(sMenuItems[iSelectedItem].Split('\\')[1]);
                 CGame.Instance.InitiateFadeLevel(sMenuItems[iSelectedItem]);
