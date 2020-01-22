@@ -67,6 +67,7 @@
     <Compile Include="CLight.cs" />
     <Compile Include="CLoadingScreen.cs" />
     <Compile Include="CObjectManager.cs" />
+    <Compile Include="ContentManagers\CColliderManager.cs" />
     <Compile Include="ContentManagers\CRender.cs" />
     <Compile Include="CPauseMenu.cs" />
     <Compile Include="CSettings.cs" />
