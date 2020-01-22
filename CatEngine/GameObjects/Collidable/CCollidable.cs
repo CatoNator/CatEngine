@@ -17,13 +17,14 @@ namespace CatEngine
 
         private float fScale = 10.0f;
 
-        public Vector3 Speed = new Vector3(0, 0, 0.1f);
+        public Vector3 Speed = new Vector3(0, 0, 0);
         public Vector3 RotationSpeed = new Vector3(0, 0, 0);
 
         public Vector3 prevPos = new Vector3(0, 0, 0);
 
-        private float rot = 0;
-        private float dist = 10;
+        public Vector3 Rotation = new Vector3(0, 0, 0);
+
+        private string sModelName = "hexatri";
 
         private class Triangle
         {
@@ -75,6 +76,64 @@ namespace CatEngine
                 return h;
             }
 
+            private bool PointInCustomTri(Vector2 TC1, Vector2 TC2, Vector2 TC3, Vector2 point)
+            {
+                float w1 = ((TC2.Y - TC3.Y) * (point.X - TC3.X) + (TC3.X - TC2.X) * (point.Y - TC3.Y)) / ((TC2.Y - TC3.Y) * (TC1.X - TC3.X) + (TC3.X - TC2.X) * (TC1.Y - TC3.Y));
+
+                float w2 = ((TC3.Y - TC1.Y) * (point.X - TC3.X) + (TC1.X - TC3.X) * (point.Y - TC3.Y)) / ((TC2.Y - TC3.Y) * (TC1.X - TC3.X) + (TC3.X - TC2.X) * (TC1.Y - TC3.Y));
+
+                return w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1;
+            }
+
+            public bool PointInWall(Vector3 point, float rad, float h)
+            {
+                bool inWall = false;
+
+                int normalDir = (Math.Abs(GetNormal().X) > Math.Abs(GetNormal().Z) ? 1 : 0);
+
+                float origX = Math.Min(Math.Min(C1.X, C2.X), C3.X);
+                float origY = Math.Min(Math.Min(C1.Y, C2.Y), C3.Y);
+                float origZ = Math.Min(Math.Min(C1.Z, C2.Z), C3.Z);
+
+                float width = Math.Max(Math.Max(C1.X, C2.X), C3.X) - origX;
+                float height = Math.Max(Math.Max(C1.Y, C2.Y), C3.Y) - origY;
+                float length = Math.Max(Math.Max(C1.Z, C2.Z), C3.Z) - origZ;
+
+                List<Vector2> points = new List<Vector2>();
+
+                Vector2 CA = new Vector2(0, 0);
+                Vector2 CB = new Vector2(0, 0);
+                Vector2 CC = new Vector2(0, 0);
+                Vector2 CD = new Vector2(0, 0);
+
+                List<bool> trueCorners = new List<bool>();
+
+                if ((point.Z + h >= origY && point.Z + h <= origY + height)
+                    || (point.Z >= origY && point.Z <= origY + height))
+                {
+                    if (normalDir == 0)
+                    {
+                        CA = new Vector2(origX, origZ - rad);
+                        CB = new Vector2(origX, origZ + rad);
+                        CC = new Vector2(origX + width, origZ + length + rad);
+                        CD = new Vector2(origX + width, origZ + length - rad);
+                    }
+                    else if (normalDir == 1)
+                    {
+                        //the points
+                        CA = new Vector2(origX - rad, origZ);
+                        CB = new Vector2(origX + rad, origZ);
+                        CC = new Vector2(origX + width + rad, origZ + length);
+                        CD = new Vector2(origX + width - rad, origZ + length);
+                    }
+
+                    if (PointInCustomTri(CA, CC, CB, new Vector2(point.X, point.Y)) || PointInCustomTri(CB, CC, CD, new Vector2(point.X, point.Y)))
+                        inWall = true;
+                }
+
+                return inWall;
+            }
+
             public void UpdateTri(Vector3 Speed)
             {
                 C1 = new Vector3(C1.X + Speed.X, C1.Y + Speed.Z, C1.Z + Speed.Y);
@@ -85,7 +144,7 @@ namespace CatEngine
 
         public override void InstanceSpawn()
         {
-            TempLoadCollision();
+            TempLoadCollision("hexatri");
         }
 
         public override void Update()
@@ -93,12 +152,12 @@ namespace CatEngine
             //x += Speed.X;
             //y += Speed.Y;
             //z += Speed.Z;
-            rot += 0.01f;
+            /*rot += 0.01f;
             rot %= (float)Math.PI * 2;
             x = 5 + distDirX(dist, rot);
-            z = 10 -distDirY(dist, rot);
+            z = 10 -distDirY(dist, rot);*/
 
-            Speed = new Vector3(x - prevPos.X, y - prevPos.Y, z - prevPos.Z);
+            //Speed = new Vector3(x - prevPos.X, y - prevPos.Y, z - prevPos.Z);
 
             prevPos = new Vector3(x, y, z);
             UpdateTriangles();
@@ -122,9 +181,10 @@ namespace CatEngine
             }
         }
 
-        private void TempLoadCollision()
+        //there is absolutely no way this can be loaded here, we'd need to load the collision for every single instance of a prop! should be a pointer to somewhere instead
+        private void TempLoadCollision(string collisionName)
         {
-            string vertName = "cube.bin";
+            string vertName = "AssetData/Props/"+collisionName+"/"+collisionName+".bin";
 
             List<Vector3> fVectors = new List<Vector3>();
 
@@ -204,8 +264,31 @@ namespace CatEngine
             return h;
         }
 
+        public Vector3 PointInWall(Vector3 position, float rad, float height)
+        {
+            bool InWall = false;
+
+            Vector3 snap = new Vector3(0, 0, 0);
+
+            //Console.WriteLine("checking for collision in cell");
+
+            foreach (Triangle tri in Walls)
+            {
+                if (tri.PointInWall(new Vector3(position.X, position.Z, position.Y), rad, height))
+                {
+                    InWall = true;
+                    snap = tri.GetNormal();
+                    //Console.WriteLine("point " + position.X + " " + position.Z + " in wall");
+                }
+            }
+
+            return snap;//InWall;
+        }
+
         public override void Render()
         {
+            CRender.Instance.DrawSimpleModel(sModelName, new Vector3(x, z, y), Rotation, fScale);
+
             if (CDebug.Instance.ShowTerrainDebug)
                 RenderCollision();
         }

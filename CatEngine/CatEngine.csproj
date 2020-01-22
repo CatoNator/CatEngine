@@ -76,7 +76,7 @@
     <Compile Include="fmod_dsp.cs" />
     <Compile Include="fmod_errors.cs" />
     <Compile Include="GameObjects\CCamera.cs" />
-    <Compile Include="GameObjects\CCollidable.cs" />
+    <Compile Include="GameObjects\Collidable\CCollidable.cs" />
     <Compile Include="GameObjects\CDoor.cs" />
     <Compile Include="GameObjects\CEnemy.cs" />
     <Compile Include="GameObjects\CEnemyBullet.cs" />

@@ -137,8 +137,8 @@ namespace CatEngine
             CObjectManager.Instance.CreateInstance(typeof(CNatsa), 5, 20, 20);
             CObjectManager.Instance.CreateInstance(typeof(CNatsa), 20, 20, 20);
             CObjectManager.Instance.CreateInstance(typeof(CNatsa), 20, 30, 30);
-            CObjectManager.Instance.CreateInstance(typeof(CCollidable), 5, -5, 5);
-            //CObjectManager.Instance.CreateInstance(typeof(CCollidable), 20, 35, 30);
+            CObjectManager.Instance.CreateInstance(typeof(CCollidable), 30, 20, 30);
+            CObjectManager.Instance.CreateInstance(typeof(CCollidable), 20, 40, 30);
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
             //debug
@@ -166,16 +166,8 @@ namespace CatEngine
         {
             CInputManager.Update();
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.P))
-            {
-                if (CurrentGameState == GameState.Game)
-                    CurrentGameState = GameState.Paused;
-                else
-                    CurrentGameState = GameState.Game;
-            }
+            /*if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();*/
 
             if (CurrentGameState == GameState.Menu)
             {
@@ -191,17 +183,19 @@ namespace CatEngine
             {
                 CObjectManager.Instance.Update();
 
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.P))
+                if (CInputManager.ButtonPressed(CSettings.Instance.gGPause) || CInputManager.KeyPressed(CSettings.Instance.kGPause))
                 {
                     CurrentGameState = GameState.Paused;
                 }
             }
             else if (CurrentGameState == GameState.Paused)
             {
-                /*if (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.P))
+                CPauseMenu.Instance.Update();
+
+                if (CInputManager.ButtonPressed(CSettings.Instance.gGPause) || CInputManager.KeyPressed(CSettings.Instance.kGPause))
                 {
                     CurrentGameState = GameState.Game;
-                }*/
+                }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.L))
                 {

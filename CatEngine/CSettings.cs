@@ -33,6 +33,9 @@ namespace CatEngine
         public Keys kPMoveForward = Keys.W;
         public Keys kPMoveBackward = Keys.S;
         public Keys kPJump = Keys.Space;
+
+        public Keys kGPause = Keys.Escape;
+
         public Keys kCRotateCamLeft = Keys.Left;
         public Keys kCRotateCamRight = Keys.Right;
         public Keys kCRotateCamUp = Keys.Up;
@@ -40,10 +43,13 @@ namespace CatEngine
 
         //gameplay input gamepad
         public Buttons gPJump = Buttons.A;
+        
         public Buttons gCRotateCamLeft = Buttons.DPadLeft;
         public Buttons gCRotateCamRight = Buttons.DPadRight;
         public Buttons gCRotateCamUp = Buttons.DPadUp;
         public Buttons gCRotateCamDown = Buttons.DPadDown;
+
+        public Buttons gGPause = Buttons.Start;
 
         public Keys kCCShowConsole = Keys.PageDown;
         public Keys kCCHideConsole = Keys.PageUp;

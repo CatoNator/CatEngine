@@ -101,6 +101,7 @@ namespace CatEngine
 
                     CParticleManager.Instance.CreateParticle("part_muzzleflash", bulletSpawnPoint);
                     CParticleManager.Instance.CreateParticle("part_gunsmoke", bulletSpawnPoint);
+                    CParticleManager.Instance.CreateParticle("part_bulletcasing", bulletSpawnPoint, new Vector3(distDirX(0.3f, fDir - (float)(Math.PI/2)), 0, distDirY(0.3f, fDir - (float)(Math.PI / 2))));
 
                     iShotCooldown = iShotCooldownMax;
                 }
@@ -336,6 +337,18 @@ namespace CatEngine
             float hsp = distDirX(fHorSpeed, fMoveDir) + distDirX(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
             float vsp = distDirY(fHorSpeed, fMoveDir) + distDirY(fVerSpeed, fMoveDir - (float)(Math.PI / 2));
 
+            //test if the player would be in a wall, did they continue walking forward
+
+            Vector3 snap = WallCollisionAt(new Vector3(x, z, y), hitCylinder.Radius, hitCylinder.Height);
+
+            while (!snap.Equals(new Vector3(0, 0, 0)))
+            {
+                x += 0.1f * Math.Sign(snap.X);
+                y += 0.1f * Math.Sign(snap.Z);
+
+                snap = WallCollisionAt(new Vector3(x, z, y), hitCylinder.Radius, hitCylinder.Height);
+            }
+
             /*float heightPoint = CLevel.Instance.GetMapHeightAt(x + colBoxSize*Math.Sign(hsp), y);
             if (heightPoint > z + bufferZone)
             {
@@ -448,6 +461,28 @@ namespace CatEngine
                 h = objH;//(float)Math.Min(z-CLevel.Instance.GetHeightAt(x, y, z) + fPlayerHeight, z-GetObjectCollision()+ fPlayerHeight);
 
             return h;
+        }
+
+        private Vector3 WallCollisionAt(Vector3 point, float rad, float height)
+        {
+            Vector3 objectCollision = new Vector3(0, 0, 0);
+
+            for (int i = 0; i < CObjectManager.MAX_INSTANCES; i++)
+            {
+                if ((CObjectManager.Instance.pGameObjectList[i] != null)
+                    && Object.ReferenceEquals(typeof(CCollidable), CObjectManager.Instance.pGameObjectList[i].GetType()))
+                {
+                    //getting the reference
+                    CCollidable otherInstance = (CCollidable)CObjectManager.Instance.pGameObjectList[i];
+
+                    Vector3 col = otherInstance.PointInWall(point, rad, height);
+
+                    if (!col.Equals(new Vector3(0, 0, 0)))
+                        objectCollision = col;
+                }
+            }
+
+            return objectCollision.Equals(new Vector3(0, 0, 0)) ? CLevel.Instance.PointInWall(point, rad, height) : objectCollision;
         }
     }
 }

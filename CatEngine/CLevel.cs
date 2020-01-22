@@ -108,12 +108,116 @@ namespace CatEngine.Content
                 return h;
             }
 
+            private bool PointInCustomTri(Vector2 TC1, Vector2 TC2, Vector2 TC3, Vector2 point)
+            {
+                float w1 = ((TC2.Y - TC3.Y) * (point.X - TC3.X) + (TC3.X - TC2.X) * (point.Y - TC3.Y)) / ((TC2.Y - TC3.Y) * (TC1.X - TC3.X) + (TC3.X - TC2.X) * (TC1.Y - TC3.Y));
+
+                float w2 = ((TC3.Y - TC1.Y) * (point.X - TC3.X) + (TC1.X - TC3.X) * (point.Y - TC3.Y)) / ((TC2.Y - TC3.Y) * (TC1.X - TC3.X) + (TC3.X - TC2.X) * (TC1.Y - TC3.Y));
+
+                return w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1;
+            }
+
+            public bool PointInWall(Vector3 point, float rad, float h)
+            {
+                bool inWall = false;
+
+                int normalDir = (Math.Abs(GetNormal().X) > Math.Abs(GetNormal().Z) ? 1 : 0);
+
+                float origX = Math.Min(Math.Min(C1.X, C2.X), C3.X);
+                float origY = Math.Min(Math.Min(C1.Y, C2.Y), C3.Y) - fCollisionBufferSize;
+                float origZ = Math.Min(Math.Min(C1.Z, C2.Z), C3.Z);
+
+                float width = Math.Max(Math.Max(C1.X, C2.X), C3.X) - origX;
+                float height = Math.Max(Math.Max(C1.Y, C2.Y), C3.Y) - origY - fCollisionBufferSize;
+                float length = Math.Max(Math.Max(C1.Z, C2.Z), C3.Z) - origZ;
+
+                Vector2 CA = new Vector2(0, 0);
+                Vector2 CB = new Vector2(0, 0);
+                Vector2 CC = new Vector2(0, 0);
+                Vector2 CD = new Vector2(0, 0);
+
+                //we currently only check for a box. The wall could be any kind of triangle, so we need to check the height on the axis instead
+                //FIXME
+                if ((point.Z + h >= origY && point.Z + h <= origY + height)
+                    || (point.Z >= origY && point.Z <= origY + height))
+                {
+                    if (normalDir == 0)
+                    {
+                        rad *= GetNormal().Z;
+
+                        //Console.WriteLine(rad);
+
+                        CA = new Vector2(origX, origZ - rad);
+                        CB = new Vector2(origX, origZ + rad);
+                        CC = new Vector2(origX + width, origZ + length + rad);
+                        CD = new Vector2(origX + width, origZ + length - rad);
+                    }
+                    else if (normalDir == 1)
+                    {
+                        rad *= GetNormal().X;
+
+                        //Console.WriteLine(rad);
+
+                        //the points
+                        CA = new Vector2(origX - rad, origZ);
+                        CB = new Vector2(origX + rad, origZ);
+                        CC = new Vector2(origX + width + rad, origZ + length);
+                        CD = new Vector2(origX + width - rad, origZ + length);
+                    }
+
+                    if (PointInCustomTri(CA, CC, CB, new Vector2(point.X, point.Y)) || PointInCustomTri(CB, CC, CD, new Vector2(point.X, point.Y)))
+                        inWall = true;
+                }
+
+                //this should return the normal vector so I can snap the player to it
+
+                return inWall;
+            }
+
             public void SetActivity(ref Triangle tri, bool activity)
             {
                 tri.isActive = activity;
 
                 //if (activity)
                 //Console.WriteLine("set tri activity to "+activity.ToString()+", activity is now " + isActive.ToString());
+            }
+
+            public void DrawWall()
+            {
+                Color col = Color.Blue;
+
+                int normalDir = (Math.Abs(GetNormal().X) > Math.Abs(GetNormal().Z) ? 1 : 0);
+
+                //Console.WriteLine(GetNormal().X + " " + (float)Math.Cos(GetNormal().X) + " " + normalDir);
+
+                float origX = Math.Min(Math.Min(C1.X, C2.X), C3.X);
+                float origY = Math.Min(Math.Min(C1.Y, C2.Y), C3.Y);
+                float origZ = Math.Min(Math.Min(C1.Z, C2.Z), C3.Z);
+
+                float width = Math.Max(Math.Max(C1.X, C2.X), C3.X) - origX;
+                float height = Math.Max(Math.Max(C1.Y, C2.Y), C3.Y) - origY;
+                float length = Math.Max(Math.Max(C1.Z, C2.Z), C3.Z) - origZ;
+
+                float rad = 2.5f;
+
+                if (normalDir == 0)
+                {
+                    CRender.Instance.DrawRectangleWireframe(new Vector3(origX, origY + height, origZ - rad),
+                    new Vector3(origX, origY + height, origZ + rad),
+                    new Vector3(origX + width, origY + height, origZ + length + rad),
+                    new Vector3(origX + width, origY + height, origZ + length - rad));
+                }
+                else if (normalDir == 1)
+                {
+                    CRender.Instance.DrawRectangleWireframe(new Vector3(origX - rad, origY + height, origZ),
+                    new Vector3(origX + rad, origY + height, origZ),
+                    new Vector3(origX + width + rad, origY + height, origZ + length),
+                    new Vector3(origX + width - rad, origY + height, origZ + length));
+                }
+
+                //CRender.Instance.DrawCube(new Vector3(origX, origY, origZ), new Vector3(width, height, length));
+
+                CRender.Instance.DrawTriangleWireframe(C1, C2, C3, col);
             }
         }
 
@@ -154,7 +258,7 @@ namespace CatEngine.Content
 
                 foreach (Triangle tri in Walls)
                 {
-                    CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3, Color.Blue);
+                    tri.DrawWall();
                     //CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Blue);
                 }
             }
@@ -211,6 +315,27 @@ namespace CatEngine.Content
                 return Height;
             }
 
+            public Vector3 PointInWall(Vector3 position, float rad, float height)
+            {
+                bool InWall = false;
+
+                Vector3 snap = new Vector3(0, 0, 0);
+
+                //Console.WriteLine("checking for collision in cell");
+
+                foreach (Triangle tri in Walls)
+                {
+                    if (tri.PointInWall(new Vector3(position.X, position.Z, position.Y), rad, height))
+                    {
+                        InWall = true;
+                        snap = tri.GetNormal();
+                        //Console.WriteLine("point " + position.X + " " + position.Z + " in wall");
+                    }
+                }
+
+                return snap;//InWall;
+            }
+
             public void Unload()
             {
                 Floors.Clear();
@@ -253,6 +378,30 @@ namespace CatEngine.Content
                 Console.WriteLine("collision wasn't in a cell dumbass"); 
 
             return Height;
+        }
+
+        public Vector3 PointInWall(Vector3 position, float rad, float height)
+        {
+            bool InWall = false;
+
+            Vector3 snap = new Vector3(0, 0, 0);
+
+            int CellX = (int)(position.X / CELL_SIZE);
+            int CellY = (int)(position.Z / CELL_SIZE);
+
+            if ((CellX >= 0 && CellX < MAX_LEVELSIZE)
+                && (CellY >= 0 && CellY < MAX_LEVELSIZE)
+                && LevelCells[CellX, CellY] != null)
+            {
+                Vector3 sn = LevelCells[CellX, CellY].PointInWall(position, rad, height);
+                if (!sn.Equals(new Vector3(0, 0, 0)))
+                    snap = sn;
+                    //InWall = true;
+            }
+            else
+                Console.WriteLine("collision wasn't in a cell");
+
+            return snap;// InWall;
         }
 
         public void UpdateActiveCell(float x, float y)

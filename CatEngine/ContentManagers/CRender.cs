@@ -441,7 +441,14 @@ namespace CatEngine.Content
             }
             catch (Exception e)
             {
-                Console.WriteLine("could not load texture "+textures[0]+" to render");
+                try
+                {
+                    Console.WriteLine("could not load texture " + textures[0] + " to render");
+                }
+                catch (Exception a)
+                {
+                    Console.WriteLine("could not load texture of model " + modelName + " to render");
+                }
             }
 
             graphicsDevice.SetVertexBuffer(dSimpleModelDict[mdlName].VertexBuffer);
@@ -624,6 +631,7 @@ namespace CatEngine.Content
             RasterizerState ogState = graphicsDevice.RasterizerState;
             RasterizerState newState = new RasterizerState();
             newState.FillMode = FillMode.WireFrame;
+            newState.CullMode = CullMode.None;
             graphicsDevice.RasterizerState = newState;
 
             graphicsDevice.SetVertexBuffer(rectangleBuffer);
@@ -672,6 +680,40 @@ namespace CatEngine.Content
                 new Vector3(pos.X - rad, pos.Y, pos.Z + rad));
         }
 
+        public void DrawCube(Vector3 pos, Vector3 size)
+        {
+            //top
+            DrawRectangleWireframe(new Vector3(pos.X, pos.Y + size.Y, pos.Z + size.Z),
+                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z + size.Z),
+                new Vector3(pos.X, pos.Y + size.Y, pos.Z),
+                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z));
+            //bottom
+            DrawRectangleWireframe(new Vector3(pos.X, pos.Y, pos.Z + size.Z),
+                new Vector3(pos.X + size.X, pos.Y, pos.Z + size.Z),
+                new Vector3(pos.X, pos.Y, pos.Z),
+                new Vector3(pos.X + size.X, pos.Y, pos.Z));
+            //left side
+            DrawRectangleWireframe(new Vector3(pos.X, pos.Y + size.Y, pos.Z),
+                new Vector3(pos.X, pos.Y + size.Y, pos.Z + size.Z),
+                new Vector3(pos.X, pos.Y, pos.Z),
+                new Vector3(pos.X, pos.Y, pos.Z + size.Z));
+            //right side
+            DrawRectangleWireframe(new Vector3(pos.X + size.X, pos.Y, pos.Z),
+                new Vector3(pos.X + size.X, pos.Y, pos.Z + size.Z),
+                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z),
+                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z + size.Z));
+            //bottom side
+            DrawRectangleWireframe(new Vector3(pos.X + size.X, pos.Y, pos.Z),
+                new Vector3(pos.X, pos.Y, pos.Z),
+                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z),
+                new Vector3(pos.X, pos.Y + size.Y, pos.Z));
+            //top side
+            DrawRectangleWireframe(new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z + size.Z),
+                new Vector3(pos.X, pos.Y + size.Y, pos.Z + size.Z),
+                new Vector3(pos.X + size.X, pos.Y, pos.Z + size.Z),
+                new Vector3(pos.X, pos.Y, pos.Z + size.Z));
+        }
+
         public void DrawTriangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3, Color color)
         {
             VertexPositionColor[] vertices = new VertexPositionColor[3]
@@ -695,6 +737,7 @@ namespace CatEngine.Content
             RasterizerState ogState = graphicsDevice.RasterizerState;
             RasterizerState newState = new RasterizerState();
             newState.FillMode = FillMode.WireFrame;
+            newState.CullMode = CullMode.None;
             graphicsDevice.RasterizerState = newState;
 
             graphicsDevice.SetVertexBuffer(vertexBuffer);

@@ -59,6 +59,7 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "dustcloud" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "muzzleflash" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "smoke" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "bullet_casing" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "bullet" });
 
             PrepareModel("AssetData/Models/Player/", "player");
@@ -123,9 +124,8 @@ namespace CatEngine
             //skybox
             QueueLoadCommand(CSprite.Instance, "LoadTextureSheetRaw", new List<string>() { "AssetData/Textures", "background" });
 
-            //load prop models into memory
-
-            //load prop textures into memory
+            //load props into memory
+            PrepareProp("AssetData/Props/hexatri/", "hexatri");
 
             //load music into memory
             //QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
@@ -148,6 +148,13 @@ namespace CatEngine
             //unload prop textures
 
             //unload music
+        }
+
+        public void PrepareProp(String path, String propName)
+        {
+            //string path = "AssetData/Models/";
+
+            PrepareModel(path, propName);
         }
 
         public void PrepareModel(String path, String modelName)
@@ -279,7 +286,7 @@ namespace CatEngine
             if (CGame.Instance.currentFadeType == CGame.FadeTypes.FadeLevel)
             {
                 game.CurrentGameState = Game1.GameState.Game;
-                CAudioManager.Instance.PlaySong("test");
+                //CAudioManager.Instance.PlaySong("test");
             }
             else if (CGame.Instance.currentFadeType == CGame.FadeTypes.FadeMenu)
                 game.CurrentGameState = Game1.GameState.Menu;

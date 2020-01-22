@@ -50,11 +50,11 @@ namespace CatEngine
 
             if (CInputManager.KeyDown(CSettings.Instance.kCRotateCamUp) || CInputManager.ButtonDown(CSettings.Instance.gCRotateCamUp))
             {
-                iCameraVRot = 1;
+                iCameraVRot = -1;
             }
             else if (CInputManager.KeyDown(CSettings.Instance.kCRotateCamDown) || CInputManager.ButtonDown(CSettings.Instance.gCRotateCamDown))
             {
-                iCameraVRot = -1;
+                iCameraVRot = 1;
             }
 
             /*if (keyboardState.IsKeyDown(Keys.Enter) && cameraState == CameraStates.LevelStart)
@@ -62,22 +62,25 @@ namespace CatEngine
                 cameraState = CameraStates.PlayerControlled;
             }*/
 
-            //PlayerCamera(iCameraRot, iCameraVRot);
+            if (iCameraRot != 0 || iCameraVRot != 0)
+                PlayerCamera(iCameraRot, iCameraVRot);
+            else
+                AutoCamera();
 
             /*if (cameraState == CameraStates.LevelStart)
                 LevelCamera();*/
-            else if (cameraState == CameraStates.PlayerControlled)
+            /*else if (cameraState == CameraStates.PlayerControlled)
             {
                 if (iCameraRot != 0 || iCameraVRot != 0)
-                    PlayerCamera(iCameraRot, iCameraVRot);
+                    PlayerCamera(iCameraRot, -1);
                 else
                     AutoCamera();
 
                 /*if (keyboardState.IsKeyDown(Keys.X))
                 {
                     fCameraRotation = ((CPlayer)oTarget).fDir;
-                }*/
-            }
+                }
+            }*/
 
             Vector3 lerpVector = Lerp(
                 new Vector3(x + distDirX(fCameraDistance, degToRad(fCameraRotation)), z + -distDirY(fCameraDistance, degToRad(fCameraVRotation)), y + distDirY(fCameraDistance, degToRad(fCameraRotation))),

@@ -34,6 +34,9 @@ namespace CatEngine.Input
         public static void InitKeys()
         {
             bIsButtonTriggered.Add(CSettings.Instance.gPJump, false);
+
+            bIsButtonTriggered.Add(CSettings.Instance.gGPause, false);
+
             bIsButtonTriggered.Add(CSettings.Instance.gCRotateCamLeft, false);
             bIsButtonTriggered.Add(CSettings.Instance.gCRotateCamRight, false);
             bIsButtonTriggered.Add(CSettings.Instance.gCRotateCamUp, false);
@@ -44,6 +47,9 @@ namespace CatEngine.Input
             bIsKeyTriggered.Add(CSettings.Instance.kPMoveForward, false);
             bIsKeyTriggered.Add(CSettings.Instance.kPMoveBackward, false);
             bIsKeyTriggered.Add(CSettings.Instance.kPJump, false);
+
+            bIsKeyTriggered.Add(CSettings.Instance.kGPause, false);
+
             bIsKeyTriggered.Add(CSettings.Instance.kCRotateCamLeft, false);
             bIsKeyTriggered.Add(CSettings.Instance.kCRotateCamRight, false);
             bIsKeyTriggered.Add(CSettings.Instance.kCRotateCamUp, false);

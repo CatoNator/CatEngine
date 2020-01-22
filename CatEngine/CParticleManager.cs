@@ -52,7 +52,7 @@ namespace CatEngine
 
             public int Life;
 
-            public ParticleData(string tex, float minAngle, float maxAngle, float minSize, float maxSize, float minAlpha, float maxAlpha, Vector3 sp, float rotSp, float sizeSp, float aSp, int lf)
+            public ParticleData(string tex, float minAngle, float maxAngle, float minSize, float maxSize, float minAlpha, float maxAlpha, Vector3 sp, float rotSp, float sizeSp, float aSp, int lf, bool grav)
             {
                 TextureName = tex;
                 AngleMin = minAngle;
@@ -67,7 +67,7 @@ namespace CatEngine
                 SizeChangeSpeed = sizeSp;
                 AlphaChangeSpeed = aSp;
 
-                bHasGravity = false;
+                bHasGravity = grav;
 
                 Life = lf;
             }
@@ -93,16 +93,15 @@ namespace CatEngine
 
             private int Life = 60;
 
-            public Particle()
+            public Particle(int ind)
             {
-
+                ID = ind;
             }
 
-            public void Spawn (int ind, Vector3 pos, ParticleData partData)
+            public void Spawn (Vector3 pos, ParticleData partData)
             {
                 Random rand = new Random();
 
-                ID = ind;
                 Position = pos;
                 TextureName = partData.TextureName;
                 Speed = partData.Speed;
@@ -114,12 +113,31 @@ namespace CatEngine
                 SizeChangeSpeed = partData.SizeChangeSpeed;
                 AlphaChangeSpeed = partData.AlphaChangeSpeed;
                 Life = partData.Life;
+                bHasGravity = partData.bHasGravity;
+            }
+
+            public void Spawn(Vector3 pos, Vector3 spd, ParticleData partData)
+            {
+                Random rand = new Random();
+
+                Position = pos;
+                TextureName = partData.TextureName;
+                Speed = partData.Speed + spd;
+                Life = partData.Life;
+                Angle = partData.AngleMin + (float)(rand.NextDouble() * (partData.AngleMax - partData.AngleMin));
+                Size = partData.SizeMin + (float)(rand.NextDouble() * (partData.SizeMax - partData.SizeMin));
+                Alpha = partData.AlphaMin + (float)(rand.NextDouble() * (partData.AlphaMax - partData.AlphaMin));
+                RotationSpeed = partData.RotationSpeed;
+                SizeChangeSpeed = partData.SizeChangeSpeed;
+                AlphaChangeSpeed = partData.AlphaChangeSpeed;
+                Life = partData.Life;
+                bHasGravity = partData.bHasGravity;
             }
 
             public void Update()
             {
                 if (bHasGravity)
-                    Speed.Y += Gravity;
+                    Speed.Y -= Gravity;
 
                 Position += Speed;
 
@@ -187,6 +205,7 @@ namespace CatEngine
                     float asp = 0;
                     float rsp = 0;
                     int life = 0;
+                    bool gravity = false;
 
                     foreach (XElement d in e.Descendants("texture"))
                     {
@@ -240,7 +259,12 @@ namespace CatEngine
                         life = Int32.Parse(d.Attribute("value").Value);
                     }
 
-                    dPartDataDict.Add(name, new ParticleData(tex, anmin, anmax, smin, smax, amin, amax, sp, rsp, ssp, asp, life));
+                    foreach (XElement d in e.Descendants("gravity"))
+                    {
+                        gravity = Boolean.Parse(d.Attribute("value").Value);
+                    }
+
+                    dPartDataDict.Add(name, new ParticleData(tex, anmin, anmax, smin, smax, amin, amax, sp, rsp, ssp, asp, life, gravity));
                 }
             }
             else
@@ -255,10 +279,44 @@ namespace CatEngine
                 if (pParticleList[i] == null)
                 {
                     //making the object!!!!
-                    pParticleList[i] = new Particle();
+                    pParticleList[i] = new Particle(i);
 
                     //here we make sure the object spawns correctly
-                    pParticleList[i].Spawn(i, position, dPartDataDict[particleName]);
+                    try
+                    {
+                        pParticleList[i].Spawn(position, dPartDataDict[particleName]);
+                    }
+                    catch (KeyNotFoundException e)
+                    {
+                        CConsole.Instance.Print("couldn't spawn particle " + particleName + " because it was not loaded! " + e.Message);
+                    }
+
+                    //debugObjSlot = i;
+
+                    break;
+                }
+            }
+        }
+
+        public void CreateParticle(String particleName, Vector3 position, Vector3 speed)
+        {
+            //find the first empty slot in the array and put the object there
+            for (int i = 0; i < MAX_PARTICLES; i++)
+            {
+                if (pParticleList[i] == null)
+                {
+                    //making the object!!!!
+                    pParticleList[i] = new Particle(i);
+
+                    //here we make sure the object spawns correctly
+                    try
+                    {
+                        pParticleList[i].Spawn(position, speed, dPartDataDict[particleName]);
+                    }
+                    catch (KeyNotFoundException e)
+                    {
+                        CConsole.Instance.Print("couldn't spawn particle " + particleName + " because it was not loaded! " + e.Message);
+                    }
 
                     //debugObjSlot = i;
 
