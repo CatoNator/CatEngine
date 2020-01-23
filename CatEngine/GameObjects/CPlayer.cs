@@ -45,7 +45,10 @@ namespace CatEngine
 
         private float fAnimFrame = 0.0f;
 
+        private float fAnimFade = 1.0f;
+
         String sCurrentAnimation = "player_tpose";
+        String sSecondaryAnimation = null;
 
         private int iShotCooldown = 0;
         private const int iShotCooldownMax = 5;
@@ -76,7 +79,8 @@ namespace CatEngine
             KeyboardState keyboardState = Keyboard.GetState();
             GamePadState gamepadState = GamePad.GetState(PlayerIndex.One);
 
-            if(!CSettings.Instance.bGamepadEnabled)
+
+            if (!CSettings.Instance.bGamepadEnabled)
                 MovementKeyboard(keyboardState);
             else
                 MovementGamepad(gamepadState);
@@ -118,7 +122,7 @@ namespace CatEngine
 
         public override void Render()
         {
-            CRender.Instance.DrawPlayer(sCurrentAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame);
+            CRender.Instance.DrawPlayer(sCurrentAnimation, sSecondaryAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame, fAnimFade);
 
             //CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
 
@@ -272,7 +276,7 @@ namespace CatEngine
 
             float groundH = CLevel.Instance.GetHeightAt(x, y, z);
             
-            Tuple<CCollidable, float> col = GetObjectCollision(new Vector2(x, y));
+            Tuple<CCollidable, float> col = GetObjectCollision(new Vector3(x, y, z));
 
             float objH = col.Item2;
 
@@ -393,12 +397,17 @@ namespace CatEngine
                 else
                 {
                     sCurrentAnimation = "player_tpose";
-                    fAnimFrame = 0.0f;
+                    fAnimFrame = 0;
                 }
             }
+
+            if (fHInput2 != 0 || fVInput2 != 0)
+                sSecondaryAnimation = "player_tpose";
+            else
+                sSecondaryAnimation = null;
         }
 
-        private Tuple<CCollidable, float> GetObjectCollision(Vector2 point)
+        private Tuple<CCollidable, float> GetObjectCollision(Vector3 point)
         {
             float Height = 0.0f;
             List<Tuple<CCollidable, float>> heights = new List<Tuple<CCollidable, float>>();
@@ -411,7 +420,7 @@ namespace CatEngine
                     //getting the reference
                     CCollidable otherInstance = (CCollidable)CObjectManager.Instance.pGameObjectList[i];
 
-                    heights.Add(new Tuple<CCollidable, float>(otherInstance, otherInstance.GetHeightAt(point.X, point.Y)));
+                    heights.Add(new Tuple<CCollidable, float>(otherInstance, otherInstance.GetHeightAt(point.X, point.Y, point.Z)));
                 }
             }
 
@@ -453,7 +462,7 @@ namespace CatEngine
 
             float groundH = CLevel.Instance.GetHeightAt(point.X, point.Y, point.Z);
 
-            float objH = GetObjectCollision(new Vector2(point.X, point.Y)).Item2;
+            float objH = GetObjectCollision(point).Item2;
 
             if (groundH > objH)
                 h = groundH;

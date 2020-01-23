@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace CatEngine
 {
-    public class CGameObject
+    public class CGameObject : IDisposable
     {
         public bool bActive = true;
 
@@ -455,6 +455,21 @@ namespace CatEngine
 
         //BECAUSE you can't mix spritebatches and 3d you can't have the same routine for both so here's render2D
         public virtual void Render2D()
+        {
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            // any other managed resource cleanups you can do here
+            GC.SuppressFinalize(this);
+        }
+        ~CGameObject()      // finalizer
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
         }
     }

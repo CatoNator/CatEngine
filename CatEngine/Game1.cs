@@ -57,7 +57,7 @@ namespace CatEngine
             graphics.PreferredBackBufferHeight = CSettings.Instance.iBackBufferHeight;
             graphics.ApplyChanges();
 
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = "AssetData";
         }
 
         private void GraphicsDeviceManager_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
@@ -111,7 +111,7 @@ namespace CatEngine
             CSprite.Instance.graphicsDevice = GraphicsDevice;
             CSprite.Instance.graphics = graphics;
             //loading the debug texture...
-            CSprite.Instance.LoadTextureSheet("empty");
+            CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures", "empty");
             //loading the loading screen so we don't crash while loading assets
             //CSprite.Instance.LoadTextureSheet("LoadingScreen");
             CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "LoadingScreen");
@@ -127,6 +127,8 @@ namespace CatEngine
             CRender.Instance.graphics = graphics;
             CRender.Instance.graphicsDevice = GraphicsDevice;
             CRender.Instance.Init();
+
+            CRender.Instance.LoadTextureRaw("AssetData/Textures", "empty");
             //debug: loading some essential models
 
             //DEBUG: creating objects that aren't configured to be loaded in CLevel yet
@@ -138,7 +140,7 @@ namespace CatEngine
             CObjectManager.Instance.CreateInstance(typeof(CNatsa), 20, 20, 20);
             CObjectManager.Instance.CreateInstance(typeof(CNatsa), 20, 30, 30);
             CObjectManager.Instance.CreateInstance(typeof(CCollidable), 30, 20, 30);
-            CObjectManager.Instance.CreateInstance(typeof(CCollidable), 20, 40, 30);
+            //CObjectManager.Instance.CreateInstance(typeof(CCollidable), 20, 40, 30);
             //CObjectManager.Instance.CreateInstance(typeof(CEnemy), 16, 16);
 
             //debug
@@ -182,6 +184,8 @@ namespace CatEngine
             else if (CurrentGameState == GameState.Game)
             {
                 CObjectManager.Instance.Update();
+
+                CScenarioManager.Instance.Update();
 
                 if (CInputManager.ButtonPressed(CSettings.Instance.gGPause) || CInputManager.KeyPressed(CSettings.Instance.kGPause))
                 {
@@ -257,6 +261,7 @@ namespace CatEngine
                 CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
                 CParticleManager.Instance.Render();
+                CScenarioManager.Instance.Render();
 
                 //rendering 2D objects
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
@@ -277,6 +282,7 @@ namespace CatEngine
                 //CLevel.Instance.Render();
                 CLevel.Instance.Render();
                 CObjectManager.Instance.Render();
+                CScenarioManager.Instance.Render();
 
                 //rendering 2D objects
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
@@ -284,6 +290,7 @@ namespace CatEngine
                 CHud.Instance.Render();
                 CPauseMenu.Instance.Render();
                 CGame.Instance.RenderFadeOut();
+
                 spriteBatch.End();
             }
 

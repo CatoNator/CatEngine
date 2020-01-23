@@ -70,8 +70,8 @@ namespace CatEngine.Content
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(fovAngle, aspectRatio, near, far);
 
-            SimpleModelEffect = content.Load<Effect>("SimpleModelEffect");
-            SkinnedModelEffect = content.Load<Effect>("SkinnedModelEffect");
+            SimpleModelEffect = content.Load<Effect>("Effects/SimpleModelEffect");
+            SkinnedModelEffect = content.Load<Effect>("Effects/SkinnedModelEffect");
         }
 
         public void InitPlayer()
@@ -507,7 +507,7 @@ namespace CatEngine.Content
             //skinnedModelInstance.Dispose();
         }
 
-        public void DrawPlayer(String animName, Vector3 position, float rotation, float animFrame)
+        public void DrawPlayer(String animName, String secondaryAnimName, Vector3 position, float rotation, float animFrame, float animFade)
         {
             if (playerInstance.Animation != dSkinnedAnimationDict[animName])
             {
@@ -520,6 +520,13 @@ namespace CatEngine.Content
                     playerInstance.SetAnimation(dSkinnedAnimationDict["player_tpose"], gameTime);
                 }
             }
+
+            if (secondaryAnimName != null)
+                playerInstance.SetSecondaryAnimation(dSkinnedAnimationDict["player_tpose"], gameTime);
+            else
+                playerInstance.SetSecondaryAnimation(null, gameTime);
+
+            playerInstance.SecondaryAnimationFading = animFade;
 
             playerInstance.FrameIndex = animFrame;
 
@@ -680,40 +687,6 @@ namespace CatEngine.Content
                 new Vector3(pos.X - rad, pos.Y, pos.Z + rad));
         }
 
-        public void DrawCube(Vector3 pos, Vector3 size)
-        {
-            //top
-            DrawRectangleWireframe(new Vector3(pos.X, pos.Y + size.Y, pos.Z + size.Z),
-                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z + size.Z),
-                new Vector3(pos.X, pos.Y + size.Y, pos.Z),
-                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z));
-            //bottom
-            DrawRectangleWireframe(new Vector3(pos.X, pos.Y, pos.Z + size.Z),
-                new Vector3(pos.X + size.X, pos.Y, pos.Z + size.Z),
-                new Vector3(pos.X, pos.Y, pos.Z),
-                new Vector3(pos.X + size.X, pos.Y, pos.Z));
-            //left side
-            DrawRectangleWireframe(new Vector3(pos.X, pos.Y + size.Y, pos.Z),
-                new Vector3(pos.X, pos.Y + size.Y, pos.Z + size.Z),
-                new Vector3(pos.X, pos.Y, pos.Z),
-                new Vector3(pos.X, pos.Y, pos.Z + size.Z));
-            //right side
-            DrawRectangleWireframe(new Vector3(pos.X + size.X, pos.Y, pos.Z),
-                new Vector3(pos.X + size.X, pos.Y, pos.Z + size.Z),
-                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z),
-                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z + size.Z));
-            //bottom side
-            DrawRectangleWireframe(new Vector3(pos.X + size.X, pos.Y, pos.Z),
-                new Vector3(pos.X, pos.Y, pos.Z),
-                new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z),
-                new Vector3(pos.X, pos.Y + size.Y, pos.Z));
-            //top side
-            DrawRectangleWireframe(new Vector3(pos.X + size.X, pos.Y + size.Y, pos.Z + size.Z),
-                new Vector3(pos.X, pos.Y + size.Y, pos.Z + size.Z),
-                new Vector3(pos.X + size.X, pos.Y, pos.Z + size.Z),
-                new Vector3(pos.X, pos.Y, pos.Z + size.Z));
-        }
-
         public void DrawTriangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3, Color color)
         {
             VertexPositionColor[] vertices = new VertexPositionColor[3]
@@ -840,61 +813,6 @@ namespace CatEngine.Content
                         new Vector3(position.X + shadowSize, cornerHeight2 + 0.1f, position.Z + shadowSize),
                         new Vector3(position.X - shadowSize, cornerHeight3 + 0.1f, position.Z - shadowSize),
                         new Vector3(position.X + shadowSize, cornerHeight4 + 0.1f, position.Z - shadowSize), "shadow", false, 0.5f);
-            }
-        }
-
-        public void DrawPlayerShadow(Vector3 position, float shadowSize, String animName, float rotation, float animFrame)
-        {
-            if (PointDistance(position.X, position.Z, cameraPosition.X, cameraPosition.Z) < CSettings.Instance.iShadowDrawDist)
-            {
-                RenderTarget2D rend = new RenderTarget2D(graphicsDevice, 64, 64);
-                RenderTargetBinding[] PreviousRend = graphicsDevice.GetRenderTargets();
-
-                //graphicsDevice.SetRenderTarget(rend);
-                CRender.Instance.DrawPlayer(animName, new Vector3(0, 0, 0), rotation, animFrame);
-                //graphicsDevice.SetRenderTargets(PreviousRend);
-
-                Texture2D shadowTex = new Texture2D(graphicsDevice, rend.Width, rend.Height);
-
-                Color[] texdata = new Color[rend.Width * rend.Height];
-                rend.GetData(texdata);
-                shadowTex.SetData(texdata);
-
-                float cornerHeight1 = CLevel.Instance.GetHeightAt(position.X - shadowSize, position.Z + shadowSize, position.Y);
-                float cornerHeight2 = CLevel.Instance.GetHeightAt(position.X + shadowSize, position.Z + shadowSize, position.Y);
-                float cornerHeight3 = CLevel.Instance.GetHeightAt(position.X - shadowSize, position.Z - shadowSize, position.Y);
-                float cornerHeight4 = CLevel.Instance.GetHeightAt(position.X + shadowSize, position.Z - shadowSize, position.Y);
-
-                Vector3 C1 = new Vector3(position.X - shadowSize, cornerHeight1 + 0.1f, position.Z + shadowSize);
-                Vector3 C2 = new Vector3(position.X + shadowSize, cornerHeight2 + 0.1f, position.Z + shadowSize);
-                Vector3 C3 = new Vector3(position.X - shadowSize, cornerHeight3 + 0.1f, position.Z - shadowSize);
-                Vector3 C4 = new Vector3(position.X + shadowSize, cornerHeight4 + 0.1f, position.Z - shadowSize);
-
-                VertexPositionColorTexture[] vertices = RectanglePrimitive(C1, C2, C3, C4, false);
-                //rectangleBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
-                rectangleBuffer.SetData<VertexPositionColorTexture>(vertices);
-
-                basicEffect.Projection = projectionMatrix;
-                basicEffect.View = viewMatrix;
-                basicEffect.World = worldMatrix;
-                basicEffect.VertexColorEnabled = true;
-                basicEffect.LightingEnabled = false;
-                basicEffect.TextureEnabled = true;
-                basicEffect.Alpha = 0.5f;
-                basicEffect.Texture = shadowTex;
-
-                graphicsDevice.SetVertexBuffer(rectangleBuffer);
-
-                foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
-                }
-
-                graphicsDevice.SetVertexBuffer(null);
-
-                rend.Dispose();
-                shadowTex.Dispose();
             }
         }
 

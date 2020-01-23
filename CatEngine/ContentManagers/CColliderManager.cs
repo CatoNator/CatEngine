@@ -5,13 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using CatEngine.Content;
 
 namespace CatEngine.Content
 {
     public class CColliderManager : CContentManager
     {
-        public Dictionary<string, ObjectCollider> colliderList = new Dictionary<string, ObjectCollider>();
+        public Dictionary<string, ObjectCollider> dColliderDict = new Dictionary<string, ObjectCollider>();
 
         private CColliderManager()
         {
@@ -34,15 +33,71 @@ namespace CatEngine.Content
             ObjectCollider col = new ObjectCollider();
             col.LoadCollider(path, colliderName);
 
-            colliderList.Add(colliderName, col);
+            dColliderDict.Add(colliderName, col);
         }
 
-        //public float GetFloorHeightAt(string colliderName, float x, float y, float z)
+        public float GetFloorHeightAt(string colliderName, float x, float y, float z)
+        {
+            float height = 0.0f;
 
-        //public Vector3 PointInWall(string colliderName, Vector3 point, float height, float rad)
+            try
+            {
+                height = dColliderDict[colliderName].GetFloorHeightAt(x, y, z);
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("collider " + colliderName + " not loaded! " + e.Message);
+            }
+
+            return height;
+        }
+
+        public Vector3 PointInWall(string colliderName, Vector3 colliderPos, float scale, Vector3 point, float height, float rad)
+        {
+            Vector3 snap = new Vector3(0, 0, 0);
+
+            try
+            {
+                //dColliderDict[colliderName].UpdateCollider(colliderPos, scale);
+                snap = dColliderDict[colliderName].PointInWall(point, rad, height, scale);
+                //dColliderDict[colliderName].UpdateCollider(-colliderPos, 1/scale);
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("collider " + colliderName + " not loaded! " + e.Message);
+            }
+
+            return snap;
+        }
+
+        public void UpdateCollider(string colliderName, Vector3 pos, float scale)
+        {
+            try
+            {
+                //dColliderDict[colliderName].UpdateCollider(pos, scale);
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("collider " + colliderName + " not loaded! " + e.Message);
+            }
+        }
+
+        public void RenderCollider(string colliderName, Vector3 pos, float scale)
+        {
+            try
+            {
+                dColliderDict[colliderName].RenderCollider(pos, scale);
+            }
+            catch (KeyNotFoundException e)
+            {
+                CConsole.Instance.Print("collider " + colliderName + " not loaded! " + e.Message);
+            }
+        }
+
+
     }
 
-    struct Triangle
+    class Triangle
     {
         public Vector3 C1;
         public Vector3 C2;
@@ -113,8 +168,6 @@ namespace CatEngine.Content
             float height = Math.Max(Math.Max(C1.Y, C2.Y), C3.Y) - origY;
             float length = Math.Max(Math.Max(C1.Z, C2.Z), C3.Z) - origZ;
 
-            List<Vector2> points = new List<Vector2>();
-
             Vector2 CA = new Vector2(0, 0);
             Vector2 CB = new Vector2(0, 0);
             Vector2 CC = new Vector2(0, 0);
@@ -148,11 +201,11 @@ namespace CatEngine.Content
             return inWall;
         }
 
-        public void UpdateTri(Vector3 Speed)
+        public void UpdateTri(Vector3 Pos, float Scale)
         {
-            C1 = new Vector3(C1.X + Speed.X, C1.Y + Speed.Z, C1.Z + Speed.Y);
-            C2 = new Vector3(C2.X + Speed.X, C2.Y + Speed.Z, C2.Z + Speed.Y);
-            C3 = new Vector3(C3.X + Speed.X, C3.Y + Speed.Z, C3.Z + Speed.Y);
+            C1 = Pos + C1 * Scale;
+            C2 = Pos + C2 * Scale;
+            C3 = Pos + C3 * Scale; 
         }
     }
 
@@ -188,7 +241,7 @@ namespace CatEngine.Content
                     using (BinaryReader reader = new BinaryReader(stream))
                     {
                         int iVertices = (int)reader.ReadInt32();
-                        CConsole.Instance.Print("CCollidable: loaded " + iVertices.ToString() + " vertices of collision data");
+                        CConsole.Instance.Print("CColliderManager: loaded " + iVertices.ToString() + " vertices of collision data");
 
                         //we make vectors out of the values
                         for (int i = 0; i < iVertices; i++)
@@ -240,21 +293,39 @@ namespace CatEngine.Content
             }
         }
 
-        public void RenderCollider()
+        public void UpdateCollider(Vector3 pos, float scale)
         {
             foreach (Triangle tri in Ceilings)
             {
-                CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3, Color.Red);
+                tri.UpdateTri(pos, scale);
             }
 
             foreach (Triangle tri in Floors)
             {
-                CRender.Instance.DrawTriangleTextured(tri.C1, tri.C2, tri.C3, Color.Yellow);
+                tri.UpdateTri(pos, scale);
             }
 
             foreach (Triangle tri in Walls)
             {
-                CRender.Instance.DrawTriangleWireframe(tri.C1, tri.C2, tri.C3, Color.Blue);
+                tri.UpdateTri(pos, scale);
+            }
+        }
+
+        public void RenderCollider(Vector3 pos, float scale)
+        {
+            foreach (Triangle tri in Ceilings)
+            {
+                CRender.Instance.DrawTriangleWireframe(pos + tri.C1 * scale, pos + tri.C2 * scale, pos + tri.C3 * scale, Color.Red);
+            }
+
+            foreach (Triangle tri in Floors)
+            {
+                CRender.Instance.DrawTriangleWireframe(pos + tri.C1 * scale, pos + tri.C2 * scale, pos + tri.C3 * scale, Color.Yellow);
+            }
+
+            foreach (Triangle tri in Walls)
+            {
+                CRender.Instance.DrawTriangleWireframe(pos + tri.C1 * scale, pos + tri.C2 * scale, pos + tri.C3 * scale, Color.Blue);
             }
         }
 
@@ -272,7 +343,7 @@ namespace CatEngine.Content
                 {
                     possibleHeights.Add(tri.HeightAt(new Vector2(x, y)));
                     possibleTris.Add(tri);
-                    //Console.WriteLine("point is in tri");
+                    Console.WriteLine("point is in tri");
                 }
             }
 
@@ -294,11 +365,6 @@ namespace CatEngine.Content
                     {
                         Height = f;
                         min = diff;
-
-                        if (CDebug.Instance.ShowTerrainDebug)
-                        {
-                            Triangle t_tri = possibleTris[i];
-                        }
                     }
                 }
 
@@ -308,10 +374,8 @@ namespace CatEngine.Content
             return Height;
         }
 
-        public Vector3 PointInWall(Vector3 position, float rad, float height)
+        public Vector3 PointInWall(Vector3 position, float rad, float height, float scale)
         {
-            bool InWall = false;
-
             Vector3 snap = new Vector3(0, 0, 0);
 
             //Console.WriteLine("checking for collision in cell");
@@ -320,7 +384,6 @@ namespace CatEngine.Content
             {
                 if (tri.PointInWall(new Vector3(position.X, position.Z, position.Y), rad, height))
                 {
-                    InWall = true;
                     snap = tri.GetNormal();
                     //Console.WriteLine("point " + position.X + " " + position.Z + " in wall");
                 }

@@ -33,7 +33,7 @@ namespace CatEngine.Content
         private FMOD.System FMODSystem;
         private FMOD.Channel MusicChannel;
 
-        private Dictionary<string, SoundEffect> dSoundFXDict = new Dictionary<string, SoundEffect>();
+        private Dictionary<string, SoundEffectInstance> dSoundFXDict = new Dictionary<string, SoundEffectInstance>();
         private Dictionary<string, Sound> dMusicDict = new Dictionary<string, Sound>();
         
         private CAudioManager()
@@ -61,7 +61,7 @@ namespace CatEngine.Content
             
             FMODSystem.release();
 
-            foreach (KeyValuePair<string, SoundEffect> s in dSoundFXDict.ToList())
+            foreach (KeyValuePair<string, SoundEffectInstance> s in dSoundFXDict.ToList())
             {
                 s.Value.Dispose();
             }
@@ -91,28 +91,31 @@ namespace CatEngine.Content
 
                         uint headerSize = 0;
 
+                        //we loop through the binary file until we have located all the header data. This takes in indefinite amount of time
                         while (true)
                         {
                             Byte next = reader.ReadByte();
                             headerSize++;
 
+                            //if the byte is not null, we add the current byte to the string
                             if (next != 0x00)
                             {
                                 s += (char)next;
                             }
-                            else
+                            else //if the byte is null, we have a name
                             {
                                 Console.WriteLine(s);
                                 bool isEnd = s.Equals("END");
                                 Console.WriteLine(isEnd.ToString());
 
+                                //if the end of the header is marked, we break the loop
                                 if (isEnd)
                                 {
                                     //we move on to read the files
                                     //Console.WriteLine("got end of data at " + headerSize + " bytes");
                                     break;
                                 }
-                                else
+                                else //if it's not the end of the loop, we move on to read the offset and size
                                 {
                                     UInt32 offset = reader.ReadUInt32();
                                     headerSize += 4;
@@ -120,33 +123,32 @@ namespace CatEngine.Content
                                     headerSize += 4;
 
                                     ItemList.Add(new Tuple<string, uint, uint>(s, offset, length));
-
-                                    Console.WriteLine(offset);
-                                    Console.WriteLine(length);
                                 }
 
                                 s = "";
                             }
                         }
 
+                        //take the list of tuples and generate sound effect data from them
                         foreach (Tuple<string, uint, uint> t in ItemList)
                         {
                             Console.WriteLine(t.Item1);
 
                             List<Byte> byteArr = new List<byte>();
 
+                            //we make the buffer
                             for (int i = 0; i < (int)t.Item3; i++)
                             {
                                 Byte b = reader.ReadByte();
-                                //Console.WriteLine(b.ToString());
                                 byteArr.Add(b);
                             }
 
                             byte[] buffer = byteArr.ToArray();
-
+                            
+                            //I need to write this somewhere
                             int freq = 44100;
 
-                            SoundEffect snd = new SoundEffect(buffer, freq, AudioChannels.Stereo);
+                            SoundEffectInstance snd = new SoundEffect(buffer, freq, AudioChannels.Stereo).CreateInstance();
                             dSoundFXDict.Add(t.Item1, snd);
                             CConsole.Instance.Print("loaded sound " + t.Item1 + " with size of " + t.Item3 +" from " + name +".bnk");
                         }
@@ -174,6 +176,16 @@ namespace CatEngine.Content
 
             if (MusicChannel != null)
                 MusicChannel.isPlaying(out isPlaying);
+
+            return isPlaying;
+        }
+
+        public bool IsSoundPlaying(string soundName)
+        {
+            bool isPlaying = false;
+
+            if (dSoundFXDict[soundName].State == SoundState.Playing)
+                isPlaying = true;
 
             return isPlaying;
         }

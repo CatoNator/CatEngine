@@ -58,22 +58,38 @@ namespace CatEngine
                 if (pGameObjectList[i] == null)
                 {
                     //making the object!!!!
-                    pGameObjectList[i] = (CGameObject)Activator.CreateInstance(instanceType);
+                    try
+                    {
+                        returnObject = pGameObjectList[i] = (CGameObject)Activator.CreateInstance(instanceType);
+                    }
+                    catch (Exception e)
+                    {
+                        try
+                        {
+                            CConsole.Instance.Print("Could not create entity type of " + instanceType.ToString() + "! " + e.Message);
+                        }
+                        catch (Exception a)
+                        {
+                            CConsole.Instance.Print("Entity type was null! " + a.Message);
+                        }
+                    }
 
-                    //this is for the function
-                    returnObject = pGameObjectList[i];
+                    if (returnObject != null)
+                    {
+                        //this is for the function
+                        //returnObject = pGameObjectList[i];
 
-                    //here we make sure the object spawns correctly
-                    returnObject.Spawn(x, z, y, i);
+                        //here we make sure the object spawns correctly
+                        returnObject.Spawn(x, z, y, i);
 
-                    //debugObjSlot = i;
-
+                        //debugObjSlot = i;
+                    }
                     break;
                 }
             }
 
             if (returnObject == null)
-                CConsole.Instance.Print("Object creation failed!");
+                CConsole.Instance.Print("Entity creation failed!");
 
             return returnObject;
         }
@@ -113,6 +129,8 @@ namespace CatEngine
                 //calling the ondestruction subroutine
                 pGameObjectList[index].OnDestruction();
 
+                pGameObjectList[index].Dispose();
+
                 //he's dead jim
                 pGameObjectList[index] = null;
 
@@ -120,6 +138,11 @@ namespace CatEngine
             }
             else
                 CConsole.Instance.Print("Tried to remove a nonexistent object with index of " + index);
+        }
+
+        public bool IndexExists(int index)
+        {
+            return pGameObjectList[index] != null;
         }
 
         //the gameobject updating loop

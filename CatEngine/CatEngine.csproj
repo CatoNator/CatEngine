@@ -70,6 +70,7 @@
     <Compile Include="ContentManagers\CColliderManager.cs" />
     <Compile Include="ContentManagers\CRender.cs" />
     <Compile Include="CPauseMenu.cs" />
+    <Compile Include="ContentManagers\CScenarioManager.cs" />
     <Compile Include="CSettings.cs" />
     <Compile Include="ContentManagers\CContentManager.cs" />
     <Compile Include="CParticleManager.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="fmod_dsp.cs" />
     <Compile Include="fmod_errors.cs" />
     <Compile Include="GameObjects\CCamera.cs" />
+    <Compile Include="GameObjects\CCheckpoint.cs" />
     <Compile Include="GameObjects\Collidable\CCollidable.cs" />
     <Compile Include="GameObjects\CDoor.cs" />
     <Compile Include="GameObjects\CEnemy.cs" />
@@ -113,7 +115,7 @@
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
+    <MonoGameContentReference Include="Content\AssetData.mgcb" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

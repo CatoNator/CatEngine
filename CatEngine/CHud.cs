@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using CatEngine.Content;
 
 namespace CatEngine
 {
@@ -32,6 +33,7 @@ namespace CatEngine
         public void Render()
         {
             CGame.Instance.RenderHUD();
+            CScenarioManager.Instance.RenderHUD();
         }
     }
 }

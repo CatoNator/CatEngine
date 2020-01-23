@@ -52,6 +52,7 @@ namespace CatEngine
             QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Collectible" });
             QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Menu" });
             QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "Player" });
+            QueueLoadCommand(CAudioManager.Instance, "LoadBank", new List<string>() { "AssetData/Sounds", "DialogTest" });
             QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "AssetData/Music", "test", "xm" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "cube_tex" });
             //QueueLoadCommand(CRender.Instance, "LoadTexture", new List<string>() { "grassside" });
@@ -60,6 +61,7 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "muzzleflash" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "smoke" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "bullet_casing" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Frontend", "arrow" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "bullet" });
 
             PrepareModel("AssetData/Models/Player/", "player");
@@ -129,6 +131,8 @@ namespace CatEngine
 
             //load music into memory
             //QueueLoadCommand(CAudioManager.Instance, "LoadSong", new List<string>() { "test.xm" });
+
+            QueueLoadCommand(CScenarioManager.Instance, "LoadScenario", new List<string>() { levelName, "scenario1" });
         }
 
         public void UnloadLevelData()
@@ -155,6 +159,8 @@ namespace CatEngine
             //string path = "AssetData/Models/";
 
             PrepareModel(path, propName);
+
+            QueueLoadCommand(CColliderManager.Instance, "LoadCollider", new List<string>() { path, propName });
         }
 
         public void PrepareModel(String path, String modelName)

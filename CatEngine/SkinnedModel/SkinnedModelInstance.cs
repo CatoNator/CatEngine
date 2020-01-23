@@ -14,12 +14,16 @@ namespace CatEngine.SkinnedMdl
         public SkinnedModel Mesh { get; set; }
         public Matrix Transformation { get; set; }
         public SkinnedModelAnimation Animation { get; set; }
+        public SkinnedModelAnimation SecondaryAnimation = null;
 
         public List<MeshInstance> MeshInstances;
         public List<BoneAnimationInstance> BoneAnimationInstances;
+        public List<BoneAnimationInstance> SecondaryBoneAnimationInstances;
 
         public SkinnedModelAnimation PreviousAnimation { get; set; }
         public List<BoneAnimationInstance> PreviousBoneAnimationInstances;
+
+        public float SecondaryAnimationFading = 0.0f;
 
         public TimeSpan TimeAnimationChanged;
         public float SpeedTransitionSecond { get; set; } = 1.0f;
@@ -31,6 +35,7 @@ namespace CatEngine.SkinnedMdl
         public struct BoneInstance
         {
             public BoneAnimationInstance BoneAnimationInstance { get; set; }
+            public BoneAnimationInstance SecondaryBoneAnimationInstance { get; set; }
             public SkinnedModel.Bone Bone { get; set; }
         }
 
@@ -59,6 +64,7 @@ namespace CatEngine.SkinnedMdl
         public void Initialize()
         {
             BoneAnimationInstances = new List<BoneAnimationInstance>();
+            SecondaryBoneAnimationInstances = new List<BoneAnimationInstance>();
             MeshInstances = new List<MeshInstance>();
             PreviousBoneAnimationInstances = new List<BoneAnimationInstance>();
 
@@ -140,6 +146,11 @@ namespace CatEngine.SkinnedMdl
             {
                 UpdateBoneAnimationInstance(boneAnimationInstance, gameTime);
             }
+
+            foreach (var boneAnimationInstance in SecondaryBoneAnimationInstances)
+            {
+                UpdateBoneAnimationInstance(boneAnimationInstance, gameTime);
+            }
         }
 
         public void UpdateBones(GameTime gameTime)
@@ -148,7 +159,28 @@ namespace CatEngine.SkinnedMdl
             {
                 foreach (var boneInstances in meshInstance.BoneInstances)
                 {
-                    if (boneInstances.BoneAnimationInstance != null)
+                    /*if (boneInstances.BoneAnimationInstance == null)
+                        Console.WriteLine("primary boneanimation instance is null");*/
+
+                    /*if (boneInstances.SecondaryBoneAnimationInstance == null)
+                        Console.WriteLine("secondary boneanimation instance is null");*/
+
+
+                    if (boneInstances.BoneAnimationInstance != null && boneInstances.SecondaryBoneAnimationInstance != null)
+                    {
+                        Matrix transform = boneInstances.BoneAnimationInstance.Transform * (1 - SecondaryAnimationFading) + boneInstances.SecondaryBoneAnimationInstance.Transform * SecondaryAnimationFading;
+
+                        if (boneInstances.BoneAnimationInstance.PreviousBoneAnimationInstance != null)
+                        {
+                            float transition = (float)(gameTime.TotalGameTime.TotalSeconds - TimeAnimationChanged.TotalSeconds);
+                            if (transition < SpeedTransitionSecond)
+                            {
+                                transform = Matrix.Lerp(boneInstances.BoneAnimationInstance.PreviousBoneAnimationInstance.Transform, boneInstances.BoneAnimationInstance.Transform * (1 - SecondaryAnimationFading) + boneInstances.SecondaryBoneAnimationInstance.Transform * SecondaryAnimationFading, transition / SpeedTransitionSecond);
+                            }
+                        }
+                        meshInstance.BonesOffsets[boneInstances.Bone.Index] = boneInstances.Bone.Offset * transform;
+                    }
+                    else if (boneInstances.BoneAnimationInstance != null)
                     {
                         Matrix transform = boneInstances.BoneAnimationInstance.Transform;
 
@@ -232,6 +264,65 @@ namespace CatEngine.SkinnedMdl
                     boneInstance.Bone = bone;
                     boneInstance.BoneAnimationInstance = BoneAnimationInstances.FirstOrDefault(ni => ni.BoneAnimation.Name == bone.Name);
                     meshInstance.BoneInstances.Add(boneInstance);
+                }
+            }
+        }
+
+        public void SetSecondaryAnimation(SkinnedModelAnimation animation, GameTime gameTime) // = null
+        {
+            /*PreviousAnimation = animation;
+            PreviousBoneAnimationInstances.Clear();
+            PreviousBoneAnimationInstances.AddRange(BoneAnimationInstances);*/
+            if (animation != null)
+            {
+                SecondaryAnimation = animation;
+
+                SecondaryBoneAnimationInstances.Clear();
+                foreach (var boneAnimation in animation.BoneAnimations)
+                {
+                    BoneAnimationInstance boneAnimationInstance = new BoneAnimationInstance();
+                    boneAnimationInstance.BoneAnimation = boneAnimation;
+                    boneAnimationInstance.Updated = false;
+                    boneAnimationInstance.AdditionalTransform = Matrix.Identity;
+                    //boneAnimationInstance.PreviousBoneAnimationInstance = PreviousBoneAnimationInstances.FirstOrDefault(ni => ni.BoneAnimation.Name == boneAnimation.Name);
+                    SecondaryBoneAnimationInstances.Add(boneAnimationInstance);
+                }
+
+                foreach (var boneAnimationInstance in SecondaryBoneAnimationInstances)
+                {
+                    boneAnimationInstance.Parent = SecondaryBoneAnimationInstances.FirstOrDefault(ni => ni.BoneAnimation == boneAnimationInstance.BoneAnimation.Parent);
+                }
+
+                foreach (var meshInstance in MeshInstances)
+                {
+                    //meshInstance.BoneInstances.Clear();
+                    for (int i = 0; i < meshInstance.BoneInstances.Count; i++)//foreach (var boneInstance in meshInstance.BoneInstances)
+                    {
+                        var boneInstance = meshInstance.BoneInstances[i];
+                        var bone = meshInstance.Mesh.Bones[i];
+                        boneInstance.SecondaryBoneAnimationInstance = SecondaryBoneAnimationInstances.FirstOrDefault(ni => ni.BoneAnimation.Name == bone.Name);
+                        meshInstance.BoneInstances[i] = boneInstance;
+                    }
+                }
+            }
+            else
+            {
+                SecondaryBoneAnimationInstances.Clear();
+
+                foreach (var boneAnimationInstance in SecondaryBoneAnimationInstances)
+                {
+                    boneAnimationInstance.Parent = SecondaryBoneAnimationInstances.FirstOrDefault(ni => ni.BoneAnimation == boneAnimationInstance.BoneAnimation.Parent);
+                }
+
+                foreach (var meshInstance in MeshInstances)
+                {
+                    //meshInstance.BoneInstances.Clear();
+                    for (int i = 0; i < meshInstance.BoneInstances.Count; i++)//foreach (var boneInstance in meshInstance.BoneInstances)
+                    {
+                        var boneInstance = meshInstance.BoneInstances[i];
+                        boneInstance.SecondaryBoneAnimationInstance = null;
+                        meshInstance.BoneInstances[i] = boneInstance;
+                    }
                 }
             }
         }
