@@ -11,6 +11,8 @@
 		<alphaspeed value="0.0"/>
 		
 		<life value="60"/>
+		
+		<gravity value="false"/>
 	</particle>
 	
 	<particle name="part_muzzleflash">
@@ -25,11 +27,13 @@
 		<alphaspeed value="0.0"/>
 		
 		<life value="2"/>
+		
+		<gravity value="false"/>
 	</particle>
 	
 	<particle name="part_gunsmoke">
 		<texture name="smoke"/>
-		<angle min="0" max="45"/>
+		<angle min="0" max="360"/>
 		<size min="1.5" max="2"/>
 		<alpha min="1" max = "1"/>
 		
@@ -39,5 +43,23 @@
 		<alphaspeed value="-0.01"/>
 		
 		<life value="60"/>
+		
+		<gravity value="false"/>
+	</particle>
+	
+	<particle name="part_bulletcasing">
+		<texture name="bullet_casing"/>
+		<angle min="0" max="0"/>
+		<size min="1" max="1"/>
+		<alpha min="1" max = "1"/>
+		
+		<speed xmin="0" xmax="0" ymin="0.5" ymax="1" zmin="0" zmax="0"/>
+		<rotspeed value="5"/>
+		<sizespeed value="0"/>
+		<alphaspeed value="0"/>
+		
+		<life value="60"/>
+		
+		<gravity value="true"/>
 	</particle>
 </partdata>

@@ -8,7 +8,7 @@
 		<enemyspawn type="CAamu" amount="69" x="0" y="0"/>
 	</objective>
 	<objective type="Elimination" string="Eliminate the target">
-		<target type="CNatsa" x="20" y="40" z="20"/>
+		<target type="CatEngine.CNatsa" x="20" y="40" z="20"/>
 		<enemyspawn type="CAamu" amount="69" x="0" y="0"/>
 	</objective>
 	<objective type="Event" string="A textbox should appear">
