@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 
 namespace CatEngine.Content
 {
@@ -66,12 +67,7 @@ namespace CatEngine.Content
                             float y = Int32.Parse(t.Attribute("y").Value);
                             float z = Int32.Parse(t.Attribute("z").Value);
 
-                            Type targetType = typeof(CNatsa);//Type.GetType(t.Attribute("type").Value);
-
-                            if (targetType == null)
-                                Console.WriteLine("nigga the type is null " + t.Attribute("type").Value);
-                            else
-                                Console.WriteLine("nigga the type is "+targetType.ToString());
+                            Type targetType = Type.GetType(t.Attribute("type").Value);
 
                             objective.SetObjective(str, targetType, x, y, z);
                         }
@@ -226,6 +222,8 @@ namespace CatEngine.Content
         private List<string> DialogSoundBytes;
         private List<string> DialogSubtitles;
 
+        private SoundEffectInstance currentDialog = null;
+
         private List<EnemySpawner> spawnerList = new List<EnemySpawner>();
 
         public bool isActive = true;
@@ -311,17 +309,12 @@ namespace CatEngine.Content
             }
             else if (currentObjective == ObjectiveType.Event)
             {
-                bool dialogueOn = false;
-
-                for (int i = 0; i < DialogSoundBytes.Count; i++)
-                {
-                    if (CAudioManager.Instance.IsSoundPlaying(DialogSoundBytes[i]))
-                        dialogueOn = true;
-                }
+                bool dialogueOn = (currentDialog != null && CAudioManager.Instance.IsSoundPlaying(currentDialog));
 
                 if (TextInd < DialogSoundBytes.Count && !dialogueOn)
                 {
-                    CAudioManager.Instance.PlaySound(DialogSoundBytes[TextInd]);
+                    currentDialog = CAudioManager.Instance.PlaySound(DialogSoundBytes[TextInd]);
+
                     TextInd++;
                 }
                 else if (TextInd >= DialogSoundBytes.Count && !dialogueOn)

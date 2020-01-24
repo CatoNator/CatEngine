@@ -30,10 +30,13 @@ namespace CatEngine.Content
 
         public void LoadCollider(string path, string colliderName)
         {
-            ObjectCollider col = new ObjectCollider();
-            col.LoadCollider(path, colliderName);
+            if(!dColliderDict.ContainsKey(colliderName))
+            {
+                ObjectCollider col = new ObjectCollider();
+                col.LoadCollider(path, colliderName);
 
-            dColliderDict.Add(colliderName, col);
+                dColliderDict.Add(colliderName, col);
+            }
         }
 
         public float GetFloorHeightAt(string colliderName, float x, float y, float z)

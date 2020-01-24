@@ -37,7 +37,7 @@ namespace CatEngine.Content
         private Matrix viewMatrix;
         private Matrix projectionMatrix;
 
-        private Vector3 SunOrientation = new Vector3(4.5f, 4.5f, 2.0f);
+        private Vector3 SunOrientation = new Vector3(4.5f, -4.5f, 2.0f);
 
         private GameTime gameTime;
 
@@ -48,8 +48,9 @@ namespace CatEngine.Content
         private SkinnedModelInstance playerInstance = new SkinnedModelInstance();
 
         //we set this up for skinned models
-        public Effect SimpleModelEffect { get; set; }
-        public Effect SkinnedModelEffect { get; set; }
+        private Effect SimpleModelEffect;
+        private Effect SkinnedModelEffect;
+        private Effect DiffuseShader;
 
         //public Dictionary<string, Texture2D> dTextureDict = new Dictionary<string, Texture2D>();
         private CRender()
@@ -72,6 +73,7 @@ namespace CatEngine.Content
 
             SimpleModelEffect = content.Load<Effect>("Effects/SimpleModelEffect");
             SkinnedModelEffect = content.Load<Effect>("Effects/SkinnedModelEffect");
+            DiffuseShader = content.Load<Effect>("Effects/LightingEffect");
         }
 
         public void InitPlayer()
@@ -507,6 +509,16 @@ namespace CatEngine.Content
             //skinnedModelInstance.Dispose();
         }
 
+        public void PlayerSetAdditionalRotation(string BoneName, Vector3 Rotation)
+        {
+            SkinnedModelInstance.BoneAnimationInstance boneInstance = playerInstance.GetBoneAnimationInstance(BoneName);
+
+            if (boneInstance != null)
+                boneInstance.AdditionalTransform = Matrix.CreateRotationX(Rotation.X) * Matrix.CreateRotationY(Rotation.Y) * Matrix.CreateRotationZ(Rotation.Z);
+            else
+                Console.WriteLine("bone was null");
+        }
+
         public void DrawPlayer(String animName, String secondaryAnimName, Vector3 position, float rotation, float animFrame, float animFade)
         {
             if (playerInstance.Animation != dSkinnedAnimationDict[animName])
@@ -539,9 +551,22 @@ namespace CatEngine.Content
 
             playerInstance.Update(gameTime);
 
-            SkinnedModelEffect.Parameters["SunOrientation"].SetValue(Vector3.Normalize(SunOrientation));
+            
+
+            SkinnedModelEffect.Parameters["SunOrientation"].SetValue(SunOrientation);
             SkinnedModelEffect.Parameters["World"].SetValue(playerInstance.Transformation);
             SkinnedModelEffect.Parameters["WorldViewProjection"].SetValue(playerInstance.Transformation * viewMatrix * projectionMatrix);
+            Matrix worldInverseTransposeMatrix = Matrix.Transpose(Matrix.Invert(playerInstance.Transformation * worldMatrix));
+            SkinnedModelEffect.Parameters["WorldInverseTranspose"].SetValue(worldInverseTransposeMatrix);
+
+            //DiffuseShader.EnableDefaultLighting();
+            //DiffuseShader.PreferPerPixelLighting = true;
+            DiffuseShader.Parameters["World"].SetValue(worldMatrix * playerInstance.Transformation);
+            DiffuseShader.Parameters["View"].SetValue(viewMatrix);
+            DiffuseShader.Parameters["Projection"].SetValue(projectionMatrix);
+            DiffuseShader.Parameters["SunOrientation"].SetValue(SunOrientation);
+
+            
 
             foreach (var meshInstance in playerInstance.MeshInstances)
             {

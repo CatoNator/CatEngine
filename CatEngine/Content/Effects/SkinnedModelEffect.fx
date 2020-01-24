@@ -9,9 +9,12 @@
 
 matrix World;
 matrix WorldViewProjection;
+matrix WorldInverseTranspose;
 Texture2D Texture1;
 float3 SunOrientation;
 float4x4 gBonesOffsets[50];
+float4 DiffuseColor = float4(1, 1, 1, 1);
+float DiffuseIntensity = 1.0;
 
 sampler TextureSampler1 = 
 sampler_state
@@ -64,6 +67,10 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	output.Position = mul(skinnedPosition, WorldViewProjection);
 	output.Normal = mul(input.Normal, World);
 	output.Uv = input.Uv;
+
+	float4 normal = mul(input.Normal, WorldInverseTranspose);
+	float lightIntensity = dot(normal, SunOrientation);
+	output.Color = saturate(DiffuseColor * DiffuseIntensity * lightIntensity);
 
 	return output;
 }

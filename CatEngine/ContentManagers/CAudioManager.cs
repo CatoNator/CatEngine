@@ -33,7 +33,7 @@ namespace CatEngine.Content
         private FMOD.System FMODSystem;
         private FMOD.Channel MusicChannel;
 
-        private Dictionary<string, SoundEffectInstance> dSoundFXDict = new Dictionary<string, SoundEffectInstance>();
+        private Dictionary<string, SoundEffect> dSoundFXDict = new Dictionary<string, SoundEffect>();
         private Dictionary<string, Sound> dMusicDict = new Dictionary<string, Sound>();
         
         private CAudioManager()
@@ -61,7 +61,7 @@ namespace CatEngine.Content
             
             FMODSystem.release();
 
-            foreach (KeyValuePair<string, SoundEffectInstance> s in dSoundFXDict.ToList())
+            foreach (KeyValuePair<string, SoundEffect> s in dSoundFXDict.ToList())
             {
                 s.Value.Dispose();
             }
@@ -148,7 +148,7 @@ namespace CatEngine.Content
                             //I need to write this somewhere
                             int freq = 44100;
 
-                            SoundEffectInstance snd = new SoundEffect(buffer, freq, AudioChannels.Stereo).CreateInstance();
+                            SoundEffect snd = new SoundEffect(buffer, freq, AudioChannels.Stereo);
                             dSoundFXDict.Add(t.Item1, snd);
                             CConsole.Instance.Print("loaded sound " + t.Item1 + " with size of " + t.Item3 +" from " + name +".bnk");
                         }
@@ -180,11 +180,11 @@ namespace CatEngine.Content
             return isPlaying;
         }
 
-        public bool IsSoundPlaying(string soundName)
+        public bool IsSoundPlaying(SoundEffectInstance snd)
         {
             bool isPlaying = false;
 
-            if (dSoundFXDict[soundName].State == SoundState.Playing)
+            if (snd != null && snd.State == SoundState.Playing)
                 isPlaying = true;
 
             return isPlaying;
@@ -212,9 +212,18 @@ namespace CatEngine.Content
             }
         }*/
 
-        public void PlaySound(string name)
+        public SoundEffectInstance PlaySound(string name)
         {
-            dSoundFXDict[name].Play();
+            if (dSoundFXDict.ContainsKey(name))
+            {
+                SoundEffectInstance snd = dSoundFXDict[name].CreateInstance();
+
+                snd.Play();
+
+                return snd;
+            }
+            else
+                return null;
         }
 
         public void PlaySong(String name)

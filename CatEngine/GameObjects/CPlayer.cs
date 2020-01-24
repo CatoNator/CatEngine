@@ -23,6 +23,7 @@ namespace CatEngine
         private float fVInput2 = 0.0f;
 
         public float fDir = 0;
+        private float fAimDir = 0;
 
         private float fMoveDir = 0.0f;
 
@@ -45,13 +46,15 @@ namespace CatEngine
 
         private float fAnimFrame = 0.0f;
 
-        private float fAnimFade = 1.0f;
+        private float fAnimFade = 0.0f;
 
         String sCurrentAnimation = "player_tpose";
         String sSecondaryAnimation = null;
 
         private int iShotCooldown = 0;
         private const int iShotCooldownMax = 5;
+
+        private bool bIsShooting = false;
         
         public override void InstanceSpawn()
         {
@@ -93,19 +96,19 @@ namespace CatEngine
             {
                 if (iShotCooldown <= 0)
                 {
-                    float xoffs = distDirX(5, fDir);
-                    float yoffs = distDirY(5, fDir);
+                    float xoffs = distDirX(5, fAimDir);
+                    float yoffs = distDirY(5, fAimDir);
 
                     Vector3 bulletSpawnPoint = new Vector3(x + xoffs, z + 7, y + yoffs);
 
                     CAudioManager.Instance.PlaySound("temp_gunshot");
 
                     CPlayerBullet bullet = (CPlayerBullet)CObjectManager.Instance.CreateInstance(typeof(CPlayerBullet), bulletSpawnPoint.X, bulletSpawnPoint.Y, bulletSpawnPoint.Z);
-                    bullet.SetProperties(fDir, 5);
+                    bullet.SetProperties(fAimDir, 5);
 
                     CParticleManager.Instance.CreateParticle("part_muzzleflash", bulletSpawnPoint);
                     CParticleManager.Instance.CreateParticle("part_gunsmoke", bulletSpawnPoint);
-                    CParticleManager.Instance.CreateParticle("part_bulletcasing", bulletSpawnPoint, new Vector3(distDirX(0.3f, fDir - (float)(Math.PI/2)), 0, distDirY(0.3f, fDir - (float)(Math.PI / 2))));
+                    CParticleManager.Instance.CreateParticle("part_bulletcasing", bulletSpawnPoint, new Vector3(distDirX(0.3f, fAimDir - (float)(Math.PI/2)), 0, distDirY(0.3f, fAimDir - (float)(Math.PI / 2))));
 
                     iShotCooldown = iShotCooldownMax;
                 }
@@ -216,17 +219,25 @@ namespace CatEngine
             float inputDir = 0;
             float inputSp = 0;
 
-            if ((fHInput != 0 || fVInput != 0) && (fHInput2 == 0 && fVInput2 == 0))
+            if ((fHInput != 0 || fVInput != 0))
             {
                 inputDir = inputDir = PointDirection(0, 0, fHInput, fVInput);
                 inputSp = 1.0f;//PointDistance(0, 0, fHInput, fVInput);
                 fDir = inputDir+fCamDir;
                 //fMoveDir = fCamDir;
             }
-            else if (fHInput2 != 0 || fVInput2 != 0)
+
+
+            if (fHInput2 != 0 || fVInput2 != 0)
             {
                 float inputDirR = PointDirection(0, 0, fHInput2, fVInput2);
-                fDir = inputDirR + fCamDir;
+                fAimDir = inputDirR + fCamDir;
+                bIsShooting = true;
+            }
+            else
+            {
+                fAimDir = fDir;
+                bIsShooting = false;
             }
 
             fHorSpeed += distDirX(inputSp * fAcceleration, fDir);
@@ -384,15 +395,40 @@ namespace CatEngine
                 {
                     sCurrentAnimation = "player_walk";
                     float animSp = (float)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed) * 2;
-                    fAnimFrame += animSp;
-                    fAnimFrame %= 89;
+                    
                     /*CConsole.Instance.debugString2 = "animframe";
                     CConsole.Instance.debugValue2 = animSp;*/
+
+                    if (bIsShooting)
+                    {
+                        int diff = (int)((fDir - fAimDir) / (float)Math.PI/2);
+                        Console.WriteLine(diff);
+
+                        if (diff >= 2)
+                        {
+                            fAnimFrame -= animSp;
+                            if (fAnimFrame < 0)
+                                fAnimFrame = 89;
+                        }
+                        else
+                        {
+                            fAnimFrame += animSp;
+                            fAnimFrame %= 89;
+                        }
+                    }
+                    else
+                    {
+                        sCurrentAnimation = "player_walk";
+                        fAnimFrame += animSp;
+                        fAnimFrame %= 89;
+                    }
 
                     if ((fAnimFrame >= 1 && fAnimFrame <= 3) || (fAnimFrame >= 45 && fAnimFrame <= 47))
                     {
                         CAudioManager.Instance.PlaySound("footstep_solid1");
                     }
+
+
                 }
                 else
                 {
@@ -401,10 +437,14 @@ namespace CatEngine
                 }
             }
 
-            if (fHInput2 != 0 || fVInput2 != 0)
+            if (bIsShooting)
+            {
                 sSecondaryAnimation = "player_tpose";
+            }
             else
                 sSecondaryAnimation = null;
+
+            CRender.Instance.PlayerSetAdditionalRotation("upperback", new Vector3(0, fAimDir - fDir, 0));
         }
 
         private Tuple<CCollidable, float> GetObjectCollision(Vector3 point)
