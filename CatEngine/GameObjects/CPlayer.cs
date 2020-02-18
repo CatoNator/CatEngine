@@ -24,6 +24,8 @@ namespace CatEngine
 
         public float fDir = 0;
         private float fAimDir = 0;
+        private float fBodyDir = 0;
+        private float fFeetDir = 0;
 
         private float fMoveDir = 0.0f;
 
@@ -198,6 +200,12 @@ namespace CatEngine
             }
         }
 
+        private float AngleDiff(float angle1, float angle2)
+        {
+            float pi = (float)Math.PI;
+            return ((((angle1 - angle2) % pi) + (pi*1.5f)) % pi) - (pi/2);
+        }
+
         private float PDPositive(float x1, float y1, float x2, float y2)
         {
 
@@ -226,7 +234,6 @@ namespace CatEngine
                 fDir = inputDir+fCamDir;
                 //fMoveDir = fCamDir;
             }
-
 
             if (fHInput2 != 0 || fVInput2 != 0)
             {
@@ -437,6 +444,9 @@ namespace CatEngine
                 }
             }
 
+            fFeetDir = fDir;
+            fBodyDir = AngleDiff(fAimDir, fFeetDir) / 2;
+
             if (bIsShooting)
             {
                 sSecondaryAnimation = "player_tpose";
@@ -444,7 +454,9 @@ namespace CatEngine
             else
                 sSecondaryAnimation = null;
 
-            CRender.Instance.PlayerSetAdditionalRotation("upperback", new Vector3(0, fAimDir - fDir, 0));
+            CRender.Instance.PlayerSetAdditionalRotation("upperback", new Vector3(0, fBodyDir, 0));
+
+            CRender.Instance.PlayerSetAdditionalRotation("neck", new Vector3(0, fAimDir-fBodyDir, 0));
         }
 
         private Tuple<CCollidable, float> GetObjectCollision(Vector3 point)
