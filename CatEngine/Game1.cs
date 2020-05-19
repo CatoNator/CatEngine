@@ -29,7 +29,7 @@ namespace CatEngine
         public GameState CurrentGameState = GameState.Loading;
 
         GraphicsDeviceManager graphics;
-        DepthStencilState depthBuffer = new DepthStencilState() { DepthBufferEnable = true, DepthBufferFunction = CompareFunction.Less };
+        DepthStencilState ds_depth_on_less_than = new DepthStencilState() { DepthBufferEnable = true, DepthBufferFunction = CompareFunction.Less };
         SpriteBatch spriteBatch;
 
         SpriteBatch screenBatch;
@@ -249,6 +249,16 @@ namespace CatEngine
             }
             else if (CurrentGameState == GameState.Game)
             {
+                //shadowmap
+                GraphicsDevice.SetRenderTarget(CRender.Instance.GetShadowMap());
+                GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1.0f, 0);
+                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                CLevel.Instance.RenderShadow();
+                CObjectManager.Instance.Render("ShadowMap");
+
+                //regular-ass rendering
+                GraphicsDevice.SetRenderTarget(renderTarget);
+
                 //skybox
                 spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
                 CSprite.Instance.DrawSkyBox();
@@ -259,7 +269,7 @@ namespace CatEngine
                 GraphicsDevice.RasterizerState = RasterizerState.CullNone; //kinnunen pls
                 //CLevel.Instance.Render();
                 CLevel.Instance.Render();
-                CObjectManager.Instance.Render();
+                CObjectManager.Instance.Render("ShadowedScene");
                 CParticleManager.Instance.Render();
                 CScenarioManager.Instance.Render();
 
@@ -281,7 +291,7 @@ namespace CatEngine
                 GraphicsDevice.RasterizerState = RasterizerState.CullNone; //kinnunen pls
                 //CLevel.Instance.Render();
                 CLevel.Instance.Render();
-                CObjectManager.Instance.Render();
+                CObjectManager.Instance.Render("BasicColorDrawing");
                 CScenarioManager.Instance.Render();
 
                 //rendering 2D objects
@@ -305,11 +315,9 @@ namespace CatEngine
             //drawing the screen scaled on the window
             screenBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
             screenBatch.Draw(renderTarget, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            if (CDebug.Instance.DrawShadowMap)
+                screenBatch.Draw(CRender.Instance.GetShadowMap(), new Rectangle(0, 0, 512, 512), Color.White);
             screenBatch.End();
-
-            //screenBatch.Begin(SpriteSortMode.Immediate, bsSubtract, SamplerState.PointClamp, null, null, null, null);
-            //screenBatch.Draw(lightMap, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-            //screenBatch.End();
 
             base.Draw(gameTime);
         }

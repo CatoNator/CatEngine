@@ -21,6 +21,8 @@ namespace CatEngine
 
         public int iFovAngle = 45;
 
+        public int iShadowMapSize = 1024;
+
         public int iShadowDrawDist = 80;
         public int iModelDrawDist = 160;
 

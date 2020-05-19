@@ -449,7 +449,7 @@ namespace CatEngine
         }
 
         //the rendering code called once per frame
-        public virtual void Render()
+        public virtual void Render(string technique)
         {
         }
 

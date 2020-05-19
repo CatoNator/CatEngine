@@ -12,8 +12,8 @@ namespace CatEngine
     class CCamera : CGameObject
     {
         private float fCameraRotation = 90.0f;
-        private float fCameraVRotation = 20.0f;
-        private float fCameraDistance = 20.0f;
+        private float fCameraVRotation = 90.0f;
+        private float fCameraDistance = 30.0f;
         private float fTargetHeight = 10.0f;
         private float fCameraBufferRange = 5.0f;
 

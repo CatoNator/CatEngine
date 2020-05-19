@@ -26,15 +26,19 @@ namespace CatEngine
             rotation %= (float)Math.PI * 2.0f;
         }
 
-        public override void Render()
+        public override void Render(string technique)
         {
             //UpdateCollision();
 
-            CRender.Instance.DrawSimpleModel("natsa", new Vector3(x, z + (float)Math.Sin((double)rotation), y), new Vector3(-(float)(Math.PI / 2.0), rotation, 0), 0.5f);
-            CRender.Instance.DrawShadowSimple(new Vector3(x, z, y), 1.5f);
+            CRender.Instance.DrawSimpleModel(technique, "natsa", new Vector3(x, z + (float)Math.Sin((double)rotation), y), new Vector3(-(float)(Math.PI / 2.0), rotation, 0), 0.5f);
+            
+            if (technique != "ShadowMap")
+            {
+                CRender.Instance.DrawShadowSimple(new Vector3(x, z, y), 1.5f);
 
-            if (CDebug.Instance.ShowHitBoxes)
-                CRender.Instance.DrawHitBox(hitCylinder.Position, hitCylinder.Height, hitCylinder.Radius);
+                if (CDebug.Instance.ShowHitBoxes)
+                    CRender.Instance.DrawHitBox(hitCylinder.Position, hitCylinder.Height, hitCylinder.Radius);
+            }
         }
     }
 }

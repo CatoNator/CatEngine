@@ -123,19 +123,24 @@ namespace CatEngine
 
             //we don't want to update the animation in Render() because it'll animate while paused
             UpdateAnimation();
+
+            CRender.Instance.SetLightPosition(new Vector3(x, z+10, y), new Vector3(x+distDirX(10, fDir), z + 10, y + distDirY(10, fDir)));
         }
 
-        public override void Render()
+        public override void Render(string technique)
         {
-            CRender.Instance.DrawPlayer(sCurrentAnimation, sSecondaryAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame, fAnimFade);
+            if (technique != "ShadowMap")
+            {
+                CRender.Instance.DrawPlayer(technique, sCurrentAnimation, sSecondaryAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame, fAnimFade);
 
-            //CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
+                //CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
 
-            CRender.Instance.DrawShadow(new Vector3(x, z+2.5f, y), 2.5f);
-            //CRender.Instance.DrawPlayerShadow(new Vector3(x, z + 2.5f, y), 2.5f, sCurrentAnimation, fDir, fAnimFrame);
+                CRender.Instance.DrawShadow(new Vector3(x, z + 2.5f, y), 2.5f);
+                //CRender.Instance.DrawPlayerShadow(new Vector3(x, z + 2.5f, y), 2.5f, sCurrentAnimation, fDir, fAnimFrame);
 
-            if (CDebug.Instance.ShowHitBoxes)
-                CRender.Instance.DrawHitBox(hitCylinder.Position, hitCylinder.Height, hitCylinder.Radius);
+                if (CDebug.Instance.ShowHitBoxes)
+                    CRender.Instance.DrawHitBox(hitCylinder.Position, hitCylinder.Height, hitCylinder.Radius);
+            }
         }
 
         public void MovementKeyboard(KeyboardState keyboardState)

@@ -347,7 +347,7 @@ namespace CatEngine.Content
             //rendering loop
         public void Render()
         {
-            CRender.Instance.DrawSimpleModel(sLevelModelName, new Vector3(0, fLevelHeight - 0.1f, 0), new Vector3(0,  0, 0), fLevelScale);
+            CRender.Instance.DrawSimpleModel("ShadowedScene", sLevelModelName, new Vector3(0, fLevelHeight - 0.1f, 0), new Vector3(0,  0, 0), fLevelScale);
 
             if (CDebug.Instance.ShowTerrainDebug)
             {
@@ -358,6 +358,12 @@ namespace CatEngine.Content
                     LevelCells[activeCellX, activeCellY].RenderCell();
                 }
             }
+        }
+
+        //temp
+        public void RenderShadow()
+        {
+            CRender.Instance.DrawSimpleModel("ShadowMap", sLevelModelName, new Vector3(0, fLevelHeight - 0.1f, 0), new Vector3(0, 0, 0), fLevelScale);
         }
 
         //public float to return the linearly interpolated height in a tile

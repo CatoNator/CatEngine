@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\teho\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\AbsoluteMapMan.csproj": {}
+    "C:\\Users\\Catonator\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\AbsoluteMapMan.csproj": {}
   },
   "projects": {
-    "C:\\Users\\teho\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\AbsoluteMapMan.csproj": {
+    "C:\\Users\\Catonator\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\AbsoluteMapMan.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\teho\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\AbsoluteMapMan.csproj",
+        "projectUniqueName": "C:\\Users\\Catonator\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\AbsoluteMapMan.csproj",
         "projectName": "AbsoluteMapMan",
-        "projectPath": "C:\\Users\\teho\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\AbsoluteMapMan.csproj",
-        "packagesPath": "C:\\Users\\teho\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\teho\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\obj\\",
+        "projectPath": "C:\\Users\\Catonator\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\AbsoluteMapMan.csproj",
+        "packagesPath": "C:\\Users\\Catonator\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Catonator\\Documents\\GitHub\\CatEngine\\AbsoluteMapMan\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\teho\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Catonator\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -42,16 +39,23 @@
         "netcoreapp2.1": {
           "dependencies": {
             "Microsoft.NETCore.App": {
+              "suppressParent": "All",
               "target": "Package",
               "version": "[2.1.0, )",
               "autoReferenced": true
             }
           },
           "imports": [
-            "net461"
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
           ],
           "assetTargetFallback": true,
-          "warn": true
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

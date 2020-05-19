@@ -164,14 +164,14 @@ namespace CatEngine
         }
 
         //the rendering loop
-        public void Render()
+        public void Render(string technique)
         {
             //rendering them fuckos
             for (int i = 0; i < MAX_INSTANCES; i++)
             {
                 if (pGameObjectList[i] != null)
                 {
-                    pGameObjectList[i].Render();
+                    pGameObjectList[i].Render(technique);
                 }
             }
         }

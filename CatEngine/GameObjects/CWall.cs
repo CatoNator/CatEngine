@@ -26,7 +26,7 @@ namespace CatEngine
             rCollisionRectangle = new Rectangle(0, 0, 16*iXScale, 16*iYScale);
         }
 
-        public override void Render()
+        public override void Render(string technique)
         {
             UpdateCollision();
 

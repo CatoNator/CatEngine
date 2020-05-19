@@ -22,9 +22,11 @@ namespace CatEngine.UI
         {
             sMenuItems.Add("toggle CDebug.ShowTerrainDebug");
             sMenuItems.Add("toggle CDebug.ShowHitBoxes");
+            sMenuItems.Add("toggle CDebug.DrawShadowMap");
 
             sMenuCommands.Add("DebugToggleGround");
             sMenuCommands.Add("DebugToggleHitboxes");
+            sMenuCommands.Add("DebugToggleShadowMap");
         }
 
         //singletoning the singleton
@@ -77,6 +79,11 @@ namespace CatEngine.UI
         public void DebugToggleHitboxes()
         {
             CDebug.Instance.ShowHitBoxes = !CDebug.Instance.ShowHitBoxes;
+        }
+
+        public void DebugToggleShadowMap()
+        {
+            CDebug.Instance.DrawShadowMap = !CDebug.Instance.DrawShadowMap;
         }
 
         public void Render()

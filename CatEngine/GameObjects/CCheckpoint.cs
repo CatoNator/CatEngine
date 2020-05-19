@@ -27,7 +27,7 @@ namespace CatEngine
             }
         }
 
-        public override void Render()
+        public override void Render(string technique)
         {
             if (CDebug.Instance.ShowHitBoxes)
                 CRender.Instance.DrawHitBox(hitCylinder.Position, hitCylinder.Height, hitCylinder.Radius);

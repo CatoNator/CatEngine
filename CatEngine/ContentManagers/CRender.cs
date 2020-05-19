@@ -51,6 +51,13 @@ namespace CatEngine.Content
         private Effect SimpleModelEffect;
         private Effect SkinnedModelEffect;
         private Effect DiffuseShader;
+        private Effect ShadowEffect;
+
+        //shadow map
+        private RenderTarget2D shadowMap;
+        Vector3 lightPos = new Vector3(0, 20, 0);
+        Vector3 lightLookat = new Vector3(3, 0, 3);
+        Matrix lightViewProjectionMatrix;
 
         //public Dictionary<string, Texture2D> dTextureDict = new Dictionary<string, Texture2D>();
         private CRender()
@@ -74,6 +81,10 @@ namespace CatEngine.Content
             SimpleModelEffect = content.Load<Effect>("Effects/SimpleModelEffect");
             SkinnedModelEffect = content.Load<Effect>("Effects/SkinnedModelEffect");
             DiffuseShader = content.Load<Effect>("Effects/LightingEffect");
+            ShadowEffect = content.Load<Effect>("Effects/Shadow");
+
+            //shadow map initialization
+            shadowMap = new RenderTarget2D(graphicsDevice, CSettings.Instance.iShadowMapSize, CSettings.Instance.iShadowMapSize, true, graphicsDevice.DisplayMode.Format, DepthFormat.Depth24);
         }
 
         public void InitPlayer()
@@ -194,10 +205,11 @@ namespace CatEngine.Content
                 try
                 {
                     CRender.Instance.dSimpleModelDict.Add(modelName, null);
+                    CConsole.Instance.Print("Tried to load simple model " + modelName + " but failed, error " + e.ToString());
                 }
                 catch (Exception a)
                 {
-                    CConsole.Instance.Print("Tried to load skinned model " + modelName + " but failed, error " + e.ToString());
+                    CConsole.Instance.Print("Tried to load simple model " + modelName + " but failed, error " + e.ToString());
                 }
             }
         }
@@ -402,7 +414,7 @@ namespace CatEngine.Content
             }
         }
 
-        public void DrawSimpleModel(string modelName, Vector3 position, Vector3 rotation, float scale)
+        public void DrawSimpleModel(string technique, string modelName, Vector3 position, Vector3 rotation, float scale)
         {
             ModelData mdl;
 
@@ -434,9 +446,13 @@ namespace CatEngine.Content
 
             Matrix scaleMatrix = Matrix.CreateScale(scale);
 
-            
-            SimpleModelEffect.Parameters["World"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * worldMatrix);
-            SimpleModelEffect.Parameters["WorldViewProjection"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * worldMatrix * viewMatrix * projectionMatrix);
+            SimpleModelEffect.CurrentTechnique = SimpleModelEffect.Techniques[technique];
+            SimpleModelEffect.Parameters["LightPos"].SetValue(lightPos);
+            SimpleModelEffect.Parameters["LightPower"].SetValue(2.0f);
+            SimpleModelEffect.Parameters["Ambient"].SetValue(0.2f);
+            SimpleModelEffect.Parameters["World"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * Matrix.Identity);
+            SimpleModelEffect.Parameters["WorldViewProjection"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * Matrix.Identity * viewMatrix * projectionMatrix);
+            SimpleModelEffect.Parameters["LightWorldViewProjection"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * Matrix.Identity * lightViewProjectionMatrix);
             try
             {
                 SimpleModelEffect.Parameters["Texture1"].SetValue(dTextureDict[textures[0]]);
@@ -452,6 +468,7 @@ namespace CatEngine.Content
                     Console.WriteLine("could not load texture of model " + modelName + " to render");
                 }
             }
+            SimpleModelEffect.Parameters["ShadowMap"].SetValue(shadowMap);
 
             graphicsDevice.SetVertexBuffer(dSimpleModelDict[mdlName].VertexBuffer);
             graphicsDevice.Indices = dSimpleModelDict[modelName].IndexBuffer;
@@ -459,7 +476,7 @@ namespace CatEngine.Content
             foreach (EffectPass pass in SimpleModelEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                graphicsDevice.DrawIndexedPrimitives(Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleList, 0, 0, dSimpleModelDict[modelName].FaceCount);
+                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, dSimpleModelDict[modelName].FaceCount);
             }
 
             graphicsDevice.SetVertexBuffer(null);
@@ -519,7 +536,7 @@ namespace CatEngine.Content
                 Console.WriteLine("bone was null");
         }
 
-        public void DrawPlayer(String animName, String secondaryAnimName, Vector3 position, float rotation, float animFrame, float animFade)
+        public void DrawPlayer(string technique, String animName, String secondaryAnimName, Vector3 position, float rotation, float animFrame, float animFade)
         {
             if (playerInstance.Animation != dSkinnedAnimationDict[animName])
             {
@@ -551,22 +568,15 @@ namespace CatEngine.Content
 
             playerInstance.Update(gameTime);
 
-            
-
-            SkinnedModelEffect.Parameters["SunOrientation"].SetValue(SunOrientation);
-            SkinnedModelEffect.Parameters["World"].SetValue(playerInstance.Transformation);
-            SkinnedModelEffect.Parameters["WorldViewProjection"].SetValue(playerInstance.Transformation * viewMatrix * projectionMatrix);
+            //SkinnedModelEffect.CurrentTechnique = SimpleModelEffect.Techniques[technique];
+            //SkinnedModelEffect.Parameters["LightPos"].SetValue(lightPos);
+            //SkinnedModelEffect.Parameters["LightPower"].SetValue(2.0f);
+            //SkinnedModelEffect.Parameters["Ambient"].SetValue(0.2f);
+            SkinnedModelEffect.Parameters["World"].SetValue(playerInstance.Transformation * worldMatrix);
+            SkinnedModelEffect.Parameters["WorldViewProjection"].SetValue(playerInstance.Transformation * worldMatrix * viewMatrix * projectionMatrix);
             Matrix worldInverseTransposeMatrix = Matrix.Transpose(Matrix.Invert(playerInstance.Transformation * worldMatrix));
             SkinnedModelEffect.Parameters["WorldInverseTranspose"].SetValue(worldInverseTransposeMatrix);
-
-            //DiffuseShader.EnableDefaultLighting();
-            //DiffuseShader.PreferPerPixelLighting = true;
-            DiffuseShader.Parameters["World"].SetValue(worldMatrix * playerInstance.Transformation);
-            DiffuseShader.Parameters["View"].SetValue(viewMatrix);
-            DiffuseShader.Parameters["Projection"].SetValue(projectionMatrix);
-            DiffuseShader.Parameters["SunOrientation"].SetValue(SunOrientation);
-
-            
+            //SkinnedModelEffect.Parameters["LightWorldViewProjection"].SetValue(playerInstance.Transformation * worldMatrix * lightViewProjectionMatrix);
 
             foreach (var meshInstance in playerInstance.MeshInstances)
             {
@@ -858,7 +868,30 @@ namespace CatEngine.Content
         public void UpdateCamera()
         {
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
+
+            //temp
+            UpdateLight();
         }
+
+        public RenderTarget2D GetShadowMap()
+        {
+            return shadowMap;
+        }
+
+        public void SetLightPosition(Vector3 position, Vector3 target)
+        {
+            lightPos = position;
+            lightLookat = target;
+        }
+
+        public void UpdateLight()
+        {
+            Matrix lightsView = Matrix.CreateLookAt(lightPos, lightLookat, new Vector3(0, 1, 0));
+            Matrix lightsProjection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, 1f, 5f, 100f);
+
+            lightViewProjectionMatrix = lightsView * lightsProjection;
+        }
+
 
         public Vector3 SunDebug()
         {

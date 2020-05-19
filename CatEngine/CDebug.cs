@@ -14,6 +14,8 @@ namespace CatEngine
 
         public bool ShowHitBoxes = false;
 
+        public bool DrawShadowMap = false;
+
         private CDebug()
         {
         }

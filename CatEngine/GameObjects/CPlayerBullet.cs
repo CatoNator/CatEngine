@@ -29,7 +29,7 @@ namespace CatEngine
                 iLife--;
         }
 
-        public override void Render()
+        public override void Render(string technique)
         {
             CRender.Instance.DrawBillBoard(new Vector3(x, z, y), new Vector2(2, 2), new Vector2(1, 1), 0, 1, "bullet");
         }

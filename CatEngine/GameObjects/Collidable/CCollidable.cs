@@ -65,7 +65,7 @@ private float fScale = 10.0f;
             return new Vector3(0, 0, 0);//return CColliderManager.Instance.PointInWall(sModelName, new Vector3(x, z, y), fScale, position, height, rad);
         }
 
-        public override void Render()
+        public override void Render(string technique)
         {
             Vector3 posVec = new Vector3(x, z, y);
 
