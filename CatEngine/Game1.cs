@@ -120,6 +120,7 @@ namespace CatEngine
             CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "numeric_font");
             CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "choco_health");
             CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "hud_natsa");
+            CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures", "lightcookie");
             //loading screen stuff NEEDS to be loaded here! it can't be loaded in during runtime, it'll just crash.
 
             //setting up 3D and loading debug cube
@@ -251,10 +252,14 @@ namespace CatEngine
             {
                 //shadowmap
                 GraphicsDevice.SetRenderTarget(CRender.Instance.GetShadowMap());
-                GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1.0f, 0);
+                GraphicsDevice.Clear(Color.White);
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
                 CLevel.Instance.RenderShadow();
                 CObjectManager.Instance.Render("ShadowMap");
+                /*spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
+                CSprite.Instance.Render("sprLightCookie", 0, 0, 0, false, 0.0f, 1.0f, Color.White);
+                spriteBatch.End();*/
 
                 //regular-ass rendering
                 GraphicsDevice.SetRenderTarget(renderTarget);

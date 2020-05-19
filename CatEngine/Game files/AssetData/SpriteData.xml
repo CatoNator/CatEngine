@@ -60,4 +60,16 @@
 		<xorig>0</xorig>
 		<yorig>0</yorig>
 	</sprite>
+	<sprite>
+		<index>5</index>
+		<name>sprLightCookie</name>
+		<texture>lightcookie</texture>
+		<left>0</left>
+		<top>0</top>
+		<width>1024</width>
+		<height>1024</height>
+		<images>1</images>
+		<xorig>0</xorig>
+		<yorig>0</yorig>
+	</sprite>
 </spritedata>

@@ -14,6 +14,8 @@ float3 LightPos;
 float LightPower;
 float Ambient;
 
+float4 AmbientColor;
+
 Texture2D Texture1;
 
 sampler TextureSampler1 = sampler_state { texture = <Texture1>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = mirror; AddressV = mirror; }; Texture xShadowMap;
@@ -82,8 +84,8 @@ technique BasicColorDrawing
 
 struct CreateShadowMap_VSOut
 {
-    float4 Position : POSITION;
-    float Depth : TEXCOORD0;
+    float4 Position : SV_Position;
+    float2 Depth : TEXCOORD0;
 };
 
 //  CREATE SHADOW MAP
@@ -91,14 +93,13 @@ CreateShadowMap_VSOut CreateShadowMap_VertexShader(float4 Position : SV_POSITION
 {
     CreateShadowMap_VSOut Out;
     Out.Position = mul(Position, LightWorldViewProjection);
-    Out.Depth = Out.Position.z / Out.Position.w;
-
+    Out.Depth = Out.Position.zw;
     return Out;
 }
 
 float4 CreateShadowMap_PixelShader(CreateShadowMap_VSOut input) : COLOR
 {
-    return float4(input.Depth, 0, 0, 0);
+    return float4(input.Depth.x / input.Depth.y, 0, 0, 1);
 }
 
 

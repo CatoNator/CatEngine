@@ -450,6 +450,7 @@ namespace CatEngine.Content
             SimpleModelEffect.Parameters["LightPos"].SetValue(lightPos);
             SimpleModelEffect.Parameters["LightPower"].SetValue(2.0f);
             SimpleModelEffect.Parameters["Ambient"].SetValue(0.2f);
+            SimpleModelEffect.Parameters["AmbientColor"].SetValue(new Vector4(Color.White.R, Color.White.G, Color.White.B, 1));
             SimpleModelEffect.Parameters["World"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * Matrix.Identity);
             SimpleModelEffect.Parameters["WorldViewProjection"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * Matrix.Identity * viewMatrix * projectionMatrix);
             SimpleModelEffect.Parameters["LightWorldViewProjection"].SetValue(scaleMatrix * rotationMatrix * transformMatrix * Matrix.Identity * lightViewProjectionMatrix);

@@ -201,8 +201,8 @@ namespace CatEngine.Content
             }
             catch (Exception e)
             {
+                CConsole.Instance.Print("tried to render texturesheet " + spr.TextureSheet + ", but it does not exist");
                 texture = dTextureDict["empty"];
-                //CConsole.Instance.Print("tried to render texturesheet " + spr.TextureSheet + ", but it does not exist");
             }
 
             int imgIndex;
