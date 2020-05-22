@@ -23,7 +23,7 @@ namespace CatEngine
         private float fVInput2 = 0.0f;
 
         public float fDir = 0;
-        private float fAimDir = 0;
+        public float fAimDir = 0;
         private float fBodyDir = 0;
         private float fFeetDir = 0;
 
@@ -49,6 +49,10 @@ namespace CatEngine
         private float fAnimFrame = 0.0f;
 
         private float fAnimFade = 0.0f;
+
+        private float fLightDistance = 20.0f;
+        private const float fLightMaxDistance = 40.0f;
+        private const float fLightMinDistance = 10.0f;
 
         String sCurrentAnimation = "player_tpose";
         String sSecondaryAnimation = null;
@@ -93,8 +97,13 @@ namespace CatEngine
             PlayerPhysics();
             PlayerCollision(fHeightBufferZone, 4.0f);
 
+            if (fHInput2 != 0)
+            {
+                fAimDir -= (fHInput2 * 0.2f)/(float)Math.PI;
+            }
+
             //shoob
-            if (fHInput2 != 0 || fVInput2 != 0)
+            /*if (fHInput2 != 0 || fVInput2 != 0)
             {
                 if (iShotCooldown <= 0)
                 {
@@ -114,7 +123,7 @@ namespace CatEngine
 
                     iShotCooldown = iShotCooldownMax;
                 }
-            }
+            }*/
 
             iShotCooldown--;
 
@@ -124,16 +133,49 @@ namespace CatEngine
             //we don't want to update the animation in Render() because it'll animate while paused
             UpdateAnimation();
 
-            CRender.Instance.SetLightPosition(new Vector3(x, z+10, y), new Vector3(x+distDirX(10, fDir), z + 10, y + distDirY(10, fDir)));
+            CRender.Instance.SetLightPosition(new Vector3(x, z+10, y), new Vector3(x+distDirX(fLightDistance, fAimDir), z, y + distDirY(fLightDistance, fAimDir)));
         }
 
         public override void Render(string technique)
         {
             if (technique != "ShadowMap")
             {
-                CRender.Instance.DrawPlayer(technique, sCurrentAnimation, sSecondaryAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame, fAnimFade);
+                //CRender.Instance.DrawPlayer(technique, sCurrentAnimation, sSecondaryAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame, fAnimFade);
 
-                //CRender.Instance.DrawModel("textured_cube", new Vector3(x, fMinHeight, y), 0.0f);
+                float psize = 6f;
+
+                //legs
+                CRender.Instance.Draw3DSprite(technique, "p_legs_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 2f, y), psize, new Vector3(0, fDir, 0), 1f);
+                //body
+                CRender.Instance.Draw3DSprite(technique, "p_body_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 4f, y), psize, new Vector3(0, fDir, 0), 1f);
+                //torso
+                CRender.Instance.Draw3DSprite(technique, "p_torso_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 6f, y), psize, new Vector3(0, fDir, 0), 1f);
+                //head
+                CRender.Instance.Draw3DSprite(technique, "p_head_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 7f, y), psize, new Vector3(0, fDir, 0), 1f);
+
+                //legs
+                /*CRender.Instance.DrawRectangle(new Vector3(x - psize, z + 2f, y + psize),
+                        new Vector3(x + psize, z + 2f, y + psize),
+                        new Vector3(x - psize, z + 2f, y - psize),
+                        new Vector3(x + psize, z + 2f, y - psize), "p_legs_"+sCurrentAnimation, false, 1f);
+
+                //body
+                CRender.Instance.DrawRectangle(new Vector3(x - psize, z + 4f, y + psize),
+                        new Vector3(x + psize, z + 4f, y + psize),
+                        new Vector3(x - psize, z + 4f, y - psize),
+                        new Vector3(x + psize, z + 4f, y - psize), "p_body_" + sCurrentAnimation, false, 1f);
+
+                //torso
+                CRender.Instance.DrawRectangle(new Vector3(x - psize, z + 6f, y + psize),
+                        new Vector3(x + psize, z + 6f, y + psize),
+                        new Vector3(x - psize, z + 6f, y - psize),
+                        new Vector3(x + psize, z + 6f, y - psize), "p_torso_" + sCurrentAnimation, false, 1f);
+
+                //head
+                CRender.Instance.DrawRectangle(new Vector3(x - psize, z + 7f, y + psize),
+                        new Vector3(x + psize, z + 7f, y + psize),
+                        new Vector3(x - psize, z + 7f, y - psize),
+                        new Vector3(x + psize, z + 7f, y - psize), "p_head_" + sCurrentAnimation, false, 1f);*/
 
                 CRender.Instance.DrawShadow(new Vector3(x, z + 2.5f, y), 2.5f);
                 //CRender.Instance.DrawPlayerShadow(new Vector3(x, z + 2.5f, y), 2.5f, sCurrentAnimation, fDir, fAnimFrame);
@@ -238,18 +280,6 @@ namespace CatEngine
                 inputSp = 1.0f;//PointDistance(0, 0, fHInput, fVInput);
                 fDir = inputDir+fCamDir;
                 //fMoveDir = fCamDir;
-            }
-
-            if (fHInput2 != 0 || fVInput2 != 0)
-            {
-                float inputDirR = PointDirection(0, 0, fHInput2, fVInput2);
-                fAimDir = inputDirR + fCamDir;
-                bIsShooting = true;
-            }
-            else
-            {
-                fAimDir = fDir;
-                bIsShooting = false;
             }
 
             fHorSpeed += distDirX(inputSp * fAcceleration, fDir);
@@ -398,15 +428,15 @@ namespace CatEngine
         {
             if (!bLanded)
             {
-                sCurrentAnimation = "player_jump";
+                sCurrentAnimation = "walk";
                 fAnimFrame = 0;
             }
             else
             {
                 if (fHorSpeed != 0 || fVerSpeed != 0)
                 {
-                    sCurrentAnimation = "player_walk";
-                    float animSp = (float)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed) * 2;
+                    sCurrentAnimation = "walk";
+                    float animSp = (float)(Math.Abs(PointDistance(0, 0, fHorSpeed, fVerSpeed)) / fMaxSpeed) * 0.125f;
                     
                     /*CConsole.Instance.debugString2 = "animframe";
                     CConsole.Instance.debugValue2 = animSp;*/
@@ -420,19 +450,19 @@ namespace CatEngine
                         {
                             fAnimFrame -= animSp;
                             if (fAnimFrame < 0)
-                                fAnimFrame = 89;
+                                fAnimFrame = 8;
                         }
                         else
                         {
                             fAnimFrame += animSp;
-                            fAnimFrame %= 89;
+                            fAnimFrame %= 8;
                         }
                     }
                     else
                     {
-                        sCurrentAnimation = "player_walk";
+                        sCurrentAnimation = "walk";
                         fAnimFrame += animSp;
-                        fAnimFrame %= 89;
+                        fAnimFrame %= 8;
                     }
 
                     if ((fAnimFrame >= 1 && fAnimFrame <= 3) || (fAnimFrame >= 45 && fAnimFrame <= 47))
@@ -444,7 +474,7 @@ namespace CatEngine
                 }
                 else
                 {
-                    sCurrentAnimation = "player_tpose";
+                    sCurrentAnimation = "stand";
                     fAnimFrame = 0;
                 }
             }
@@ -454,7 +484,7 @@ namespace CatEngine
 
             if (bIsShooting)
             {
-                sSecondaryAnimation = "player_tpose";
+                sSecondaryAnimation = "stand";
             }
             else
                 sSecondaryAnimation = null;

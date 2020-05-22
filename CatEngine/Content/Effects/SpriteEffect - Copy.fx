@@ -53,10 +53,9 @@ sampler ShadowMapSampler = sampler_state
 
 struct VertexToPixel
 {
-    float4 Position     : POSITION;
+    float4 Position     : SV_Position;
     float2 TexCoords    : TEXCOORD0;
-    float3 Normal        : TEXCOORD1;
-    float3 Position3D    : TEXCOORD2;
+    float4 Color        : COLOR0;
 };
 
 struct PixelToFrame
@@ -70,39 +69,25 @@ float DotProduct(float3 lightPos, float3 pos3D, float3 normal)
     return dot(-lightDir, normal);
 }
 
-VertexToPixel SimplestVertexShader(float4 inPos : POSITION0, float3 inNormal : NORMAL0, float2 inTexCoords : TEXCOORD0)
+VertexToPixel BasicVertexShader(float4 Position : POSITION)
 {
-    VertexToPixel Output = (VertexToPixel)0;
-
-    Output.Position = mul(inPos, WorldViewProjection);
-    Output.TexCoords = inTexCoords;
-    Output.Normal = normalize(mul(inNormal, (float3x3)World));
-    Output.Position3D = mul(inPos, World);
-
-    return Output;
+    VertexToPixel Out;
+    Out.Position = mul(Position, WorldViewProjection);
+    return Out;
 }
 
-PixelToFrame OurFirstPixelShader(VertexToPixel PSIn)
+PixelToFrame BasicPixelShader(VertexToPixel input) : COLOR
 {
-    PixelToFrame Output = (PixelToFrame)0;
-
-    float diffuseLightingFactor = DotProduct(LightPos, PSIn.Position3D, PSIn.Normal);
-    diffuseLightingFactor = saturate(diffuseLightingFactor);
-    diffuseLightingFactor *= LightPower;
-
-    PSIn.TexCoords.y--;
-    float4 baseColor = tex2D(TextureSampler1, PSIn.TexCoords);
-    Output.Color = lerp(baseColor, float4(1, 1, 1, 1), (diffuseLightingFactor + Ambient));
-
-    return Output;
+    PixelToFrame Out;
+	return Out;
 }
 
 technique BasicColorDrawing
 {
     pass Pass0
     {
-        VertexShader = compile VS_SHADERMODEL SimplestVertexShader();
-        PixelShader = compile PS_SHADERMODEL OurFirstPixelShader();
+        VertexShader = compile VS_SHADERMODEL BasicVertexShader();
+        PixelShader = compile PS_SHADERMODEL BasicPixelShader();
     }
 }
 
@@ -110,12 +95,12 @@ technique BasicColorDrawing
 
 struct CreateShadowMap_VSOut
 {
-    float4 Position : SV_Position;
+    float4 Position : POSITION;
     float2 Depth : TEXCOORD0;
 };
 
 //  CREATE SHADOW MAP
-CreateShadowMap_VSOut CreateShadowMap_VertexShader(float4 Position : SV_POSITION)
+CreateShadowMap_VSOut CreateShadowMap_VertexShader(float4 Position : POSITION)
 {
     CreateShadowMap_VSOut Out;
     Out.Position = mul(Position, LightWorldViewProjection);
@@ -142,13 +127,12 @@ technique ShadowMap
 
 struct SSceneVertexToPixel
 {
-    float4 Position             : POSITION;
-    float4 Pos2DAsSeenByLight    : TEXCOORD0;
+    float4 Position : SV_Position;
+    float4 Pos2DAsSeenByLight : TEXCOORD0;
 
-    float2 TexCoords            : TEXCOORD1;
-    float3 Normal                : NORMAL0;
-    float4 Position3D            : TEXCOORD3;
-
+    float2 TexCoords : COLOR0;
+    float3 Normal : COLOR0;
+    float4 Position3D : TEXCOORD0;
 };
 
 struct SScenePixelToFrame
@@ -157,7 +141,7 @@ struct SScenePixelToFrame
 };
 
 
-SSceneVertexToPixel ShadowedSceneVertexShader(float4 inPos : POSITION, float2 inTexCoords : TEXCOORD0, float3 inNormal : NORMAL)
+SSceneVertexToPixel ShadowedSceneVertexShader(float4 inPos : SV_Position, float2 inTexCoords : TEXCOORD0, float3 inNormal : NORMAL)
 {
     SSceneVertexToPixel Output = (SSceneVertexToPixel)0;
 

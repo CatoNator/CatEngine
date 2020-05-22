@@ -22,6 +22,10 @@ namespace CatEngine
 
         private float fHealthCycle = 0.0f;
 
+        private Vector2 vPlayerPosition;
+
+        private float fNorthDirection = 0f;
+
         public enum FadeTypes
         {
             FadeLevel,
@@ -69,6 +73,16 @@ namespace CatEngine
             CAudioManager.Instance.PlaySound("natsa");
         }
 
+        public void UpdatePlayer(Vector2 pos)
+        {
+            vPlayerPosition = pos;
+        }
+
+        public void UpdateCamera(float dir)
+        {
+            fNorthDirection = -(((dir + 90f) * (float)Math.PI) / 180f);
+        }
+
         public void InitiateFadeLevel(string nextLevel)
         {
             currentFadeState = FadeStates.FadeOut;
@@ -105,6 +119,23 @@ namespace CatEngine
                 CSprite.Instance.DrawRect(new Rectangle(0, 0, CSettings.Instance.GAME_VIEW_WIDTH, CSettings.GAME_VIEW_HEIGHT), Color.Black * fFadeAlpha);
         }
 
+        private float distDirX(float dist, float dir)
+        {
+            return (float)(Math.Cos(dir) * dist);
+        }
+
+        private float distDirY(float dist, float dir)
+        {
+            return (float)(-Math.Sin(dir) * dist);
+        }
+
+        private float clamp (float val, float min, float max)
+        {
+            if (val.CompareTo(min) < 0) return min;
+            else if (val.CompareTo(max) > 0) return max;
+            else return val;
+        }
+
         public void RenderHUD()
         {
             fNatsaFrame += 0.125f;
@@ -120,6 +151,10 @@ namespace CatEngine
 
             //natsa
             CSprite.Instance.Render("sprHudNatsa", CSettings.Instance.GAME_VIEW_WIDTH / 2-32, 5 + fNatsaOffset + 3 * (float)Math.Sin(fHealthCycle + (0.5 * 1)), (int)fNatsaFrame, false, 0, 1, Color.White);
+
+            CSprite.Instance.Render("sprRadarBlips", 44, CSettings.GAME_VIEW_HEIGHT - 44, 0, false, 0, 0.5f, Color.White);
+            CSprite.Instance.Render("sprRadarBlips", 44 + clamp(distDirX(72, fNorthDirection), -32, 32), CSettings.GAME_VIEW_HEIGHT - 44 + clamp(distDirY(72, fNorthDirection), -32, 32), 2, false, 0, 0.5f, Color.White);
+            CSprite.Instance.Render("sprRadarBorder", 8, CSettings.GAME_VIEW_HEIGHT - 80, 0, false, 0, 1f, Color.White);
 
             //the x symbol for counting the natsas
             CSprite.Instance.Render("numeric_font", CSettings.Instance.GAME_VIEW_WIDTH / 2-6, 7 + fNatsaOffset + 3 * (float)Math.Sin(fHealthCycle + (0.5 * 2)), 10, false, 0, 1, Color.White);

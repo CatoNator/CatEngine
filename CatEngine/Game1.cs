@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using CatEngine.UI;
 using CatEngine.Content;
 using CatEngine.Input;
+using CatEngine.SkeletalAnimation;
 
 namespace CatEngine
 {
@@ -58,6 +59,9 @@ namespace CatEngine
             graphics.ApplyChanges();
 
             Content.RootDirectory = "AssetData";
+
+            SkeletalSprite test = new SkeletalSprite();
+            test.LoadAnimation("test.anm");
         }
 
         private void GraphicsDeviceManager_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
@@ -120,7 +124,7 @@ namespace CatEngine
             CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "numeric_font");
             CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "choco_health");
             CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "hud_natsa");
-            CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures", "lightcookie");
+            CSprite.Instance.LoadTextureSheetRaw("AssetData/Textures/Frontend", "radar");
             //loading screen stuff NEEDS to be loaded here! it can't be loaded in during runtime, it'll just crash.
 
             //setting up 3D and loading debug cube
@@ -257,9 +261,6 @@ namespace CatEngine
                 GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
                 CLevel.Instance.RenderShadow();
                 CObjectManager.Instance.Render("ShadowMap");
-                /*spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
-                CSprite.Instance.Render("sprLightCookie", 0, 0, 0, false, 0.0f, 1.0f, Color.White);
-                spriteBatch.End();*/
 
                 //regular-ass rendering
                 GraphicsDevice.SetRenderTarget(renderTarget);

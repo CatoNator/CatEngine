@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using CatEngine.SimpleMdl;
 using CatEngine.SkinnedMdl;
+using CatEngine.SkeletalAnimation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -44,14 +45,14 @@ namespace CatEngine.Content
         //effects
         private BasicEffect basicEffect;
         private VertexBuffer rectangleBuffer;
+        private VertexBuffer spriteBuffer;
 
         private SkinnedModelInstance playerInstance = new SkinnedModelInstance();
 
         //we set this up for skinned models
         private Effect SimpleModelEffect;
         private Effect SkinnedModelEffect;
-        private Effect DiffuseShader;
-        private Effect ShadowEffect;
+        private Effect SpriteEffect;
 
         //shadow map
         private RenderTarget2D shadowMap;
@@ -73,6 +74,7 @@ namespace CatEngine.Content
 
             basicEffect = new BasicEffect(graphicsDevice);
             rectangleBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+            spriteBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionNormalTexture), 6, BufferUsage.WriteOnly);
 
             worldMatrix = Matrix.CreateTranslation(0.0f, 0.0f, 0.0f);
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
@@ -80,8 +82,7 @@ namespace CatEngine.Content
 
             SimpleModelEffect = content.Load<Effect>("Effects/SimpleModelEffect");
             SkinnedModelEffect = content.Load<Effect>("Effects/SkinnedModelEffect");
-            DiffuseShader = content.Load<Effect>("Effects/LightingEffect");
-            ShadowEffect = content.Load<Effect>("Effects/Shadow");
+            SpriteEffect = content.Load<Effect>("Effects/SpriteEffect");
 
             //shadow map initialization
             shadowMap = new RenderTarget2D(graphicsDevice, CSettings.Instance.iShadowMapSize, CSettings.Instance.iShadowMapSize, true, graphicsDevice.DisplayMode.Format, DepthFormat.Depth24);
@@ -470,6 +471,8 @@ namespace CatEngine.Content
                 }
             }
             SimpleModelEffect.Parameters["ShadowMap"].SetValue(shadowMap);
+            SimpleModelEffect.Parameters["LightCookie"].SetValue(dTextureDict["lightcookie"]);
+            
 
             graphicsDevice.SetVertexBuffer(dSimpleModelDict[mdlName].VertexBuffer);
             graphicsDevice.Indices = dSimpleModelDict[modelName].IndexBuffer;
@@ -610,9 +613,7 @@ namespace CatEngine.Content
 
             Vector3 Normal = GetNormal(C2, C3, C4);
 
-            float lightValue = (CalculateAngleDifference(SunOrientation.X, Normal.X) + CalculateAngleDifference(SunOrientation.Y, Normal.Y) + CalculateAngleDifference(SunOrientation.Z, Normal.Z)) / 3.0f;
-
-            Color color = Color.Lerp(Color.Black, Color.White, 0.1f + (0.9f * lightValue));
+            Color color = Color.White;
 
             VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[6]
             {
@@ -643,7 +644,15 @@ namespace CatEngine.Content
             basicEffect.LightingEnabled = false;
             basicEffect.TextureEnabled = true;
             basicEffect.Alpha = alpha;
-            basicEffect.Texture = dTextureDict[textureName];
+
+            try
+            {
+                basicEffect.Texture = dTextureDict[textureName];
+            }
+            catch (Exception e)
+            {
+                basicEffect.Texture = dTextureDict["empty"];
+            }
 
             graphicsDevice.SetVertexBuffer(rectangleBuffer);
 
@@ -657,6 +666,108 @@ namespace CatEngine.Content
 
             //rectangleBuffer.Dispose();
             //rectangleBuffer = null;
+        }
+
+        public void Draw3DSprite(string technique, String spriteName, int imageIndex, Vector3 Position, float Scale, Vector3 Rotation, float alpha)
+        {
+            Vector3 Normal = GetNormal(new Vector3(-1, -0, -1), new Vector3(1, 0, 1), new Vector3(1, 0, -1));
+
+            float spriteSize = 32f;
+            float spriteLeft = (spriteSize * (float)(imageIndex)) / dTextureDict[spriteName].Width;
+            float spriteRight = (spriteSize * (float)(imageIndex + 1)) / dTextureDict[spriteName].Width;
+
+            VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[6]
+            {
+                //polygon 1
+                new VertexPositionNormalTexture(new Vector3(-1, 0, 1), Normal, new Vector2(spriteLeft, 0)),
+                new VertexPositionNormalTexture(new Vector3(1, 0, 1), Normal, new Vector2(spriteRight, 0)),
+                new VertexPositionNormalTexture(new Vector3(-1, 0, -1), Normal, new Vector2(spriteLeft, 1)),
+
+                //polygon 2
+                new VertexPositionNormalTexture(new Vector3(-1, 0, -1), Normal, new Vector2(spriteLeft, 1)),
+                new VertexPositionNormalTexture(new Vector3(1, 0, 1), Normal, new Vector2(spriteRight, 0)),
+                new VertexPositionNormalTexture(new Vector3(1, 0, -1), Normal, new Vector2(spriteRight, 1))
+            };
+
+            spriteBuffer.SetData<VertexPositionNormalTexture>(vertices);
+
+            Matrix rotationMatrix = Matrix.CreateRotationX(Rotation.X) * Matrix.CreateRotationY(Rotation.Y) * Matrix.CreateRotationZ(Rotation.Z);
+            Matrix positionMatrix = Matrix.CreateTranslation(Position);
+            Matrix scaleMatrix = Matrix.CreateScale(Scale);
+
+
+
+            Matrix transformMatrix = scaleMatrix * rotationMatrix * positionMatrix;
+
+            Matrix transformMatrix2 = Matrix.CreateTranslation(new Vector3(3, 3, 3));
+
+            SpriteEffect.Parameters["Transform"].SetValue(transformMatrix*transformMatrix2);
+            SpriteEffect.Parameters["World"].SetValue(worldMatrix);
+            SpriteEffect.Parameters["WorldViewProjection"].SetValue(worldMatrix * viewMatrix * projectionMatrix);
+            try
+            {
+                SpriteEffect.Parameters["Texture1"].SetValue(dTextureDict[spriteName]);
+            }
+            catch (Exception e)
+            {
+                SpriteEffect.Parameters["Texture1"].SetValue(dTextureDict["empty"]);
+            }
+
+            graphicsDevice.SetVertexBuffer(spriteBuffer);
+
+            foreach (EffectPass pass in SpriteEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
+            }
+
+            graphicsDevice.SetVertexBuffer(null);
+        }
+
+        public void RenderBone(string technique, String spriteName, int imageIndex, Matrix transformMatrix)
+        {
+            Vector3 Normal = GetNormal(new Vector3(-1, -0, -1), new Vector3(1, 0, 1), new Vector3(1, 0, -1));
+
+            float spriteSize = 32f;
+            float spriteLeft = (spriteSize * (float)(imageIndex)) / dTextureDict[spriteName].Width;
+            float spriteRight = (spriteSize * (float)(imageIndex + 1)) / dTextureDict[spriteName].Width;
+
+            VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[6]
+            {
+                //polygon 1
+                new VertexPositionNormalTexture(new Vector3(-1, 0, 1), Normal, new Vector2(spriteLeft, 0)),
+                new VertexPositionNormalTexture(new Vector3(1, 0, 1), Normal, new Vector2(spriteRight, 0)),
+                new VertexPositionNormalTexture(new Vector3(-1, 0, -1), Normal, new Vector2(spriteLeft, 1)),
+
+                //polygon 2
+                new VertexPositionNormalTexture(new Vector3(-1, 0, -1), Normal, new Vector2(spriteLeft, 1)),
+                new VertexPositionNormalTexture(new Vector3(1, 0, 1), Normal, new Vector2(spriteRight, 0)),
+                new VertexPositionNormalTexture(new Vector3(1, 0, -1), Normal, new Vector2(spriteRight, 1))
+            };
+
+            spriteBuffer.SetData<VertexPositionNormalTexture>(vertices);
+
+            SpriteEffect.Parameters["Transform"].SetValue(transformMatrix);
+            SpriteEffect.Parameters["World"].SetValue(worldMatrix);
+            SpriteEffect.Parameters["WorldViewProjection"].SetValue(worldMatrix * viewMatrix * projectionMatrix);
+            try
+            {
+                SpriteEffect.Parameters["Texture1"].SetValue(dTextureDict[spriteName]);
+            }
+            catch (Exception e)
+            {
+                SpriteEffect.Parameters["Texture1"].SetValue(dTextureDict["empty"]);
+            }
+
+            graphicsDevice.SetVertexBuffer(spriteBuffer);
+
+            foreach (EffectPass pass in SpriteEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 3);
+            }
+
+            graphicsDevice.SetVertexBuffer(null);
         }
 
         public void DrawRectangleWireframe(Vector3 C1, Vector3 C2, Vector3 C3, Vector3 C4)
@@ -888,7 +999,7 @@ namespace CatEngine.Content
         public void UpdateLight()
         {
             Matrix lightsView = Matrix.CreateLookAt(lightPos, lightLookat, new Vector3(0, 1, 0));
-            Matrix lightsProjection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, 1f, 5f, 100f);
+            Matrix lightsProjection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1f, 5f, 200f);
 
             lightViewProjectionMatrix = lightsView * lightsProjection;
         }

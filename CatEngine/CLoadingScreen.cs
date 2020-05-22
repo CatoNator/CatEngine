@@ -63,7 +63,9 @@ namespace CatEngine
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Particles", "bullet_casing" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Frontend", "arrow" });
             QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "bullet" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures", "lightcookie" });
 
+            PreparePlayer();
             PrepareModel("AssetData/Models/Player/", "player");
             PrepareModel("AssetData/Models/Natsa/", "natsa");
 
@@ -152,6 +154,23 @@ namespace CatEngine
             //unload prop textures
 
             //unload music
+        }
+
+        public void PreparePlayer()
+        {
+            //temp
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Stand", "p_head_stand" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Stand", "p_torso_stand" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Stand", "p_body_stand" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Stand", "p_legs_stand" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Run", "p_head_run" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Run", "p_torso_run" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Run", "p_body_run" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Run", "p_legs_run" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Walk", "p_head_walk" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Walk", "p_torso_walk" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Walk", "p_body_walk" });
+            QueueLoadCommand(CRender.Instance, "LoadTextureRaw", new List<string>() { "AssetData/Textures/Player/Walk", "p_legs_walk" });
         }
 
         public void PrepareProp(String path, String propName)

@@ -21,7 +21,7 @@ namespace CatEngine
 
         public int iFovAngle = 45;
 
-        public int iShadowMapSize = 512;
+        public int iShadowMapSize = 1024;
 
         /*shadowmap sizes ("shadow quality"):
          * low: 512

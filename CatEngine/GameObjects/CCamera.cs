@@ -13,9 +13,9 @@ namespace CatEngine
     {
         private float fCameraRotation = 90.0f;
         private float fCameraVRotation = 90.0f;
-        private float fCameraDistance = 30.0f;
+        private float fCameraDistance = 15.0f;
         private float fTargetHeight = 10.0f;
-        private float fCameraBufferRange = 5.0f;
+        private float fCameraHeight = 60.0f;
 
         private float fCameraRotationSpeed = 2.0f;
         private float fCameraVRotationSpeed = 2.0f;
@@ -62,10 +62,12 @@ namespace CatEngine
                 cameraState = CameraStates.PlayerControlled;
             }*/
 
-            if (iCameraRot != 0 || iCameraVRot != 0)
+            /*if (iCameraRot != 0 || iCameraVRot != 0)
                 PlayerCamera(iCameraRot, iCameraVRot);
             else
-                AutoCamera();
+                AutoCamera();*/
+
+            CameraBehaviour();
 
             /*if (cameraState == CameraStates.LevelStart)
                 LevelCamera();*/
@@ -101,7 +103,32 @@ namespace CatEngine
             return fCameraRotation;
         }
 
-        private void PlayerCamera(int rotDir, int rotDirV)
+        private void CameraBehaviour()
+        {
+            
+            
+            Vector3 targetPos = new Vector3(0.0f, 0.0f, 0.0f);
+
+            if (oTarget != null)
+            {
+                fCameraRotation = ((((CPlayer)oTarget).fAimDir * 180f) / (float)Math.PI) + 180f;
+                targetPos = new Vector3(oTarget.x, oTarget.z + fTargetHeight, oTarget.y);
+            }
+
+            CGame.Instance.UpdateCamera(fCameraRotation);
+
+            Vector3 cameraPos = new Vector3(x, z, y);
+
+            float camDist = PointDistance(cameraPos.X, cameraPos.Z, targetPos.X, targetPos.Z);
+
+            x = targetPos.X + distDirX(fCameraDistance, degToRad(fCameraRotation));
+            y = targetPos.Z + distDirY(fCameraDistance, degToRad(fCameraRotation));
+            z = targetPos.Y + fCameraHeight;
+
+            TargetVector = targetPos;
+        }
+
+           private void PlayerCamera(int rotDir, int rotDirV)
         {
             fCameraRotation += (float)rotDir * fCameraRotationSpeed;
 
