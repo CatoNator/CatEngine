@@ -1,0 +1,3 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/Catonator/Documents/GitHub/CatEngine/BullSheet/Content/Enemy.png","C:/Users/Catonator/Documents/GitHub/CatEngine/BullSheet/Content/bin/DesktopGL/Content/Enemy.xnb","TextureProcessor","Texture2DContent",3230,8277,0,1020242
+"C:/Users/Catonator/Documents/GitHub/CatEngine/BullSheet/Content/Player.png","C:/Users/Catonator/Documents/GitHub/CatEngine/BullSheet/Content/bin/DesktopGL/Content/Player.xnb","TextureProcessor","Texture2DContent",2941,3157,0,0060004

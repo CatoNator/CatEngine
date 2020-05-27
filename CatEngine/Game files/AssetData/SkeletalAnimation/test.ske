@@ -1,0 +1,14 @@
+<SkeletonStructure>
+	<Bone name="root" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="0" posy="0" posz="0">
+		<Bone name="bone1" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="5" posy="0" posz="5">
+			<Bone name="bone2" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="5" posy="0" posz="5">
+			</Bone>
+			<Bone name="bone3" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="5" posy="0" posz="5">
+				<Bone name="bone4" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="2" posy="0" posz="2">
+				</Bone>
+			</Bone>
+		</Bone>
+		<Bone name="bone5" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="2" posy="0" posz="2">
+		</Bone>
+	</Bone>
+</SkeletonStructure>

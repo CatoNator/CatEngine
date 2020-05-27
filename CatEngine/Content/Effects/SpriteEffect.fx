@@ -32,9 +32,9 @@ Texture2D Texture1;
 sampler TextureSampler1 = sampler_state
 {
     texture = <Texture1>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
+    magfilter = POINT;
+    minfilter = POINT;
+    mipfilter = POINT;
     AddressU = mirror;
     AddressV = mirror;
 };
@@ -43,8 +43,8 @@ Texture2D ShadowMap;
 sampler ShadowMapSampler = sampler_state
 {
     texture = <ShadowMap>;
-    magfilter = POINT;
-    minfilter = POINT;
+    magfilter = LINEAR;
+    minfilter = LINEAR;
     mipfilter = LINEAR;
     AddressU = clamp;
     AddressV = clamp;

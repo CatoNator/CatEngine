@@ -1,0 +1,18 @@
+<SkeletonStructure>
+	<Bone name="root" sizex="7" sizey="14" origx="3" origy="7" texture="p_body" posx="0" posy="0" posz="0">
+		<Bone name="torso" sizex="8" sizey="18" origx="4" origy="9" texture="p_torso" posx="0" posy="2" posz="0">
+			<Bone name="r_arm" sizex="11" sizey="6" origx="1" origy="3" texture="p_r_upperarm" posx="0" posy="-0,2" posz="8">
+				<Bone name="r_forearm" sizex="15" sizey="6" origx="1" origy="3" texture="p_r_forearm" posx="8" posy="0,2" posz="0">
+					<Bone name="revolver" sizex="16" sizey="4" origx="1" origy="2" texture="p_revolver" posx="10" posy="0,2" posz="-1">
+					</Bone>
+				</Bone>
+			</Bone>
+			<Bone name="l_arm" sizex="11" sizey="6" origx="1" origy="3" texture="p_l_upperarm" posx="0" posy="-0,2" posz="-8">
+				<Bone name="l_forearm" sizex="15" sizey="6" origx="1" origy="2" texture="p_l_forearm" posx="8" posy="0,2" posz="0">
+				</Bone>
+			</Bone>
+			<Bone name="head" sizex="8" sizey="6" origx="4" origy="3" texture="p_head" posx="0" posy="1" posz="0">
+			</Bone>
+		</Bone>
+	</Bone>
+</SkeletonStructure>

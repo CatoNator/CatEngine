@@ -5,9 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.IO;
-using CatEngine.Content;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace CatEngine.SkeletalAnimation
 {
@@ -17,108 +15,15 @@ namespace CatEngine.SkeletalAnimation
         {
 
         }
-        
-        private class Bone
-        {
-            String boneName = "";
-
-            SkeletalSprite parentSprite;
-
-            Vector3 Position;
-            Vector3 Size;
-            float[] Rotations;
-
-            Bone parentBone = null;
-            List<Bone> childBones = new List<Bone>();
-
-            private Matrix positionMatrix;
-            private Matrix rotationMatrix;
-
-            public Bone(Bone parent, Vector3 pos, float[] rot, string name)
-            {
-                Position = pos;
-                Rotations = rot;
-                boneName = name;
-
-                parentBone = parent;
-            }
-
-            public string GetName()
-            {
-                return boneName;
-            }
-
-                public string ParentName()
-            {
-                string name = "";
-
-                if (parentBone != null)
-                    name = parentBone.GetName();
-
-                return name;
-            }
-
-            public void AddChild(Bone bone)
-            {
-                childBones.Add(bone);
-            }
-
-            public void UpdateBone(int currentFrame)
-            {
-                if (parentBone != null)
-                {
-                    positionMatrix = parentBone.GetPositionMatrix() * Matrix.CreateTranslation(Position);
-                    rotationMatrix = parentBone.GetRotationMatrix() * Matrix.CreateRotationY(Rotations[currentFrame]);
-                }
-                else
-                {
-                    positionMatrix = Matrix.CreateTranslation(Position);
-                    rotationMatrix = Matrix.CreateRotationY(Rotations[currentFrame]);
-                }
-
-                if (childBones.Count > 0)
-                {
-                    foreach (Bone b in childBones)
-                    {
-                        UpdateBone(currentFrame);
-                    }
-                }
-            }
-
-            public void RenderBone()
-            {
-                Matrix transformMatrix = rotationMatrix * positionMatrix;
-                
-                CRender.Instance.RenderBone("BasicColorDrawing", "p_body_stand", 0, transformMatrix);
-                
-                if (childBones.Count > 0)
-                {
-                    foreach (Bone b in childBones)
-                    {
-                        RenderBone();
-                    }
-                }
-            }
-
-            public Matrix GetPositionMatrix()
-            {
-                return positionMatrix;
-            }
-
-            public Matrix GetRotationMatrix()
-            {
-                return rotationMatrix;
-            }
-        }
 
         Bone rootBone = null;
 
-        int animFrame = 0;
+        float animFrame = 0;
         int animLength = 0;
 
-        public void LoadAnimation(string animName)
+        public void LoadSkeleton(string path, string skelName)
         {
-            string animData = "AssetData/SkeletalAnimation/" + animName;
+            string animData = path + "/" + skelName + ".ske";
 
             if (File.Exists(animData))
             {
@@ -128,28 +33,29 @@ namespace CatEngine.SkeletalAnimation
 
                 //Console.WriteLine(xmlText);
 
-                animLength = Int32.Parse(file.Root.Attribute("frames").Value);
-
                 foreach (XElement e in file.Root.Elements("Bone"))
                 {
+                    System.Globalization.CultureInfo ci = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.CurrentCulture.Clone();
+                    ci.NumberFormat.CurrencyDecimalSeparator = ".";
+
                     string name = e.Attribute("name").Value;
 
-                    List<float> Rotations = new List<float>();
-
-                    foreach (XElement rot in e.Elements("Rotations"))
-                    {
-                        foreach (XElement f in e.Elements("Frame"))
-                        {
-                            Rotations.Add(float.Parse(f.Value));
-                        }
-                    }
-
                     Vector3 Position = new Vector3(
-                        float.Parse(e.Attribute("posx").Value),
-                        float.Parse(e.Attribute("posy").Value),
-                        float.Parse(e.Attribute("posz").Value));
+                        float.Parse(e.Attribute("posx").Value, System.Globalization.NumberStyles.Any, ci),
+                        float.Parse(e.Attribute("posy").Value, System.Globalization.NumberStyles.Any, ci),
+                        float.Parse(e.Attribute("posz").Value, System.Globalization.NumberStyles.Any, ci));
 
-                    rootBone = new Bone(null, Position, Rotations.ToArray(), name);
+                    Vector2 Size = new Vector2(
+                        float.Parse(e.Attribute("sizex").Value, System.Globalization.NumberStyles.Any, ci),
+                        float.Parse(e.Attribute("sizey").Value, System.Globalization.NumberStyles.Any, ci));
+
+                    Vector2 Origin = new Vector2(
+                        float.Parse(e.Attribute("origx").Value, System.Globalization.NumberStyles.Any, ci),
+                        float.Parse(e.Attribute("origy").Value, System.Globalization.NumberStyles.Any, ci));
+
+                    string tex = e.Attribute("texture").Value;
+
+                    rootBone = new Bone(name, null, Position, tex, Size, Origin);
 
                     Console.WriteLine("created rootbone " + name);
 
@@ -167,28 +73,31 @@ namespace CatEngine.SkeletalAnimation
         {
             Bone bone;
 
+            System.Globalization.CultureInfo ci = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.CurrentCulture.Clone();
+            ci.NumberFormat.CurrencyDecimalSeparator = ".";
+
             string name = parent.Attribute("name").Value;
 
-            List<float> Rotations = new List<float>();
-
-            foreach (XElement rot in parent.Elements("Rotations"))
-            {
-                foreach (XElement f in parent.Elements("Frame"))
-                {
-                    Rotations.Add(float.Parse(f.Value));
-                }
-            }
-
             Vector3 Position = new Vector3(
-                float.Parse(parent.Attribute("posx").Value),
-                float.Parse(parent.Attribute("posy").Value),
-                float.Parse(parent.Attribute("posz").Value));
+                float.Parse(parent.Attribute("posx").Value, System.Globalization.NumberStyles.Any, ci),
+                float.Parse(parent.Attribute("posy").Value, System.Globalization.NumberStyles.Any, ci),
+                float.Parse(parent.Attribute("posz").Value, System.Globalization.NumberStyles.Any, ci));
 
-            bone = new Bone(parentBone, Position, Rotations.ToArray(), name);
+            Vector2 Size = new Vector2(
+                float.Parse(parent.Attribute("sizex").Value, System.Globalization.NumberStyles.Any, ci),
+                float.Parse(parent.Attribute("sizey").Value, System.Globalization.NumberStyles.Any, ci));
+
+            Vector2 Origin = new Vector2(
+                float.Parse(parent.Attribute("origx").Value, System.Globalization.NumberStyles.Any, ci),
+                float.Parse(parent.Attribute("origy").Value, System.Globalization.NumberStyles.Any, ci));
+
+            string tex = parent.Attribute("texture").Value;
+
+            bone = new Bone(name, parentBone, Position, tex, Size, Origin);
 
             Console.WriteLine("created bone " + bone.GetName() + " as child to " + bone.ParentName());
 
-            foreach (XElement b in parent.Descendants("Bone"))
+            foreach (XElement b in parent.Elements("Bone"))
             {
                 bone.AddChild(LoadBone(bone, b));
             }
@@ -196,21 +105,54 @@ namespace CatEngine.SkeletalAnimation
             return bone;
         }
 
-        public void UpdateSkeleton(int frame)
+        public Bone GetBone(string name)
         {
-            animFrame = frame;
-            
-            if (animFrame > animLength)
-                animFrame %= animLength;
-            
-            if (rootBone != null)
-                rootBone.UpdateBone(animFrame);
+            Bone bone = null;
+
+            if (rootBone.GetName() != name)
+            {
+                Console.WriteLine("bone was not root, traversing");
+                bone = rootBone.GetChild(name);
+            }
+            else
+                bone = rootBone;
+
+            return bone;
         }
 
-        public void RenderSkeleton()
+        public void SetAnimation(BoneAnimation anim)
+        {
+            animLength = anim.animLength;
+            
+            foreach (AnimationBone aBone in anim.GetBones())
+            {
+                Bone b = GetBone(aBone.boneName);
+
+                if (b != null)
+                {
+                    b.SetRotations(aBone.Rotations);
+                    b.SetImages(aBone.Images);
+                    CConsole.Instance.Print("set rotations for bone "+b.GetName());
+                }
+                else
+                    CConsole.Instance.Print("tried to set rotations for " + aBone.boneName + " but it was null");
+            }
+        }
+
+        public void UpdateSkeleton(float frame)
+        {
+            animFrame = frame;
+
+            animFrame %= animLength;
+
+            if (rootBone != null)
+                rootBone.UpdateBone(animFrame, animLength);
+        }
+
+        public void RenderSkeleton(float scale)
         {
             if (rootBone != null)
-                rootBone.RenderBone();
+                rootBone.RenderBone(scale);
         }
     }
 }

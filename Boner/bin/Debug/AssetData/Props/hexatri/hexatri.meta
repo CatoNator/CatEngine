@@ -1,0 +1,4 @@
+<ModelMetadata type="simplemodel">
+	<texture name="test" filetype="png"/>
+	<model name="hexatri" filetype="dae"/>
+</ModelMetadata>

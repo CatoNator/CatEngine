@@ -26,6 +26,8 @@ namespace CatEngine
 
         private float fNorthDirection = 0f;
 
+        private float fMapScale = 2f;
+
         public enum FadeTypes
         {
             FadeLevel,
@@ -129,6 +131,16 @@ namespace CatEngine
             return (float)(-Math.Sin(dir) * dist);
         }
 
+        public float PointDirection(float x1, float y1, float x2, float y2)
+        {
+            return (float)Math.Atan2((double)(y2 - y1), (double)(x2 - x1));
+        }
+
+        public float PointDistance(float x1, float y1, float x2, float y2)
+        {
+            return (float)Math.Sqrt(Math.Pow((double)(x2 - x1), 2) + Math.Pow((double)(y2 - y1), 2));
+        }
+
         private float clamp (float val, float min, float max)
         {
             if (val.CompareTo(min) < 0) return min;
@@ -152,16 +164,30 @@ namespace CatEngine
             //natsa
             CSprite.Instance.Render("sprHudNatsa", CSettings.Instance.GAME_VIEW_WIDTH / 2-32, 5 + fNatsaOffset + 3 * (float)Math.Sin(fHealthCycle + (0.5 * 1)), (int)fNatsaFrame, false, 0, 1, Color.White);
 
-            CSprite.Instance.Render("sprRadarBlips", 44, CSettings.GAME_VIEW_HEIGHT - 44, 0, false, 0, 0.5f, Color.White);
-            CSprite.Instance.Render("sprRadarBlips", 44 + clamp(distDirX(72, fNorthDirection), -32, 32), CSettings.GAME_VIEW_HEIGHT - 44 + clamp(distDirY(72, fNorthDirection), -32, 32), 2, false, 0, 0.5f, Color.White);
-            CSprite.Instance.Render("sprRadarBorder", 8, CSettings.GAME_VIEW_HEIGHT - 80, 0, false, 0, 1f, Color.White);
+            List<Vector3> objectives = CScenarioManager.Instance.GetObjectivePositions();
+
+            foreach (Vector3 vec in objectives)
+            {
+                float dir = PointDirection(vPlayerPosition.X, vPlayerPosition.Y, vec.X, vec.Z) - (fNorthDirection - (float)Math.PI);
+                float dist = PointDistance(vPlayerPosition.X, vPlayerPosition.Y, vec.X, vec.Z) / fMapScale;
+
+                dist = clamp(dist, 0, 32);
+                
+                CSprite.Instance.Render("sprRadarBlips", 44 - distDirX(dist, dir), CSettings.GAME_VIEW_HEIGHT - 44 + distDirY(dist, dir), 1, false, 0, 0.5f, Color.White);
+            }
+
+            CSprite.Instance.Render("sprRadarBlips", 44 + distDirX(32, fNorthDirection), CSettings.GAME_VIEW_HEIGHT - 44 + distDirY(32, fNorthDirection), 2, false, 0, 0.5f, Color.White);
+            CSprite.Instance.Render("sprRadarBorder", 44, CSettings.GAME_VIEW_HEIGHT - 44, 0, false, 0, 1f, Color.White);
+            //CSprite.Instance.Render("sprRadarBorder", 44, CSettings.GAME_VIEW_HEIGHT - 44, 1, false, -fNorthDirection, 0.8f, Color.White);
+
+            CScenarioManager.Instance.RenderHUD(new Vector2(92, CSettings.GAME_VIEW_HEIGHT - 13));
 
             //the x symbol for counting the natsas
-            CSprite.Instance.Render("numeric_font", CSettings.Instance.GAME_VIEW_WIDTH / 2-6, 7 + fNatsaOffset + 3 * (float)Math.Sin(fHealthCycle + (0.5 * 2)), 10, false, 0, 1, Color.White);
+            /*CSprite.Instance.Render("numeric_font", CSettings.Instance.GAME_VIEW_WIDTH / 2-6, 7 + fNatsaOffset + 3 * (float)Math.Sin(fHealthCycle + (0.5 * 2)), 10, false, 0, 1, Color.White);
 
             //number itself
             CSprite.Instance.Render("numeric_font", CSettings.Instance.GAME_VIEW_WIDTH / 2 + 8, 7 + fNatsaOffset + 3 * (float)Math.Sin(fHealthCycle + (0.5 * 3)), iNatsas/10, false, 0, 1, Color.White);
-            CSprite.Instance.Render("numeric_font", CSettings.Instance.GAME_VIEW_WIDTH / 2 + 21, 7 + fNatsaOffset + 3 * (float)Math.Sin(fHealthCycle + (0.5 * 4)), iNatsas%10, false, 0, 1, Color.White);
+            CSprite.Instance.Render("numeric_font", CSettings.Instance.GAME_VIEW_WIDTH / 2 + 21, 7 + fNatsaOffset + 3 * (float)Math.Sin(fHealthCycle + (0.5 * 4)), iNatsas%10, false, 0, 1, Color.White);*/
         }
     }
 }

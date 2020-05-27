@@ -1,0 +1,4 @@
+<ModelMetadata type="simplemodel">
+	<texture name="mc_kakine00" filetype="png"/>
+	<model name="terrain" filetype="dae"/>
+</ModelMetadata>

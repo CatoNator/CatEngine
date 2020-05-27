@@ -59,9 +59,6 @@ namespace CatEngine
             graphics.ApplyChanges();
 
             Content.RootDirectory = "AssetData";
-
-            SkeletalSprite test = new SkeletalSprite();
-            test.LoadAnimation("test.anm");
         }
 
         private void GraphicsDeviceManager_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)

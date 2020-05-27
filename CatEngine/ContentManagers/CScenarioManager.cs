@@ -182,6 +182,28 @@ namespace CatEngine.Content
             }
         }
 
+        public List<Vector3> GetObjectivePositions()
+        {
+            List<Vector3> vectorList = new List<Vector3>();
+
+            if (pObjectiveList.Count > 0)
+            {
+                Objective o = pObjectiveList[0];
+                
+                if (o.isActive)
+                {
+                    CGameObject Target = o.GetTarget();
+
+                    if (Target != null)
+                    {
+                        vectorList.Add(new Vector3(Target.x, Target.z, Target.y));
+                    }
+                }
+            }
+            
+            return vectorList;
+        }
+
         public void Render()
         {
             if (pObjectiveList.Count > 0)
@@ -191,12 +213,15 @@ namespace CatEngine.Content
             }
         }
 
-        public void RenderHUD()
+        public void RenderHUD(Vector2 strPos)
         {
             if (pObjectiveList.Count > 0)
             {
                 if (pObjectiveList[0].isActive)
-                    pObjectiveList[0].DrawObjective();
+                {
+                    CSprite.Instance.Render("sprRadarBlips", strPos.X, strPos.Y, 1, false, 0, 0.5f, Color.White);
+                    pObjectiveList[0].DrawObjective(new Vector2(strPos.X + 13, strPos.Y - 3));
+                }
             }
         }
     }
@@ -265,6 +290,11 @@ namespace CatEngine.Content
             DialogSoundBytes = dialog;
 
             DialogSubtitles = subtitles;
+        }
+
+        public CGameObject GetTarget()
+        {
+            return Target;
         }
 
         public void CreateEnemySpawner(Type enemyType, int amount, float x, float y)
@@ -337,12 +367,12 @@ namespace CatEngine.Content
                 CRender.Instance.DrawBillBoard(new Vector3(Target.x, Target.z + 10, Target.y), new Vector2(5, 5), new Vector2(2.5f, 2.5f), 0, 1, "arrow");
         }
 
-        public void DrawObjective()
+        public void DrawObjective(Vector2 strPos)
         {
             if (currentObjective == ObjectiveType.Survival)
-                CSprite.Instance.DrawText(string.Format(sObjectiveString, Timer), new Vector2(64, 10), Color.Red);
+                CSprite.Instance.DrawText(string.Format(sObjectiveString, Timer), strPos, Color.Red);
             else
-                CSprite.Instance.DrawText(sObjectiveString, new Vector2(64, 10), Color.Red);
+                CSprite.Instance.DrawText(sObjectiveString, strPos, Color.Red);
 
             if (currentObjective == ObjectiveType.Event)
             {

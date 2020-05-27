@@ -72,4 +72,28 @@
 		<xorig>0</xorig>
 		<yorig>0</yorig>
 	</sprite>
+		<sprite>
+		<index>6</index>
+		<name>sprRadarBorder</name>
+		<texture>radar</texture>
+		<left>0</left>
+		<top>0</top>
+		<width>72</width>
+		<height>72</height>
+		<images>2</images>
+		<xorig>36</xorig>
+		<yorig>36</yorig>
+	</sprite>
+		<sprite>
+		<index>7</index>
+		<name>sprRadarBlips</name>
+		<texture>radar</texture>
+		<left>0</left>
+		<top>73</top>
+		<width>9</width>
+		<height>10</height>
+		<images>3</images>
+		<xorig>4</xorig>
+		<yorig>5</yorig>
+	</sprite>
 </spritedata>

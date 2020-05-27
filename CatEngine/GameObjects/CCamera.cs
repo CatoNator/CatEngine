@@ -15,7 +15,7 @@ namespace CatEngine
         private float fCameraVRotation = 90.0f;
         private float fCameraDistance = 15.0f;
         private float fTargetHeight = 10.0f;
-        private float fCameraHeight = 60.0f;
+        private float fCameraHeight = 100.0f;
 
         private float fCameraRotationSpeed = 2.0f;
         private float fCameraVRotationSpeed = 2.0f;
@@ -112,7 +112,7 @@ namespace CatEngine
             if (oTarget != null)
             {
                 fCameraRotation = ((((CPlayer)oTarget).fAimDir * 180f) / (float)Math.PI) + 180f;
-                targetPos = new Vector3(oTarget.x, oTarget.z + fTargetHeight, oTarget.y);
+                targetPos = ((CPlayer)oTarget).vLightTarget;//new Vector3(oTarget.x, oTarget.z + fTargetHeight, oTarget.y);
             }
 
             CGame.Instance.UpdateCamera(fCameraRotation);

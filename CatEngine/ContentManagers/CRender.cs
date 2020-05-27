@@ -31,6 +31,9 @@ namespace CatEngine.Content
         private Dictionary<string, SkinnedModel> dSkinnedModelDict = new Dictionary<string, SkinnedModel>();
         private Dictionary<string, SkinnedModelAnimation> dSkinnedAnimationDict = new Dictionary<string, SkinnedModelAnimation>();
 
+        private Dictionary<string, SkeletalSprite> dSkeletalSpriteDict = new Dictionary<string, SkeletalSprite>();
+        private Dictionary<string, BoneAnimation> dBoneAnimationDict = new Dictionary<string, BoneAnimation>();
+
         private Vector3 cameraPosition = new Vector3(30.0f, 30.0f, 30.0f);
         private Vector3 cameraTarget = new Vector3(0.0f, 0.0f, 0.0f); // Look back at the origin
 
@@ -246,6 +249,36 @@ namespace CatEngine.Content
             {
                 CRender.Instance.dSkinnedAnimationDict.Add(animationName, null);
                 CConsole.Instance.Print("Tried to load skinned animation " + animationName + " but failed, error " + e.ToString());
+            }
+        }
+
+        public void LoadSkeletalSprite(String path, String skelName)
+        {
+            try
+            {
+                SkeletalSprite spr = new SkeletalSprite();
+                spr.LoadSkeleton(path, skelName);
+                dSkeletalSpriteDict.Add(skelName, spr);
+            }
+            catch (ContentLoadException e)
+            {
+                dSkeletalSpriteDict.Add(skelName, null);
+                CConsole.Instance.Print("Tried to load skeletal sprite " + skelName + " but failed, error " + e.ToString());
+            }
+        }
+
+        public void LoadBoneAnimation(String path, String animName)
+        {
+            try
+            {
+                BoneAnimation anim = new BoneAnimation();
+                anim.LoadAnimation(path, animName);
+                dBoneAnimationDict.Add(animName, anim);
+            }
+            catch (ContentLoadException e)
+            {
+                dSkeletalSpriteDict.Add(animName, null);
+                CConsole.Instance.Print("Tried to load skeletal sprite " + animName + " but failed, error " + e.ToString());
             }
         }
 
@@ -724,25 +757,46 @@ namespace CatEngine.Content
             graphicsDevice.SetVertexBuffer(null);
         }
 
-        public void RenderBone(string technique, String spriteName, int imageIndex, Matrix transformMatrix)
+        public void RenderSkeletalSprite(string sprite, string animation, Vector3 position, float frame, float rotation, float scale)
         {
-            Vector3 Normal = GetNormal(new Vector3(-1, -0, -1), new Vector3(1, 0, 1), new Vector3(1, 0, -1));
+            SkeletalSprite spr = dSkeletalSpriteDict[sprite];
+            spr.SetAnimation(dBoneAnimationDict[animation]);
 
-            float spriteSize = 32f;
-            float spriteLeft = (spriteSize * (float)(imageIndex)) / dTextureDict[spriteName].Width;
-            float spriteRight = (spriteSize * (float)(imageIndex + 1)) / dTextureDict[spriteName].Width;
+            spr.GetBone("root").AddRotation(rotation);
+            spr.GetBone("root").AddPosition(position);
+
+            spr.UpdateSkeleton(frame);
+            spr.RenderSkeleton(scale);
+        }
+
+        public void RenderBone(string technique, String spriteName, int imageIndex, Matrix transformMatrix, Vector2 Size, Vector2 Origin)
+        {
+            /*Vector3 C1 = new Vector3(-(Size.X - Origin.X), 0, (Size.Y - Origin.Y));
+            Vector3 C2 = new Vector3(-(Size.X - Origin.X), 0, -(Size.Y - Origin.Y));
+            Vector3 C3 = new Vector3((Size.X - Origin.X), 0, (Size.Y - Origin.Y));
+            Vector3 C4 = new Vector3((Size.X - Origin.X), 0, -(Size.Y - Origin.Y));*/
+
+            Vector3 C1 = new Vector3(-Origin.X, 0, (Size.Y - Origin.Y));
+            Vector3 C2 = new Vector3(-Origin.X, 0, -Origin.Y);
+            Vector3 C3 = new Vector3((Size.X - Origin.X), 0, (Size.Y - Origin.Y));
+            Vector3 C4 = new Vector3((Size.X - Origin.X), 0,  -Origin.Y);
+
+            Vector3 Normal = GetNormal(C2, C3, C4);
+
+            float spriteLeft = (Size.X * (float)(imageIndex)) / dTextureDict[spriteName].Width;
+            float spriteRight = (Size.X * (float)(imageIndex + 1)) / dTextureDict[spriteName].Width;
 
             VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[6]
             {
                 //polygon 1
-                new VertexPositionNormalTexture(new Vector3(-1, 0, 1), Normal, new Vector2(spriteLeft, 0)),
-                new VertexPositionNormalTexture(new Vector3(1, 0, 1), Normal, new Vector2(spriteRight, 0)),
-                new VertexPositionNormalTexture(new Vector3(-1, 0, -1), Normal, new Vector2(spriteLeft, 1)),
+                new VertexPositionNormalTexture(C1, Normal, new Vector2(spriteLeft, 1)),
+                new VertexPositionNormalTexture(C3, Normal, new Vector2(spriteRight, 1)),
+                new VertexPositionNormalTexture(C2, Normal, new Vector2(spriteLeft, 0)),
 
                 //polygon 2
-                new VertexPositionNormalTexture(new Vector3(-1, 0, -1), Normal, new Vector2(spriteLeft, 1)),
-                new VertexPositionNormalTexture(new Vector3(1, 0, 1), Normal, new Vector2(spriteRight, 0)),
-                new VertexPositionNormalTexture(new Vector3(1, 0, -1), Normal, new Vector2(spriteRight, 1))
+                new VertexPositionNormalTexture(C2, Normal, new Vector2(spriteLeft, 0)),
+                new VertexPositionNormalTexture(C3, Normal, new Vector2(spriteRight, 1)),
+                new VertexPositionNormalTexture(C4, Normal, new Vector2(spriteRight, 0))
             };
 
             spriteBuffer.SetData<VertexPositionNormalTexture>(vertices);
@@ -1002,14 +1056,6 @@ namespace CatEngine.Content
             Matrix lightsProjection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1f, 5f, 200f);
 
             lightViewProjectionMatrix = lightsView * lightsProjection;
-        }
-
-
-        public Vector3 SunDebug()
-        {
-            //SunOrientation = new Vector3(SunOrientation.X + 0.01f, SunOrientation.Y + 0.01f, SunOrientation.Z + 0.01f);
-            SunOrientation = new Vector3(SunOrientation.X%(float)(Math.PI*2), SunOrientation.Y % (float)(Math.PI * 2), SunOrientation.Z % (float)(Math.PI * 2));
-            return SunOrientation;
         }
     }
 }

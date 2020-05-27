@@ -57,6 +57,8 @@ namespace CatEngine
         public Buttons gCRotateCamUp = Buttons.DPadUp;
         public Buttons gCRotateCamDown = Buttons.DPadDown;
 
+        public Buttons gFire = Buttons.RightTrigger;
+
         public Buttons gGPause = Buttons.Start;
 
         public Keys kCCShowConsole = Keys.PageDown;

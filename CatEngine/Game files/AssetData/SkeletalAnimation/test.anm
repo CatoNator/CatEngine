@@ -1,0 +1,35 @@
+<SkeletalAnimation frames="1">
+	<Bone name="root" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="0" posy="0" posz="0">
+		<Rotations>
+			<Frame id="0">0</Frame>
+			<Frame id="1">2</Frame>
+		</Rotations>
+		<Bone name="bone1" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="5" posy="0" posz="5">
+			<Rotations>
+				<Frame id="0">0</Frame>
+				<Frame id="1">0,5</Frame>
+			</Rotations>
+			
+			<Bone name="bone2" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="5" posy="0" posz="5">
+				<Rotations>
+					<Frame id="0">0</Frame>
+					<Frame id="1">1,6</Frame>
+				</Rotations>
+			</Bone>
+			
+			<Bone name="bone3" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="5" posy="0" posz="5">
+				<Rotations>
+					<Frame id="0">0</Frame>
+					<Frame id="1">1,6</Frame>
+				</Rotations>
+				
+				<Bone name="bone4" sizex="32" sizey="32" origx="16" origy="16" texture="p_whatever" posx="2" posy="0" posz="2">
+					<Rotations>
+						<Frame id="0">0</Frame>
+						<Frame id="1">4</Frame>
+					</Rotations>
+				</Bone>
+			</Bone>
+		</Bone>
+	</Bone>
+</SkeletalAnimation>

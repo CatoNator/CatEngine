@@ -95,6 +95,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleModel\SimpleModel.cs" />
     <Compile Include="SimpleModel\SimpleModelVertex.cs" />
+    <Compile Include="SkeletalSprite\Bone.cs" />
+    <Compile Include="SkeletalSprite\Animation.cs" />
     <Compile Include="SkeletalSprite\SkeletalSprite.cs" />
     <Compile Include="SkinnedModel\SkinnedModel.cs" />
     <Compile Include="SkinnedModel\SkinnedModelAnimation.cs" />

@@ -1,0 +1,4 @@
+<SkeletonStructure>
+	<Bone name="root" sizex="32" sizey="32" origx="16" origy="16" texture="p_legs_walk" posx="0" posy="0" posz="0">
+	</Bone>
+</SkeletonStructure>

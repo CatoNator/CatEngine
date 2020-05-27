@@ -33,7 +33,6 @@ namespace CatEngine
         public void Render()
         {
             CGame.Instance.RenderHUD();
-            CScenarioManager.Instance.RenderHUD();
         }
     }
 }

@@ -54,6 +54,8 @@ namespace CatEngine
         private const float fLightMaxDistance = 40.0f;
         private const float fLightMinDistance = 10.0f;
 
+        public Vector3 vLightTarget = Vector3.Zero;
+
         String sCurrentAnimation = "player_tpose";
         String sSecondaryAnimation = null;
 
@@ -61,7 +63,10 @@ namespace CatEngine
         private const int iShotCooldownMax = 5;
 
         private bool bIsShooting = false;
-        
+
+        float testframe = 0;
+
+
         public override void InstanceSpawn()
         {
             vCollisionOrigin = new Vector2(0, 0);
@@ -102,8 +107,18 @@ namespace CatEngine
                 fAimDir -= (fHInput2 * 0.2f)/(float)Math.PI;
             }
 
+            if (Math.Abs(fVInput2) >= 0.35)
+            {
+                fLightDistance -= (fVInput2 * 1.5f) / (float)Math.PI;
+
+                if (fLightDistance > fLightMaxDistance)
+                    fLightDistance = fLightMaxDistance;
+                else if (fLightDistance < fLightMinDistance)
+                    fLightDistance = fLightMinDistance;
+            }
+
             //shoob
-            /*if (fHInput2 != 0 || fVInput2 != 0)
+            if (CInputManager.ButtonDown(CSettings.Instance.gFire))
             {
                 if (iShotCooldown <= 0)
                 {
@@ -123,7 +138,9 @@ namespace CatEngine
 
                     iShotCooldown = iShotCooldownMax;
                 }
-            }*/
+
+                testframe += 0.25f;
+            }
 
             iShotCooldown--;
 
@@ -133,7 +150,11 @@ namespace CatEngine
             //we don't want to update the animation in Render() because it'll animate while paused
             UpdateAnimation();
 
-            CRender.Instance.SetLightPosition(new Vector3(x, z+10, y), new Vector3(x+distDirX(fLightDistance, fAimDir), z, y + distDirY(fLightDistance, fAimDir)));
+            CGame.Instance.UpdatePlayer(new Vector2(x, y));
+
+            vLightTarget = new Vector3(x + distDirX(fLightDistance, fAimDir), z, y + distDirY(fLightDistance, fAimDir));
+
+            CRender.Instance.SetLightPosition(new Vector3(x, z + 10, y), vLightTarget);
         }
 
         public override void Render(string technique)
@@ -142,40 +163,20 @@ namespace CatEngine
             {
                 //CRender.Instance.DrawPlayer(technique, sCurrentAnimation, sSecondaryAnimation, new Vector3(x, z, y), fDir+((float)Math.PI/2), fAnimFrame, fAnimFade);
 
-                float psize = 6f;
+                float psize = 0.5f;
+
+                //CRender.Instance.Draw3DSprite(technique, "p_legs_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 2f, y), psize, new Vector3(0, fDir, 0), 1f);
+                CRender.Instance.RenderSkeletalSprite("legs", "legs_anim", new Vector3(x, z + 2f, y) / psize, fAnimFrame, fDir, psize);
+                CRender.Instance.RenderSkeletalSprite("player_ak", "ak_fire", new Vector3(x, z + 4f, y)/psize, testframe, fAimDir, psize);
 
                 //legs
-                CRender.Instance.Draw3DSprite(technique, "p_legs_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 2f, y), psize, new Vector3(0, fDir, 0), 1f);
+                /*CRender.Instance.Draw3DSprite(technique, "p_legs_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 2f, y), psize, new Vector3(0, fDir, 0), 1f);
                 //body
                 CRender.Instance.Draw3DSprite(technique, "p_body_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 4f, y), psize, new Vector3(0, fDir, 0), 1f);
                 //torso
                 CRender.Instance.Draw3DSprite(technique, "p_torso_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 6f, y), psize, new Vector3(0, fDir, 0), 1f);
                 //head
-                CRender.Instance.Draw3DSprite(technique, "p_head_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 7f, y), psize, new Vector3(0, fDir, 0), 1f);
-
-                //legs
-                /*CRender.Instance.DrawRectangle(new Vector3(x - psize, z + 2f, y + psize),
-                        new Vector3(x + psize, z + 2f, y + psize),
-                        new Vector3(x - psize, z + 2f, y - psize),
-                        new Vector3(x + psize, z + 2f, y - psize), "p_legs_"+sCurrentAnimation, false, 1f);
-
-                //body
-                CRender.Instance.DrawRectangle(new Vector3(x - psize, z + 4f, y + psize),
-                        new Vector3(x + psize, z + 4f, y + psize),
-                        new Vector3(x - psize, z + 4f, y - psize),
-                        new Vector3(x + psize, z + 4f, y - psize), "p_body_" + sCurrentAnimation, false, 1f);
-
-                //torso
-                CRender.Instance.DrawRectangle(new Vector3(x - psize, z + 6f, y + psize),
-                        new Vector3(x + psize, z + 6f, y + psize),
-                        new Vector3(x - psize, z + 6f, y - psize),
-                        new Vector3(x + psize, z + 6f, y - psize), "p_torso_" + sCurrentAnimation, false, 1f);
-
-                //head
-                CRender.Instance.DrawRectangle(new Vector3(x - psize, z + 7f, y + psize),
-                        new Vector3(x + psize, z + 7f, y + psize),
-                        new Vector3(x - psize, z + 7f, y - psize),
-                        new Vector3(x + psize, z + 7f, y - psize), "p_head_" + sCurrentAnimation, false, 1f);*/
+                CRender.Instance.Draw3DSprite(technique, "p_head_" + sCurrentAnimation, (int)fAnimFrame, new Vector3(x, z + 7f, y), psize, new Vector3(0, fDir, 0), 1f);*/
 
                 CRender.Instance.DrawShadow(new Vector3(x, z + 2.5f, y), 2.5f);
                 //CRender.Instance.DrawPlayerShadow(new Vector3(x, z + 2.5f, y), 2.5f, sCurrentAnimation, fDir, fAnimFrame);
